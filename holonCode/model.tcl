@@ -49,7 +49,7 @@ proc OpenDB {} {
 	set newdb [expr ![file exists $db]]
 	mk::file open wdb $db -shared                 ;# wdb is handle of the db-file
 	SetDBLayout
-	if {$newdb} {CreateStructure}
+	if {$newdb} {CreateStructure; return}
 	catch {
 		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
 			wm iconify .  ;# reduce window to icon, only message box is visible
