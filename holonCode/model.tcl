@@ -49,14 +49,15 @@ proc OpenDB {} {
 	set newdb [expr ![file exists $db]]
 	mk::file open wdb $db -shared                 ;# wdb is handle of the db-file
 	SetDBLayout
-	if {$newdb} {CreateStructure; return}
+	if {$newdb} {CreateStructure}
 	catch {
 		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
 			wm iconify .  ;# reduce window to icon, only message box is visible
 			tk_messageBox -type ok -message "System is already running"
 			exit
 		}	
-	}	UpdateRunning
+	}	
+	UpdateRunning
 }
 
 proc CloseDB {} {
