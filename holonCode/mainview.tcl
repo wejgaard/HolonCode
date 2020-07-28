@@ -44,7 +44,16 @@ proc CreateButtons {} {
 	CreateButton Load LoadUnit
 	CreateButton Setup AskSetup
 	CreateButton Run DoRun
+	CreateButton Test LoadTest
+	CreateButton Commit Commit
 	CreateButton Print Print
+	CreateButton Rev EditRevision
+	CreateButton Clear ClearAll
+	label .b.leer -text " |    " -bg $::color(menu)
+	bind .b.rev <$::RightButton> ShowRevisions
+	bind .b <$::RightButton> ClearAll
+	bind .b <Button-1> ClearAll
+	bind .b.load <$::RightButton> DoRun
 }
 
 proc FindReplace {} {
@@ -68,8 +77,8 @@ proc FindReplace {} {
 }
 
 proc PackButtons {} {
-	pack $::Back $::View $::New $::Edit $::Load -side left -padx 0 -pady 0 
- 	pack [FindReplace] -in .b -side right 
+	pack $::Back $::View $::New $::Edit $::Load .b.leer $::Rev  -side left -padx 0 -pady 0 
+	pack [FindReplace] -in .b -side right 
 }
 
 proc ButtonBar {} {
@@ -78,6 +87,9 @@ proc ButtonBar {} {
 	frame $buttonBar -relief flat -bd 1 -bg $color(menu) -padx 5 -pady 6 -cursor xterm
 	CreateButtons
 	PackButtons
+#	.b.rev config -text "Revision $::version"
+	.b.rev config -text "Rev. $::version"
+	.b.rev config -width 8
 	return $buttonBar
 }
 
@@ -87,7 +99,8 @@ proc CreateMenu {} {
 	FileMenu 
 	ViewMenu 
 	ConfigurationMenu
-	HolonMenu
+#	HolonMenu
+#	HelpMenu
 }
 
 proc FileMenu {} {
@@ -118,6 +131,16 @@ proc ViewMenu {} {
 	$menu(view) add command -label "Lists shorter  (-)" -command {DecrList} 
 }
 
+proc ConfigurationMenu {} {
+	global menu
+	.menubar add cascade -label Configuration -menu .menubar.version -underline 0
+	set menu(version) [menu .menubar.version -tearoff 0 ]
+	$menu(version) add command -label "Preferences" -command AskSetup
+	$menu(version) add command -label "Commit" -command Commit
+	$menu(version) add command -label "About" -command AboutHolon
+#	ShowProject
+}
+
 proc HolonMenu {} {
 	global menu
 	.menubar add cascade -label Holon -menu .menubar.holon -underline 0
@@ -127,30 +150,46 @@ proc HolonMenu {} {
 	$menu(holon) add command -label "License" -command {License}
 }
 
-proc AboutHolonCode {} {
+proc HelpMenu {} {
+	global menu
+	.menubar add cascade -label Manual -menu .menubar.help -underline 0
+	set menu(help) [menu .menubar.help -tearoff 0]
+	$menu(help) add command -label "Operation" -command {ShowHelp}
+	$menu(help) add command -label "About" -command {About}
+	$menu(help) add command -label "License" -command {License}
+}
+
+proc TargetMenu {} {
+	global menu
+	set menu(target) [menu .menubar.target -tearoff 0]
+	.menubar add cascade -label Target -menu .menubar.target -underline 0
+	$menu(target) add command -label "Load unit" -command {LoadUnit}
+	$menu(target) add command -label "Test unit" -command {TestUnit}
+	$menu(target) add command -label "Run program" -command {DoRun}
+	
+}
+
+proc AboutHolon {} {
 	if [winfo exists .about] {return}
 	toplevel .about
-	wm title .about "About HolonCode"
+	wm title .about "About Holon"
 	set abouttext [text .about.t -width 80 -height 27]
 	pack $abouttext -side top -fill both
 	AnzahlElemente
   	$abouttext insert 1.0 "
-  HolonCode Version 1.0 
-  Copyright 2008-20 Wolf Wejgaard
+  Holon Master Version $::sourceversion 
+  Copyright 2008-17 Wolf Wejgaard
   All Rights Reserved
-   
+    
   Current # Elements:
   $::AboutElemente 
-
+    
+  Credits:
+  I am indebted to Jean-Claude Wippler, Equi4 Software, http://equi4.com, 
+  for two great tools that make Holon efficient and reliable: 
+  Metakit - a widely proven database engine
+  Tclkit - a self-contained Tcl/Tk runtime 
 "
-}
-
-proc ConfigurationMenu {} {
-	global menu
-	.menubar add cascade -label Configuration -menu .menubar.version -underline 0
-	set menu(version) [menu .menubar.version -tearoff 0 ]
-	$menu(version) add command -label "Preferences" -command AskSetup
-	$menu(version) add command -label "About" -command AboutHolonCode
 }
 
 set menu(chapters) ""
@@ -186,6 +225,14 @@ proc UnitMenu {} {
 	$menu(units) add command -label "Print Page" -command PrintUnit
 }
 
+proc RevisionMenu {} {
+	global menu
+	set menu(revision) [menu .b.rev.menu -tearoff 0 ]
+	$menu(revision) add command -label "Commit" -command {Commit}
+	$menu(revision) add command -label "Revisions" -command ShowRevisions
+#	ShowProject
+}
+
 proc LoadMenu {} {
 	global menu
 	set menu(load) [menu .b.load.menu -tearoff 0 ]
@@ -204,6 +251,12 @@ proc ContextMenus {} {
 	UnitMenu 
 	bind $view(units) <$::RightButton> {tk_popup $menu(units) %X %Y}
 	bind $view(units) <Control-Button-1> {tk_popup $menu(units) %X %Y}
+	RevisionMenu
+	bind $::Rev <$::RightButton> {tk_popup $menu(revision) %X %Y}
+	bind $::Rev <Control-Button-1> {tk_popup $menu(revision) %X %Y}
+	LoadMenu
+	bind $::Load <$::RightButton> {tk_popup $menu(load) %X %Y}
+	bind $::Load <Control-Button-1> {tk_popup $menu(load) %X %Y}
 }
 
 proc BindInfo {} {
@@ -222,89 +275,92 @@ proc InfoPane {} {
 	InfoFrame
 	panedwindow .info.panes -orient vertical -borderwidth 0 \
 		-sashrelief flat -opaqueresize 1 -sashwidth 3 -bg #f3f3f3
+	set view(info) .info.panes.text
 	if [osx] {set infosize 24} {set infosize 17}
-	
-	set view(visited) .info.panes.visited
-	text $view(visited) -width $infosize	-state disabled -wrap none -bg $color(menu) \
+	text $view(info) -width $infosize	-state disabled -wrap none -bg $color(menu) \
 		-padx 8 -relief sunken -cursor arrow -bd 1 -highlightthickness 0 -pady 5 -spacing3 0
-		
 	BindInfo
-	
-	$view(visited) tag configure normal -font infoNormal
-	$view(visited) tag configure bold -font infoBold
-	$view(visited) tag configure marking -foreground blue -font infoNormal
-	$view(visited) tag configure red -foreground brown -font infoNormal
-	$view(visited) tag configure title -font infoBold -spacing1 9 -spacing3 9 -foreground #666
-	$view(visited) tag raise marking
-	
-	set view(found) .info.panes.found
-	text $view(found) -width $infosize	-state disabled -wrap none -bg $color(menu) \
+	$view(info) tag configure normal -font infoNormal
+	$view(info) tag configure bold -font infoBold
+	$view(info) tag configure marking -foreground blue -font infoNormal
+	$view(info) tag configure red -foreground brown -font infoNormal
+	$view(info) tag configure title -font infoBold -spacing1 9 -spacing3 9 -foreground #666
+	$view(info) tag raise marking
+	set view(rev) .info.panes.revision
+	text $view(rev) -width $infosize	-state disabled -wrap none -bg $color(menu) \
 		-padx 8 -relief sunken -cursor arrow -bd 1 -highlightthickness 0 -pady 5 -spacing3 0
-		
-	$view(found) tag configure normal -font infoNormal
-	$view(found) tag configure grey -font infoNormal -foreground #999
-	$view(found) tag configure date -font smallbold -foreground #666
-	$view(found) tag configure title -font infoBold -spacing1 9 -spacing3 9 -foreground #666
-	
-	.info.panes add $view(visited)
-	.info.panes add $view(found)
+	$view(rev) tag configure normal -font infoNormal
+	$view(rev) tag configure grey -font infoNormal -foreground #999
+	$view(rev) tag configure date -font smallbold -foreground #666
+	$view(rev) tag configure title -font infoBold -spacing1 9 -spacing3 9 -foreground #666
+	.info.panes add $view(info)
+	.info.panes add $view(rev)
 	.info.panes sash place 0 0 163
 	pack .info.panes -side top -fill both -expand 1
 	return .info
 }
 
+set infomode ""
+
 proc ClearVisited {} {
 	global view 
-	$view(visited) configure -state normal
-	$view(visited) delete 1.0 end
-	$view(visited) configure -state disabled
+	$view(info) configure -state normal
+	$view(info) delete 1.0 end
+	$view(info) configure -state disabled
 }
 
-proc ClearFound {} {
+proc ClearRevision {} {
 	global view 
-	$view(found) configure -state normal
-	$view(found) delete 1.0 end
-	$view(found) configure -state disabled  
+	$view(rev) configure -state normal
+	$view(rev) delete 1.0 end
+	$view(rev) configure -state disabled
 }
 
-proc VisitedTitle {name} {
+proc InfoTitle {name} {
 	global view
-	$view(visited) configure -state normal 
-	$view(visited) insert end " $name" title
-	$view(visited) configure -state disabled
+	$view(info) configure -state normal 
+	$view(info) insert end " $name" title
+	$view(info) configure -state disabled
 }
 
-proc FoundTitle {name} {
+proc RevisionTitle {name} {
 	global view
-	$view(found) configure -state normal 
-	$view(found) insert end "$name" title
-	$view(found) configure -state disabled
+	$view(rev) configure -state normal 
+	$view(rev) insert end "$name" title
+	$view(rev) configure -state disabled
 }
 
-proc InsertVisited {name style id} {
+proc InsertInfo {name style id} {
 	global view
-	$view(visited) configure -state normal  
-	$view(visited) tag bind goto$id <1> "GotoTree $id; break"
+	$view(info) configure -state normal  
+	$view(info) tag bind goto$id <1> "GotoTree $id; break"
 	# show name clashes red (two or more units with the same name)
 	set n [llength [mk::select wdb.pages name $name type unit]]
 	if {$n>1} {set style red}
-	$view(visited) insert end " $name\n" "goto$id $style"
+	$view(info) insert end " $name\n" "goto$id $style"
 	set style normal
-	$view(visited) configure -state disabled
+	$view(info) configure -state disabled
 }
 
-proc InsertFound {name style id} {
+proc InfoDate {name} {
 	global view
-	$view(found) configure -state normal 
-	$view(found) tag bind goto$id <1> "GotoTree $id; break"
-	$view(found) insert end " $name\n" "goto$id $style"
+	$view(rev) configure -state normal 
+	$view(rev) insert end " $name\n" date
+	$view(rev) configure -state disabled
+}
+
+proc InsertRevisionline {name style id} {
+	global view
+	$view(rev) configure -state normal 
+	$view(rev) tag bind goto$id <1> "GotoTree $id; break"
+	$view(rev) insert end " $name\n" "goto$id $style"
 	set style normal
-	$view(found) configure -state disabled
+	$view(rev) configure -state disabled
 }
 
 proc MarkInfoPages {} {
 	global view page 
-	foreach pane {visited found} {
+	foreach pane {info rev} {
 		# clear marks
 		foreach name [$view($pane) tag names] {
 			$view($pane) tag configure $name -foreground black
@@ -422,8 +478,7 @@ proc ShowHolon {} {
 	global view
 	set ::page [lindex [PageStack] 0]
 	ShowPage [CurrentPage]
-	ShowVisitedPages; 
-	ShowFound
+	ShowVisitedPages; ShowRevision $::version
 	after 300 {TextCodePanes [CurrentPage]}
 }
 
@@ -433,14 +488,18 @@ proc DisableMotionEvents {} {
 	bind $view(text) <Leave> {}
 	bind $view(code) <Motion> {}
 	bind $view(code) <Leave> {}
+	bind $view(test) <Motion> {}
+	bind $view(test) <Leave> {}
 	bind $view(info) <Motion> {}
 	bind $view(info) <Leave> {}
 }
 
 proc EndSession {} {
 	DisableMotionEvents
-	SetBase geometry 1000x600+40+40   
+#	SetBase geometry [wm geometry .]   
+	SetBase geometry 1100x800+300+60   
 	CloseDB
+# 	file delete $::runfile
 	destroy $::topwin 
 	exit
 }

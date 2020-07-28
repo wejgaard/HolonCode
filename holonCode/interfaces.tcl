@@ -289,61 +289,7 @@ proc WriteAllChapters {} {
           SetChapter [NextChapter]
      }
 	SetChapter $current
-#	WriteSourceVersion
-}
-
-proc Markup {} {
-	if [winfo exists .markup] {return}
-	toplevel .markup
-	wm title .markup "Markup for Import"
-	set markuptext [text .markup.t -width 80 -height 30]
-	pack $markuptext -side top -fill both
-	$markuptext insert 1.0 "
-  IMPORTING .fml FILES  (Legacy Files Markup Language)
-	
-  <File> File=Chapter name
-  (text)
-  <Section> Section name
-  (text)
-  <Unit> Unit name
-  code
-  <Section> name 
-  (text)
-  <Unit> name
-  code
- 
-  --
-  Tag names are case insensitive
-  Unit comments are imported with the code. 
-  Text and code are delimited by the following tag. 
-   
-  -----------------------------------------------------------------
-   
-  IMPORTING .hml FILES  (Holon Markup Language)
-  (export a chapter for an example)
-  
-  <Chapter>
-  <Name> Name of Chapter
-  <Comment> text
-  <Section>
-  <Name> Get prime numbers
-  <Comment> text
-  <Unit>
-  <Name> Name of unit
-  <Comment> text
-  <Source> text
-  <Unit>
-  <Name> Name of unit
-  <Source> text
-  <Section>
-  <Name> Name of section
-  <Comment> text
-  
-  --
-  Comments and source are delimited by the following tag. 
-  Exported <Comment> text contains Tcl Editor markup.
- 
-"
+	WriteSourceVersion
 }
 
 proc OpenExportFile {} {
@@ -358,7 +304,7 @@ proc ExportRecord {r f} {
 	puts $f "<Name> [GetPage $r name]"
 	set t [GetPage $r text] ; if {$t!=""} {puts $f "<Comment> $t"}
 	set s [GetPage $r source] ; if {$s!=""} {puts $f "<Source> $s"}
-#	set v [lindex [GetPage $r changes] end] ; if {$v!=""} {puts $f "<Version> $v"}
+	set v [lindex [GetPage $r changes] end] ; if {$v!=""} {puts $f "<Version> $v"}
 }
 
 proc ExportUnit {f} {
@@ -588,15 +534,5 @@ proc StartMonitor {} {
 	global LastRead
 	set LastRead [LastAccess]
 	Monitor
-}
-
-proc LoadUnit {} {
-	global view 
-	if [NoUnits] return
-	if [Editing] {SaveIt}
-	set loadText [GetPage [Unit] source]
-	if {[catch	{SendMonitor $loadText} result]} {
-		tk_messageBox -type ok -message "Sorry, $result  "
-	}	
 }
 

@@ -37,7 +37,7 @@ proc Insert&Delete {} {
 	bind $view(units) <Shift-BackSpace> {InsertUDeleted after; break} 
 }
 
-proc NewPage {} { 
+proc NewPage {} {
 	if [Editing] {SaveIt}
 	switch [GetPage [CurrentPage] type] {
 		chapter {AddChapter}
@@ -70,6 +70,23 @@ proc Editing {} {
 	expr {[$view(text) cget -state]=="normal"}
 }
 
+proc TextChanged {} {
+	global view oldTitle oldText oldCode  
+	set newTitle [string trim [$view(title) get 1.0 1.end]]
+	set newText [$view(text) get 1.0 end]
+	set newCode [$view(code) get 1.0 end ]
+	regsub -all {\s+} $oldText "" oldText
+	regsub -all {\s+} $newText "" newText
+	regsub -all {\s+} $oldCode "" oldCode
+	regsub -all {\s+} $newCode "" newCode
+	if {[string equal $oldTitle $newTitle] && [string equal $oldText $newText] \
+			&& [string equal $oldCode $newCode]} {
+		return 0
+	} else {
+		return 1
+	}
+}
+
 proc StoreText {} {
 	global view changed 
 	# if text exists with no space at end, append space.
@@ -81,14 +98,21 @@ proc StoreText {} {
 	$view(text) tag remove foundit 1.0 end
 	set title [string trim [$view(title) get 1.0 1.end]]
 	set text [$view(text) dump 1.0 "end - 1 char"]
-	set code [string trimright [$view(code) get 1.0 end ]]; 
-	set cursor [lindex [$view(code) yview] 0] 
-	SavePage [CurrentPage] $text $code local $title $cursor 
+	set code [string trim [$view(code) get 1.0 end ]]; 	set cursor [lindex [$view(code) yview] 0]
+	set test " "; 	# set test [string trim [$view(test) get 1.0 end]]
+	SavePage [CurrentPage] $text $code local $title $cursor $test $changed
 }
 
 proc SaveText {} {
-	if {![Editing]} {return}
+	global version changelist oldVersion changed
+	if {![Editing]||$oldVersion} {return}
 	set id [CurrentPage]
+	set changed 0
+	# Save previous version.
+	if {[TextChanged] && $version!=[lindex $changelist end]} {
+		SaveOldPage $id ; UpdateChangelist $id 
+		set changed 1
+	}
 	StoreText
 	WriteChapter	         
 	BrowserButtons
@@ -119,7 +143,8 @@ proc Cancel {} {
 }
 
 proc EditPage {} {
-	global edit type view  color 
+	global edit type view oldVersion color 
+	if {$oldVersion} {return}
 	set id [CurrentPage] 
 	EditorButtons
 	pagevars $id name page cursor source type 
@@ -127,11 +152,14 @@ proc EditPage {} {
 		$pane configure -state normal  -bg $color(editbg)
 		$pane edit reset
 	}
+	$view(test) configure -state normal  -bg bisque
 	if {$edit(pane)==""} {
 		set pane $view(title)
 	} else {
 		set pane $edit(pane); set edit(pane) "" ; set cursor $edit(pos)
 	}
+#	if {$cursor==""} {set cursor 1.0}   ;# new page
+#	$pane mark set insert $cursor
 	$pane mark set anchor insert	   
 	focus $pane
 	RefreshColors
@@ -198,12 +226,12 @@ proc ReplaceText  {pane} {
 }
 
 proc FindLoop {} {
-	global searchText findText 
+	global searchText findText infomode
 	if {[string length $findText]<1} {
 		if {$searchText!=""} {
 			set searchText "" 
 			ShowFoundText 
-			ShowFound 
+			ShowRevision $::version
 		}
 	} {
 		if {[string compare $findText $searchText]!=0} {
@@ -219,7 +247,7 @@ proc ClearAll {} {
 	set ::searchText ""
 	set ::replaceText ""
 	ShowFoundText
-	ShowFound
+	ShowRevision $::version
 	focus .
 }
 
@@ -475,5 +503,35 @@ proc TextMenu {} {
 #	$tm add command -label "source" -command TextCode
 #	$tm add command -label "image" -command TextImage
 	$tm add command -label "url" -command TextURL
+}
+
+proc CutLines {pane} {
+	set i 0; set j 0
+	set buf [$pane get 1.0 end]  
+	set len [string length $buf]
+	while {$i<$len} {
+		if {[string index $buf $i] eq "\n"} {set  j 0}
+		if {$j > 72} {
+			while {[string index $buf $i] ne " "} {
+				incr i -1;  if {$i<0} break
+			}
+			set buf [string replace $buf $i $i \n]
+			set j 0; 
+		}
+		incr i; incr j
+	} 
+	# Text zurückschreiben
+	$pane configure -state normal
+	$pane delete 1.0 end
+	$pane insert  end $buf
+}
+
+proc Signatur {pane} {
+	$pane insert end "
+- Wolf
+--
+Wolf Wejgaard
+http://holonforth.com
+"
 }
 

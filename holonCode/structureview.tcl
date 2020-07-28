@@ -105,9 +105,11 @@ set view(version) ""
 set view(text) ""
 set view(code) ""
 set view(info) ""
+set view(test) ""
 set view(treeactive) ""
 
 set view(sash0) "0 50"     ;# Position of sash Text/Code
+set view(sash1) "0 250"   ;# Position of sash Code/Test
 set view(height) 7            ;# Number of elements visible in each list
 set view(dragging) 0
 
@@ -310,7 +312,7 @@ proc UpdateChapters {} {
 	ShowPage [Chapter]
 #	GetSyntax
 	focus $view(chapters)
-	# keep active chapter in center of list
+	# keep active chapter in center of pane
 	$view(chapters) yview [expr {$active-$view(height)/2}]
 	after 500 {$view(chapters) activate $active}
 }

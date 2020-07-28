@@ -594,7 +594,7 @@ proc FoundColor {color} {
 	.s.replace config -bg $color
 }
 
-proc ShowFoundText {} { 
+proc ShowFoundText {} {
 	global view searchText found
 	set found 1.0;   # für FoundInPage
 	foreach pane "$view(title) $view(text) $view(code)" {
@@ -621,14 +621,14 @@ proc ShowFoundText {} {
 proc ShowFoundPages {rows} {
 	global findText searchText 
 	ShowFoundText
-	ClearFound
-	FoundTitle " Found: $findText\n"
+	ClearRevision
+	RevisionTitle " Found: $findText\n"
 	set count 0
 	foreach i $rows {
 		if {[string compare $findText $searchText] != 0} return
 		pagevars $i date name type
 		if {[Deleted $i]} {continue}
-		InsertFound $name normal $i
+		InsertRevisionline $name normal $i
 		update
    		incr count; # if {$count>60} return
    		set lcname [string tolower $name]
@@ -642,30 +642,69 @@ proc ShowFoundPages {rows} {
 			}
 		}
   	}
-    	if {$count==0} {InsertFound "(none)" normal 0}
+    	if {$count==0} {InsertRevisionline "(none)" normal 0}
+	set ::infomode found  
 }
 
 proc ShowVisitedPages {} {
 	global color
 	ClearVisited
 	FoundColor $color(info)
-	VisitedTitle "Visited\n"
+	InfoTitle "Visited\n"
+#	InfoTitle "Back\n"
+#	InfoTitle "History\n"
+#	InfoTitle "Recent\n"
+#	InfoTitle "Edited:\n"
 	set count 0
 	foreach i [PageStack] {
 		pagevars $i name 
 		if {[Deleted $i]} {continue}
-		InsertVisited $name normal $i
+		InsertInfo $name normal $i
 		incr count; if ($count>$::maxPages) return
 	}
 	MarkInfoPages
 }
 
-proc ShowFound {} {
+proc ShowRevision {rev} {
 	global view color findText searchText infomode
-	$view(found) configure -state normal; $view(found) delete 1.0 end; 
+	$view(rev) configure -state normal; $view(rev) delete 1.0 end; 
 	set findText ""; set searchText ""; ShowFoundText
-	FoundTitle " Found"
+	RevisionTitle " Revision $rev\n"
 	update
-	return
+	set count 0
+	set rows [mk::select wdb.pages -rsort date -globnc changes *$rev*]
+	foreach i $rows {
+		pagevars $i date name type
+		InsertRevisionline $name normal $i
+   		incr count
+	}
+	if {$count == 0} {InsertInfo "(none)" normal 0}
+	set infomode revision
+}
+
+proc ShowRevisions {} {
+	global view 
+	set count 0; set lastDay 0; set lastversion 0; array set pageDays {}
+	$view(rev) configure -state normal; $view(rev) delete 1.0 end; 
+	$view(rev) insert end " Revisions" title; $view(rev) configure -state disabled
+	update
+	foreach i [mk::select wdb.archive -rsort date] {
+		lassign [mk::get wdb.archive!$i id date name version] id date name version
+		# only report last change to a page on each day
+		set day [expr {$date/86400}]; set dayversion $day$version
+		if {[info exists pageDays($id)] && $dayversion==$pageDays($id)} continue
+		set pageDays($id) $dayversion
+		#insert a header for each new date and version
+		incr count
+		if {$day!=$lastDay || $version!=$lastversion} {
+			# only cut off on day changes and if over 7 days reported
+			# if {$count > 1000} {break}
+			set lastDay $day; set lastversion $version
+			InfoDate "\n $version - [clock format $date -gmt 1 -format {%b. %e, %Y}] "
+			update 
+		}
+		InsertRevisionline $name normal $id
+	}
+	set ::infomode revisions
 }
 

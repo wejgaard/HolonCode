@@ -5,7 +5,9 @@ proc AskSetup {} {
 	toplevel $setup(win)
 	wm title $setup(win) "Preferences"
 	.setup config -bg $color(pagebg)
+	SetupRevision
 	SetupOperation
+#	SetupPrinting
 	SetupOK
 	wm protocol $setup(win) WM_DELETE_WINDOW {EndSetup}
 }
@@ -91,15 +93,23 @@ proc SetupOK {} {
 
 proc EndSetup {} {
 	global setup view
+	SaveSetupVersion	 $setup(version); 
 	SetBase safe $setup(safe)
-	SetBase fontsize $setup(size); 
-	SetBase codesize $setup(codesize); 	
-	AdjustFontsize
-	SetBase codecolor $setup(codecolor); 
-	if {![Editing]} {ShowCode [CurrentPage]}
+	SetBase fontsize $setup(size); SetBase codesize $setup(codesize); AdjustFontsize
+#	SetBase codefont $setup(codefont)
+	SetBase codecolor $setup(codecolor); if {![Editing]} {ShowCode [CurrentPage]}
 	if {[GetBase extension]!=$setup(extension)} {
 		SetBase extension $setup(extension); RefreshChapters
-	}	
+	}
+	if {[GetBase extension]==0} {
+		$view(lists).cf configure -text "  Chapters" -fg #888
+		$view(treeframe) configure -text "  Chapters" -fg #888
+	} else {
+		$view(lists).cf configure -text "  Files" -fg #888
+		$view(treeframe) configure -text "  Files" -fg #888
+	}
+#	SetBase comdel $setup(comdel)
+#	SetBase pagesize $setup(pagesize)
 	destroy $setup(win)
 }
 
@@ -132,25 +142,87 @@ proc AnzahlElemente {} {
 	GotoUnit $endUnit
 }
 
-proc NewProject {} {
-	if [winfo exists .project] {return}
-	toplevel .project
-	wm title .project "Holon Projects"
-	set projecttext [text .project.t -width 80 -height 30]
-	pack $projecttext -side top -fill both
-	$projecttext insert 1.0 " 
-  CREATING A NEW PROJECT
+proc IncrVersion {} {
+	global version
+	set v1 [split $version .]         
+	if {$v1==$version} {
+		set v2 $v1                
+	} {
+		set v2 [lindex $v1 end] 
+	} 
+	set n [string length $v2]
+	incr n -1		                          ;# length of changenumber
+	set v3 [join "1 $v2" ""]       ;# avoid leading zeros = octal
+	incr v3
+	set v2 [string range $v3 end-$n end]
+	if {$v1==$version} {
+		set version $v2
+	} {
+		set v1 [lreplace $v1 end end $v2]
+		set version [join $v1 .]
+	}
+}
+
+proc ShowProject {} {
+	wm title . "$::appname  "
+}
+
+proc Commit {} {
+	global version  
+	set revpage  [GetBase revpage]
+	if {$revpage==""} return
+	GotoTree [GetBase revpage]; update
+	IncrVersion
+	SetVersion $version
+	WriteSourceVersion
+	AddLogPage
+}
+
+proc SaveSetupVersion {v} {
+	if {$v==$::version} {return}
+	SetVersion $v
+	WriteSourceVersion
+#	ShowProject
+	focus .
+}
+
+proc WriteSourceVersion {} {
+	set version [GetBase version]
+	set f [open $::sourcedir/sourceversion.tcl w]
+	puts $f "set sourceversion $version"
+	close $f
+}
+
+proc UpdateChangelist {id} {
+	global version changelist
+	if {$version==[lindex $changelist end]} {return}
+	lappend changelist $version
+	SetPage $id changes $changelist 
 	
-  1. Create a project folder, say, 'MyProject'
-  2. Insert a COPY of HolonTalk.app and rename it 'MyProject.app' -- or .exe 
-  3. Run the App. 
-  
-  The new project App creates the database MyProject.hdb and the folder 
-  myproject/  for source files that are generated in the project.
-  
-  You are ready to go.
-   
-"
+}
+
+proc GotoLogPage {} {
+	set u [GetBase revpage]
+	if $u {GotoUnit $u}
+}
+
+proc AddLogPage {} {
+	if [Editing] SaveIt
+	global version 
+	LastProgramUnit
+	set u [AppendPage name "$version" changes $version date [clock seconds] ]
+	InsertUnit $u after
+	SetBase revpage $u
+	.b.rev config -text "Rev. $version"
+}
+
+proc EditRevision {} {
+	set ::findText ""
+	set ::searchText ""
+	set ::replaceText ""
+	ShowRevision $::version
+	set revpage  [GetBase revpage]
+	if {$revpage!=""} {GotoTree $revpage}
 }
 
 proc CreateImportScript {} {
@@ -180,10 +252,79 @@ proc ImportChapters {} {
 	source ./source/project.imp
 }
 
-proc Import-hml {} {
-	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
-	if {$file==""} {return}
-	ImportChapter $file
+proc About {} {
+	if [winfo exists .about] {return}
+	toplevel .about
+	wm title .about "About HolonS/L"
+	set abouttext [text .about.t -width 80 -height 30]
+	pack $abouttext -side top -fill both
+
+	$abouttext insert 1.0 "
+  HolonS/L Version $::sourceversion 
+  Copyright 2008-17 Wolf Wejgaard
+  All Rights Reserved
+  
+  -----
+    
+  Credits:
+  I am indebted to Jean-Claude Wippler, Equi4 Software, http://equi4.com, 
+  for two fine tools that helped keeping HolonS/L simple and reliable. 
+  Metakit - a widely proven database engine
+  Tclkit - a self-contained Tcl/Tk runtime 
+ 
+  -----
+  
+  Contact/Support: 
+  Dr. Wolf Wejgaard
+  Forth Engineering
+  Neuhoflirain 10
+  CH-6045 Meggen
+  
+  Email: wolf@holonforth.com
+  Web: www.holonforth.com
+
+  
+ 
+ "
+  
+#  $abouttext insert end 	$::LicenseText
+
+}
+
+set LicenseTextTrial {
+LICENSE AGREEMENT
+
+This is a legal agreement between you and DR. WOLF WEJGAARD FORTH ENGINEERING. 
+You should carefully read the following terms and conditions before using this
+software. Your use of the software indicates your acceptance of this license 
+agreement and disclaimer of warranty. 
+
+DR. WOLF WEJGAARD FORTH ENGINEERING, hereinafter referred to as "WOLF WEJGAARD", 
+grants to you a temporary license to use the present Software for evaluation 
+purposes without charge on a single computer with one keyboard/display, i.e., a 
+computer intended to be used by one person at a time, for a period of 12 days. 
+ 
+Once the registration fee has been paid, WOLF WEJGAARD grants to you a permanent 
+non-exclusive and non-transferable license to use the Software on a single computer 
+with one keyboard/display, i.e., a computer intended to be used by one person at a 
+time.
+
+Furthermore, you agree not to modify, de-compile, disassemble, or otherwise reverse 
+engineer the Software at any time or under any circumstances. WOLF WEJGAARD's 
+software is under copyright and contains proprietary information belonging to FORTH 
+ENGINEERING and/or its partners. 
+
+THE SOFTWARE AND THE ACCOMPANYING FILES ARE PROVIDED AS IS AND WITHOUT WARRANTIES AS 
+TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIES WHETHER EXPRESSED OR IMPLIED. 
+NO WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE IS OFFERED. 
+
+--
+
+CREDITS
+HolonTalk is built in TclTk and relies on the marvellous Metakit database.
+License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
+License for Metakit:  http://equi4.com/metakit/license.html
+
 }
 
 set LicenseText {
@@ -225,18 +366,36 @@ License for Metakit:  http://equi4.com/metakit/license.html
 proc ShowProject {} {
 	global keytext licensed trial days trialtime  
 	set title "$::appname "
-	wm title . $title 
+	if {$keytext=="nokey"} {
+		if $trial {
+			set daysleft [expr $trialtime-$days]
+			wm title . "$title Trial    +$daysleft days"
+		} {
+			wm title . "$title  - Editor is closed, register to reopen"
+		}
+	} {	
+		if $licensed {
+			wm title . $title 
+		} {
+			wm title . "$title  |  Keyfile problem - Project closed " 
+		}		
+	}
 }
 
 proc License {} {
 	global licensed keytext
 	if [winfo exists .license] {return}
 	toplevel .license
-	wm title .license "HolonCode License"
+	wm title .license "HolonS/L License"
 	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
 	pack $lt -side top -fill both -expand true
-	$lt insert 1.0 "Open Source VERSION OF HOLONCODE\n"
-	$lt insert end  "Hier kommt der aktive Lizenz Text"
-	$lt configure -state disabled
+	if $licensed {
+		$lt insert 1.0 "THIS COPY OF HOLON-S/L IS LICENSED TO:\n\n"
+		$lt insert	end $keytext\n\n
+		$lt insert end $::LicenseText
+	} {
+		$lt insert 1.0 "TRIAL VERSION OF HOLON-S/L\n"
+		$lt insert end $::LicenseTextTrial
+	}	
 }
 
