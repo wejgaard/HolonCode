@@ -12,7 +12,7 @@ source $dir/browsing.tcl
 source $dir/editing.tcl
 source $dir/develop.tcl
 source $dir/interfaces.tcl
-# source $dir/sourceversion.tcl
+source $dir/sourceversion.tcl
 
 proc ProjectDB {} {
 	global argv appname 
@@ -46,15 +46,13 @@ proc CreateStructure {} {
 			textcolor #ffffff codecolor 1 pages 2 comdel //  running 0 \
 			runcmd "../tclkit ./main.tcl" syntax Tcl safe 0 \
 			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 12 revpage 1
-		set c [AppendPage type chapter name "<Chapter>" mode source]
+		set c [AppendPage type chapter name "Revisions" mode source]
     		SetBase list $c active $c
     		SetPage $c next ""
-  #  		set r [AppendPage type chapter name "Revisions" mode source]
-  #  		SetPage $r next $c
-    		set s [AppendPage type section name "<Section>"]
+    		set s [AppendPage type section name "Setup"]
     		SetPage $c list $s active $s
     		SetPage $s next $c
-    		set u [AppendPage type unit name "<Unit>"]
+    		set u [AppendPage type unit name "0.001"]
     		SetPage $s list $u active $u
     		SetPage $u next $s
     		SetBase revpage $u

@@ -130,7 +130,7 @@ proc InsertCDeleted {where} {
 }
 
 proc NewChapter {} {
-	set name Chapter
+	set name "Chapter"
 	set c [AppendPage name $name changes $::version date [clock seconds]]
 	SetPage $c list $c
 	InsertChapter $c 1
