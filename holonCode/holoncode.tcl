@@ -45,7 +45,7 @@ proc CreateStructure {} {
 			geometry "1100x700+50+50" extension 1  \
 			textcolor #ffffff codecolor 1 pages 2 comdel //  running 0 \
 			runcmd "../tclkit ./main.tcl" syntax Tcl safe 0 \
-			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 15 revpage 1
+			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 12 revpage 1
 		set c [AppendPage type chapter name "Revisions" mode source]
     		SetBase list $c active $c
     		SetPage $c next ""
