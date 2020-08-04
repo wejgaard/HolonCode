@@ -1,6 +1,6 @@
 # HolonCode
 
-The holon way of programming.
+Source Content Management System
 
 ### Overview
 HolonCode lets you handle your program units in a CMS as structure of sections and chapters like a book. Offers clarity and immediacy. I have built applications the holon way since 1989 and release the full version as an open source project.  
