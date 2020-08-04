@@ -21,7 +21,7 @@ HolonCode lets you handle your program units in a CMS as structure of sections a
 ### Guide
 HolonCode is special. Explore a new programming experience.
 
-### [Comments](https://github.com/wejgaard/holoncode/issues) 
+### [Issues](https://github.com/wejgaard/holoncode/issues) 
 Use the Issues for Comments, Questions, Ideas. 
 
 ### Runscripts
