@@ -34,11 +34,11 @@ Cut, copy & paste functionality
 
 
 ## Installation
-**Chromebook
+**Chromebook**
 
 The Code Pad IDE can be installed directly from the Chrome store here: https://chrome.google.com/webstore/detail/code-pad-ide/adaepfiocmagdimjecpifghcgfjlfmkh
 
-**Other devices
+**Other devices**
 
 Alternatively, if you're not running a Chrome OS device just follow these steps:
 
