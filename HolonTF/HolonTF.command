@@ -1,2 +1,2 @@
-cd ~/desktop/github/HolonCode/HolonTF
-tclsh ~/desktop/github/HolonCode/HolonCode/holoncode.tcl HolonTF.hdb &
+cd ~/documents/Github/HolonCode/HolonTF
+tclsh ~/documents/github/HolonCode/HolonCode/holoncode.tcl HolonTF.hdb &

@@ -1,0 +1,1549 @@
+
+  0.002 Installiert 
+
+Von Holon importiert Rev. 2.165 
+RunCommand = Run TkCon
+
+
+
+
+  0.003 Objecttype => Class 
+
+GetItem geflickt.
+Objecttype => Class - das Konzept bereinigen. - deutlich eleganter. Noch eleganter wäre :
+
+class variable {
+	set   {...}
+	get   {...}
+} 
+
+Simpler geht es nicht! - Doch, kann die äusseren Klammern weglassen:
+
+class variable 
+     set {...} 
+     get {...} 
+     ... 
+
+Aber das ist wohl zuviel für Tcler? Vielleicht so
+class variable 
+set {...} 
+get {...} 
+... 
+Nein, ignoriert Zugehörigkeit zu class.
+
+
+
+
+  0.004 Messages Liste - schon vorhanden! 
+
+set messages { set get go come ... };  Message vorhanden wenn lsearch >=0 
+!? Die Liste ist überflüssig, jede Class hat ihre eigene Liste. schon. bereits.
+Nochmals einfacher. Der Message Mechnismus ist überflüssig.
+
+wordcode => words
+
+
+
+
+  0.005 Kommentare 
+
+Kommentarzeilen # und \ bei gets $f erfassen und Zeilen ignorieren. Auch im Code.
+
+String ok, Forth Konvention " der string fängt mit einem Leerszeichen an"
+
+
+
+
+  0.006 CompileColon und Objekte 
+
+Compiler Code hat Leerzeile wenn der Code auf der folgenden Zeile beginnt. Auf null spaces getrimmt.
+: spaces  ( -- )   times .. repeat  ;  [ohne locals] : compiliert ok 
+Zangengeburt. Dafür ist der Code schön geworden.
+
+
+
+
+  0.007 \ im Source - Wortfolge 
+
+Reihenfolge der Definitionen ist wichtig. Weil jedes Wort in der Definition sich selbst compiliert. 
+\ nur am Anfang der Zeile? - wäre aber nützlich auch im Text. 
+- SkipLine macht das jetzt möglich. \ überall im Source erkannt. 
+
+Die Reihenfolge der Worte muss strikt sein, erst definieren dann brauchen. Weil die Worte sich selbst compilieren. War das bei HolonT auch so?
+
+Globale Objekte mit :: ablegen! Aber erst auf local testen, weil es gibt auch Doppelgänger.
+
+Und dann spiel Chess ok.
+
+
+
+
+  0.008 CLI 
+
+Command Line Interpreter zeigt Stack, macht neues Colonwort, ist soweit nett.
+Aber öffnet kein neues Chessspiel. Kann ausgebaut werden.
+Immerhin. ... 
+LoadLine mit catch. 
+
+Targetfile Versuch. File geschrieben. pop und push fehlen. - nur die Ruhe! später.
+
+
+
+
+  0.009 Turnkey-App bilden = Targetfile 
+
+Turnkeyfile der Applikation nebenbei produzieren, (Glück gehabt), 
+einfach puts comp(code) auch auf das Targetfile target.tcl.
+Wird immer neu produziert beim Laden des Source. 
+Bedingung: comp(code) enthält den Zielcode einer Programmeinheit.
+
+
+
+
+  0.010 Forth Console 1 
+
+Fenster mit Eingabezeile und Resultaten, Stackanzeige, Zeilen speichern und zurückholen. 
+
+Targetfile lässt sich nicht mehr öffnen für Compilieren. Consolefenster bauen ohne Targetfile. Sowieso nicht zu ende gedacht.
+
+Console als Textfenster, binden an <Return>, schickt Zeile zum laden. 
+Console in . als .con.
+Das funktioniert an sich ok, aber wenn ein Textfenster Console spielt, dann muss puts umdefiniert werden. Und das wird kompliziert. Besser wäre eine Tcl Console und das simple quit. Wobei ich dann ins Schleudern komme mit der Zeilenhistory.
+Wie kann ich in der Console Zeilen zeigen und löschen?
+Kombination von Tcl-Console und Entry?
+stdout ist die Tcl-Console.
+
+
+
+
+  0.011 Forth Console 2 
+
+Tcl Console auch für Forth brauchen mit Quit. - nein
++ simpel, auch Tcl Worte testen und untersuchen
+- nicht elegant, wie die Zeilen History machen? s. TkCon, kann es.
+Wie kriege ich eine Console ohne TkCon.
+
+
+
+
+  0.012 
+
+
+
+
+
+
+  0.013 Forth Entry & Tcl Console 
+
+Die einfache Lösung. Forth Commandline und Tcl Console für Output. 
+Forth CLI mit label und entry.
+Tcl console = Tk console. 
+Konsolenteile zusammenhängen, zumindest beim Start schön untereinander gruppieren. 
+Forth command line und Codefenster kein Problem.
+Aber wie arrangiere ich die Tk Console? Kenne den Namen nicht und kann nicht zugreifen. Scheint ein eigenes Toplevel zu sein. 
+- die anderen Fenster darauf beziehen. Tk Console wird relativ zu den vorigen Fenstern positioniert, 
+
+Codefenster in Forthconsole integrieren statt eigenes Fenster. - Rev. 0.017
+
+=> es ist doch nicht die einfache Lösung. 
+Komme um eine eigene volle Forthkonsole nicht herum. TclForth soll Forth sein, Tcl kann zusätzlich angeschaut werden mit console show, falls das jemand will. Aber normal soll der Programmierer ein Forthfenster sehen. -
+
+
+
+
+  0.014 Forth-Fenster 
+
+TclForth startet in einem Forth Fenster mit einem CLI. Das Fenster kann wahlweise den compilierten Code zeigen und einen Editor haben für eine neue Programmunit, je in eigenem Fenster.
+Forth Console tut, Zeile erfassen mit GetLine, LoadLine schreibt ok>. Und dann geht der Zeiger auf die nächste Zeile, warum?
+-- weil bind <Return> nicht mit break endet. 
+GetItem hat nicht gerne Leerraum am Ende der Zeile. Weiss nicht warum trotzdem die Forth Files geladen werden, sind die alle sauber?. - Test mit Unit scaleTag in tk.fth zwei Spaces am Codeende. Kein Problem. Weil EmptyLine die Zeile hinten trimmt. 
+-- GetLine trimmen.
+Vektorisieren mit rename. print und printnl einführen. Umdefinieren mit rename. Sicherheitscheck dass nicht bereits umgesetzt.
+-> puts ersetzen durch print, print-tcl, print-fth und so.
+
+
+
+
+  0.015 Forth Console 3 
+
+Befehle hinter ok> eingeben, Resultate auf den folgenden Zeilen, ok> auf der nächsten Zeile.
+Keine Leerzeilen ausser gewollt. 
+Fehler in der Console catchen.
+Bei leerer Befehlszeile ein neues ok> schreiben.
+Stack zeigen  ok> ( 3 44 5 - ) dup .
+Forth Befehle: tcl ShowStack, tcl HideStack
+
+
+
+
+  0.016 Forth Console History 
+
+frühere Entry History übernehmen mit einsetzen in das Textwidget.
+Fenster hochscrollen wenn unten. yview moveto 0.9
+? Scrollbar
+Leerraum unten -pady 20 - gibt auch Leerraum oben, so what.
+ok statt ok> 
+Stack zeigen ohne (), also   ok -     ok 33 -    ok 33 44 {some text} - : ja klarer
+ok hinten   33 44 - ok : ja, wenn bei leerem Stack ok ohne Strich. und besser mit ok>.
+
+
+
+
+  0.017 Console & Codefenster 
+
+Codefenster unten anhängen. 
+Stackanzeige ohne - :  22 33 ok> 
+Polituren
+
+
+
+
+  0.018 Interpretersachen 
+
+Stack underflow erfasst. 
+
+0.019 Delay in EvalLine nach Error, damit der Insertcursor Zeit hat hinter ok> zu kommen
+
+
+
+
+  0.019 App Chess 
+
+Chess.fth ist gedacht für laden in Tk Fenster .
+Was ja auch normal ist für eine Applikation.
+Jetzt wird es in die Forthconsole geladen weil diese auch in . liegt. 
+Nach dem Laden bleibt ein .c auf dem Stack. So what.
+Turnkey bilden: 
+Loadfile chess.tcl
+	source source/compiler.tcl
+	LoadForth source/forth.fth
+	LoadForth source/tk.fth
+	LoadForth source/chess.fth
+Execute chess.command
+	cd holon/holontf
+	./tclkit85 ./source/chess.tcl &
+
+
+
+
+  0.020 Forthconsole in .fth // Stack "text" // Chess 
+
+Commandline History wäre klarer in Forth. Die Compilerworte müssten Code sein. ? in compiler.tcl legen.
+
+Stack: Textargumente: neben  " arg"   auch "arg" zulassen, vor allem als Indizes in arrays einfacher:
+{ wie 33 was 44 wo 55 } array frage         "wie" frage .   statt    " wie" frage . - gemacht
+
+Chess.fth korrigiert.
+
+
+
+
+  0.021 Tk widgets 
+
+?? Finde keine bessere Syntax als Tk. Muss halt Codeworte bilden. 
+
+Versuch: Class widget
+Use: "type window" widget <name> -- An instance of type contained in window is created as the variable name.
+Example: "text $frame.forth" widget Console
+"-relief sunken -color blue" Console config -- list of property & value pairs. property with or without dash -relief 
+
+code theBoard ( -- )
+    frame .f
+    label  .f.e -width 30 -anchor w -textvar info -relief sunken
+    button .f.u -text Undo  -command {undo; push .c; drawSetup }
+    button .f.r -text Reset -command {reset; push .c; drawSetup}
+    button .f.f -text Flip  -command {push .c; flipSides}
+    eval pack [winfo children .f] -side left -fill both
+    pack .f -fill x -side bottom
+    pack .c -fill both -expand 1
+    trace add variable ::toMove write doMoveInfo 
+    bind . ?         {console show}
+    bind . <Escape> {exit}
+    set ::info "white to move"
+    wm title . "Chess in Forth"
+
+: theBoard ( -- )
+	"frame .f" widget CF
+	"label $CF.e" widget CL  "-width 30 -anchor w -textvar info -relief sunken" CL config
+?	"-width 30 -anchor w -textvar info -relief sunken label $CF.e" widget CL 
+	"button .f.u" widget BU   "-text Undo  -command {undo; push .c; drawSetup}" BU config  	
+	CF children "-side left -fill both" pack
+	"-fill x -side bottom" CF pack
+	"-fill both -expand 1" CW pack
+ 
+Je Class pro Widget Typ
+: theBoard ( -- )
+	".f" frame cwin 
+	".f.e" label cboard  "-width 30 -anchor w -textvar info -relief sunken" c-oard config
+	"$cwin.u" button bUndo  "-text Undo  -command {undo; push .c; drawSetup}" bUndo config  	
+	"-side left -fill both"	cwin children pack
+	"-fill x -side bottom" cwin pack
+	"-fill both -expand 1" CW pack
+
+!	".f" frame cF   == set cF [frame .f]
+ 
+	".c" canvas w  "-width 300 -height 300" w config
+
+
+
+
+  0.022 Widgets 2 
+
+? Kann eine Class in colon code, in einer proc, gebildet werden? ja:
+Class Objekte in uplevel #0 bilden. Bsp. tktext:  instance code = uplevel #0 {set obj [pop]; text $obj}
+
+
+
+
+  0.023 Console GetLine History: Textanfang 
+
+Die Position nach dem Prompt kann falsch sein nach einem Fehler. Aus internen Zeitverschiebungen.
+Es wäre besser, den Start des Consolentextes bei RETURN zu bestimmen.
+Oder doch nach einer Verzögerung? Ja aber ohne das Programm anzuhalten!!
+
+
+
+
+  0.024 Widgets 3 configure 
+
+.f config "-relief sunken -border 3" geht nicht, muss -relief sunken -border 3 sein ohne ". 
+Bzw ein String mit config drin, und das dann eval? ja
+
+? Class widget allgemein
+.f widget frame fWindow
+.f.c widget text fConsole
+-- nein, jedes Widget hat eigene Commands.
+
+uvam
+
+ 
+Forth Console in Forth
+ 
+
+erst mal committen
+
+
+
+
+  0.025 Forth Console in Forth 
+
+Es funktioniert tatsächlich.
+Mit Codeworten.
+Noch einige Fragen. In neuer Revision...
+
+> "command" msec doafter   -- kein Script statt command möglich?
+
+
+
+
+  0.026 Console polieren 
+
+: tt ( -- ) { some command } 500 doafter -- die {} sollte auf dem Stack landen als { script } unverändert. - das tut es auch. 
+Warum hat es in okprompt nicht geklappt?  Das Skript muss compiliert auf den Stack kommen also in Tcl code. 
+
+okprompt update statt delay - ok
+
+Console nach oben schieben wenn die Commandline unten ankommt, immer zwei Leerzeilen darunter. - Bug: moveto vergessen.
+1.0 Console yview. 
+
+Commandhistory debuggen, com- und com+ vertauschen!
+
+ok> ganz links wenn kein Stack oder leer.
+
+
+
+
+  0.027 div. 
+
+decr 
+
+pack mit null Options - leeren Options-String liefern!
+
+config mit null Options zum Auslesen der Configuration: geht nicht. Lieber in Tcl console.
+
+Stacknotation ( -- )  = (-) = () -- nein ( -- ) ist klar, soviel Arbeit muss sein!
+
+Commandline details:
+.forth ersetzt durch $::Console in den proc und code Worten
+
+
+
+
+  0.028 Parsen 
+
+"string" und {list} zusammenfassen, sind das gleiche in Tcl. 
+Der Stringtext kann als eine Folge von Listelementen verarbeitet werden.
+Wie finde ich den Stringindex für das n-te Element in einer Liste? 
+Vorerst bei der Stringmethode bleiben.
+ 
+comp(current) => comp(prev), 
+comp(imax) => comp(end), 
+comp(source) => comp(text) 
+
+> Fall Keine End-" oder kein End-}
+
+
+
+
+  0.029 {text} und {list} und simpel 
+
+if {[isNoString]&&[isNoList]} {error "$comp(word) is undefined"}
+--
+PushText für " tttt" und "tttt", do. PushList
+
+
+
+
+  0.030 Console Menus 
+
+Menus erst in Tcl bauen. Dann eine Forth Version probieren. Aus Holon kopieren. 
+Kein Contextmenu, unnötig kompliziert. Menu Setup kann die Console löschen.
+
+
+
+
+  0.031 Code mit { }  Colon mit : ; 
+
+?? CODE WORTE MIT {   } 
++: deutlich zeigen dass es Tcl ist -- wahrscheinlich ist das weniger verwirrend. Die Leute wollen wohl Begrenzerzeichen haben im Source. -- Ich bin für mich zu radikal. 
+-: der Source wird polluted! All die schönen kurzen Kernelworte werden verhunzt. Die Leute sollen sich an eine einfachere Welt gewöhnen. ICH finde es schöner! .. und ein bisschen später sehe auch ich, dass {} und ; richtig sind weil Code und Colon so aussehen bei allen anderen Leuten, und mir gefällt es auch. 
+
+MakeCode 
+- auf Anfangs-{ testen: erstes Wort nach der Stackdefinition muss { sein. 
+- auf End-} testen: Letztes } muss am Ende des Textes sein. string last ... 
+- letztes } und CR davor abschneiden. 
+Test: leerzeichen hinten anhängen. --werden von Holon abgeschnitten, muss File direkt behandeln. :: Ende ist falsch, muss trimmen.
+EmptyLine - Test schneidet Leerraum vorne und hinten ab. 
+
+Alle Module umgesetzt auf { } und : ;
+
+--
+
+s. 0.047
+
+
+
+
+  0.032 div. 
+
+par => stack
+
+Setupmenu: Open Tcl Console 
+
+EvalLine error zeigt comp(name) wenn der Fehler in einer Definition ist.
+
+
+
+
+  0.033 okprompt 
+
+Bei okprompt wird "ok>" ans Ende des Textes geschrieben, aber der insert Ort im Text bleibt wo er war.
+Neu auch den insert ans Ende setzen, als Teil von append. 
+--
+Ein Eintrag in der Commandgeschichte kann mehrere Zeilen umfassen. Wenn wir schon am Ende des Fensters sind, verschwinden die weiteren Zeilen unten, muss das Fenster neu richten. 
+--
+Jetzt macht die Console Spass. 
+--
+Im Forth-Tcl Code die ; mit einem Space vor und nach einsetzen. Dadurch unterschieden vom Tcl-Proc-Code und gut lesbar.
+
+
+
+
+  0.034 Test Class mit Kommentar 
+
+Class variable  
+\	Message    Method	
+\     -----------------------------
+	instance	   {set obj [pop]}
+	""		   {push $obj}
+	get		   {push $obj}
+	@		   {push $obj}
+	put		   {set obj [pop]}
+	!		   {set obj [pop]}
+	set		   {set obj [pop]}
+	incr		   {incr obj}
+	decr		   {incr obj -1}
+	add		   {set obj [expr {$obj+[pop]}]}
+	print		   {print $obj}
+	tolower		   {push [string tolower $obj]}
+
+Sieht klumpig aus. Genügt es im Manual zu zeigen.
+
+
+
+
+  0.035 Chess, Console 
+
+
+
+
+
+
+  0.036 Command History 
+
+Command history überarbeitet. ctext ist überflüssig.
+--
+ShowWords im HelpMenu.
+
+
+
+
+  0.037 Class Menu 
+
+Class Menu begonnen, aber jetzt ist genug...
+
+
+
+
+  0.038 Starkit bauen 
+
+Kit Verzeichnis: 
+ 
+tclforth.vfs
+     main.tcl
+     app-tclforth     
+          compiler.tcl
+          forth.tcl
+          tk.tcl
+          tfmain.tcl
+          chess.fth
+
+main.tcl
+package require starkit
+starkit::startup
+set dir $starkit::topdir
+cd $dir/app-tclforth
+source tfmain.tcl
+
+tfmain.tcl
+source compiler.tcl
+LoadForth forth.fth
+LoadForth tk.fth
+LoadForth console.fth
+catch {console show}
+puts "Tcl console"
+ForthConsole
+
+
+makekit.command - in Terminal rufen
+cd /Users/wolf/Holon/HolonTF/Starpack
+rm ./tclforth.vfs/app-tclforth/*.*
+# Files kopieren
+cp ../source/compiler.tcl  ./tclforth.vfs/app-tclforth/
+cp ../source/forth.fth  ./tclforth.vfs/app-tclforth/
+cp ../source/tk.fth  ./tclforth.vfs/app-tclforth/
+cp ../source/console.fth  ./tclforth.vfs/app-tclforth/
+cp ../source/tfmain.tcl  ./tclforth.vfs/app-tclforth/
+cp ../source/chess.fth  ./tclforth.vfs/app-tclforth/
+./tclkit85 sdx.kit wrap tclforth.kit
+
+RunKit.command
+cd /Users/wolf/Holon/HolonTF/Starpack
+./tclkit85 tclforth.kit &
+
+
+
+
+  0.039 Run mit mail.tcl für tkmail.tcl 
+
+source/tkmain.tcl  lädt  files im selben verzeichnis, d.h. pwd muss in source/ zeigen.
+
+run tclforth1.command =
+cd holon/holontf/source
+../tclkit85 ./tfmain.tcl &
+funktioniert nicht
+
+run tclforth.command =
+cd holon/holontf
+./tclkit85 ./source/main.tcl &
+funktioniert mit 
+
+main.tcl = 
+cd ./source
+source tfmain.tcl
+ 
+weiss nicht warum
+
+beide tclforth.command varianten funktioneren vom Finder aus.
+aber nicht aus tcl heraus mit dem runcmd.
+
+
+
+
+  0.040 Source polieren für Googlecode 
+
+font configure code -family Monaco 
+
+isNoString, isNoList Logik umkehren 
+
+Kommentare einfügen in Source. 
+
+Fileköpfe wie man das so tut.
+
+
+
+
+  0.041 Source weiter anpassen. 
+
+Codeworte einzeilig in eine Zeile. - Überzeugt nicht immer, habe gerne Parameter und Code getrennt.
+
+Compiler mit dem Code in  { } -- ja, ist klar und korrekt
+Alles korrigiert.
+MakeCompiler testet auf Anfangs-{ und End-} Klammern, d.h. beide müssen frei stehen. Syntax
+
+compiler proc  {
+	MakeProc
+}
+ 
+? compiler proc {MakeProc}  -  machbar?  
+	E: Erstes Wort nach dem Namen muss mit { beginnen, letztes Wort muss mit } enden
+
+
+
+
+  0.042 do ... loop 
+
+es ist gut wie es ist, auch wenn es kompliziert ist, es funktioniert. 
+
+CodeWindow grösser
+
+
+
+
+  0.043 Chess 
+
+Polieren, Freiraum links.
+Farben ändern, lasse es original, ist hübsch. Kein Grund zu ändern.
+
+
+
+
+  0.044 Objecttypes 
+
+Class ist irreführend, zu allgemein und umfassend. Muss zu OT zurück. 
+Class => Objecttype, class => objtype.
+
+
+
+
+  0.045 Objecttype als Arrays zeigen? Kleinschrift 
+
+Mit Array Klammern ist es Tcl, ohne ist es Forth !? Ich liebe Forth... 
+
+objecttype klein geschrieben
+compiler klein geschrieben 
+--
+macht mir Mühe - aber ist konsequent wegen proc - und ws Gewohnheitssache. -- technischer. ok
+- aber Variable ? ist variable.
+
+
+
+
+  0.046 do - code ohne {abstand} 
+
+::doi etc warum global? - weiss es nicht mehr aber es funktioniert auch mit Unterwort mit loop - weil das Wort früher definiert und damit die richtigen Indizes hat. 
+
+code - {ohne Abstand} - tut auch irgendwann. Frug mich kurz ob die Braces nötig sind. Jetzt tut es also lassen.
+
+
+
+
+  0.047 Code und Compiler ohne {} 
+
+Es war ein Irrtum, bin der "Eleganz" von Tcl erlegen. Ohne {} ist alles einfacher, Compiler und Forthsource. Forth ist einfach! 
+
+Für Tcl Leute ist es ungewohnt. Aber welcher Tcl Mensch will TclForth? Es ist für Forth Leute gemacht. 
+- Könnte auch gerade formale Argumente einführen und Substitutionen, wenn mir die {} gefallen... 
+
+Auch die Sourcefiles werden kürzer und lesbarer, wenn auch weniger angenehm für Tcl Augen. 
+Also zurück zur Natur!
+
+Bug in : -- ; --  weil ";" noch { } einsetzt.
+
+
+
+
+  0.048 Die Tcl Konsole arbeitet nicht. 
+
+Muss von Anfang an dabei sein, am besten. In tfMain laden.
+
+
+
+
+  0.049 Chess, Help, 
+
+Chess Farbe anders. 
+
+Helpmenu Forth = DPANS
+
+
+
+
+  0.050 kit bilden Version 0.1 
+
+
+
+
+
+
+  0.051 Chess View neu 
+
+? board => square - die Figuren werden auf die Squares verteilt
+? canvas board - das Spielfeld chessboard besteht aus 64 squares 
+NEIN die original Namen sind gut gewählt. 
+? w rausnehmen - nein die Canvas Routinen allgemein lassen. 
+- Toplevel dazu - OK
+
+
+
+
+  0.052 Chess forthitifieren 
+
+Canvas als objecttype
+create text => text ohne create, do. polygon, etc.
+Argumente auf Stack liefern für  Message text, Reihenfolge a la Tk 
+Reihenfolge korrigieren vor Methodcode (3flip) 
+tkcanvas w -- damit kann ich jetzt Tcl und Forth Code zusammen anwenden. Bsp. Messages text, rectangle, delete
+drawChess - Board canvas und frame sofort bilden.
+bbox liefert eine Liste der Koordinaten - zerlegen mit unlist == join $stack 
+	join zerlegt auch Strings, ein String ist eine Liste auf dem Stack.
+
+
+
+
+  0.053 Chess ff 
+
+- moveTag => canvas move: drawMan, release 
+- w nicht über Stack geben, weil dann local. w ist globale canvas.
+- distance macht 	xa xb - xd set  ya yb - yd set -- vereinfacht release . 
+(- die Figuren bleiben wo ich sie setze, nicht in der Mitte der Box. : tag "current" vergessen) 
+- canvasfind - overlap (Suchenwirth), laut Tk ist es overlapping - overlap geht auch - w find
+- w gettags 
+- w dtag
+- w addtag
+- release fertig => Release
+- White oder "white"? "white". do. "black"
+
+
+
+
+  0.054 Chess Bind 
+
+Unterscheiden: bind $w = widget einbinden und $w bind = etwas im widget einbinden (tag)
+
+Commands ohne []: Bsp. BindBoard
+	"mv <B1-Motion> {%W move current \[expr {%x-\$::X}\] \[expr {%y-\$::Y}\];	set ::X %x; set ::Y %y}" w bindtag
+	Ist eine Drag Operation, also Wort Drag erfinden.
+		Rufen:		{push %x; push %y; Drag} - W ist nicht nötig, wir wissen welches Widget es ist.
+		: Drag ( x y -- )  "current"  x X -  y Y -  w move   x X set  y Y set  ;
+	Und es funktioniert.
+
+Das obligate w auf dem Stack bei StartChess ablegen.
+
+
+
+
+  0.055 TheBoard = Game Widgets 
+
+theBoard teilen: Panel p und Canvas w 
+Panel = Label und Buttons 
+Und Toplevel Teile zu Chessboard bringen, beim Laden bilden. Kein Colon. 
+tktoplevel, tkframe, tklabel, tkbutton. bringen nichts. Tk Code ist einfacher!
+
+
+
+
+  0.056 Widgets 
+
+Kann ich in Colon ein Widget bilden? ja. Wird mit uplevel #0 gebildet. 
+	Muss absolute Windownamen nehmen ".t.f", 	Nicht "$top.f". Aber "$::top.f" ca va!
+Kann ich die Options in einem Colon setzen? ja. Mit den definierten Widgetnamen.
+
+
+
+
+  0.057 Chess Stil anpassen 
+
+wie Chess in Tcl. Gross und Kleinschrift
+; hinter Text, nicht eigene Zeile -- sehr viel klarer 
+Canvas und Panel gross, sonst vorwiegend Klein beginnen. 
+set statt put
+TclForth Version 0.2
+
+
+
+
+  0.058 tclkit-0.2 - \<space> 
+
+Wo wird \ Kommentar erkannt? In EmptyLine - \ muss ein Leerzeichen folgen, sonst nicht erkannt. 
+tclkit-0.2 und chess-0.2 in GC legen 
+
+"." wird ".."
+
+
+
+
+  0.059 Compiler und Interpreter - immediate 
+
+Definer Aktion in LoadUnit und LoadLine separieren als InterpretText.
+GetSource => GetText.
+comp(name) = "" setzen in EvalForth, sonst wird es sowieso gesetzt auf den Wortnamen. Gebraucht für Fehlermeldung. 
+- überflüssig, also comp(name) = "" weglassen. 
+MakeMacro ist noch HolonT - obsolet. 
+Leeren Stack mit () angeben. : Leer () "so kann es aussehen" ; 
+--
+Wort immediate als Variante von compiler bilden in der Console: 
+Bsp. 
+ok> compiler immediate MakeCompiler
+-- bildet Forthwort immediate = Eintrag immediate in words()
+
+ok> immediate if-neu appendcode "if \[pop\]  \{\n"
+Sorry: appendcode is undefined 
+-- compiliert die Zeile, ruft dazu die einzelnen Worte:
+	immediate aktion = MakeCompiler, 
+		MakeCompiler bildet Forthwort if-neu mit der aktion {appendcode "if \[pop\]  \{\n" }, 
+		setzt den Zeiger hinter if-neu vor appendcode
+	appendcode aktion - gibt es nicht weil appendcode kein Forthwort ist - daher Fehlermeldung
+-- hat aber das Compilerwort if-neu gebildet!
+
+ok>: test-neu ( -- ) 10 1 if-neu dup else drop then
+ok>test-neu
+10 10 ok> 
+
+Einfachere Variante: immediate in die Definers nehmen!
+
+
+
+
+  0.060 Stack diagram leer auch () und (--) 
+
+CompileStack ergänzt.
+
+
+
+
+  0.061 OSX Starpack = APP 
+
+Da ich die Sourcefiles extern laden, muss ich aus dem virtuellen Verzeichnis raus zum source Verzeichnis wechseln.
+Nach viel Experimentieren finde ich folgende Methode in main.tcl in .vfs.
+
+main.tcl debugversion
+package require starkit
+starkit::startup
+# package require Tk   
+# catch {console show}
+set dir [file dirname [info script]]  ;# set dir [file dirname $argv0]  geht auch
+cd $dir                                       ;# erst absolut setzen auf das vfs im Pack
+cd ../../../../source                     ;# dann relativ aus der App raus zum Source Verzeichnis
+# puts "Verzeichnis ist [pwd]"
+# tkwait window .
+source tfmain.tcl
+
+main.tcl 
+package require starkit
+starkit::startup
+cd [file dirname [info script]]
+cd ../../../../source
+source tfmain.tcl
+
+
+Nehme das HolonCode App und modifiziere es. 
+Editiere die Info.plist, und kriege merkwürdige Resultate. Der Finder ignoriert die Korrekturen. Lädt immer noch holoncode statt tclforth. - Irgendwo im OS muss die erste Version des Bundles gespeichert sein. 
+=> Für eine Korrektur des Bundles/Paketes eine neue Ausgabe bauen. 
+Die App ist eine Verzeichnis, das vom Finder als App gezeigt wird. Mit dem Kontextmenu kann ich den Paketinhalt zeigen. Und vielleicht auch korrigieren.
+
+Zuerst bin ich im Dunkeln, weiss nicht ob das Starpack überhaupt gerufen wird. 
+Zur Kontrolle Tk und die Console laden und die aktuelle pwd zeigen.
+Die pwd ist der root des vfs im Starpack relativ zum root, also / . Ich weiss noch nicht wo das ist relativ zu OSX.
+Das bekommt man mit 
+set dir [file dirname [info script]] 
+Von dort aus dann mit cd das Verzeichnis setzen und mit cd ../../../../ vier Stufen hinauf und mit cd ./source eine runter.
+
+Gelernt OSX App:
+Info.plist Korrekturen werden nicht sofort erkannt oder gar nicht. Zur Sicherheit ein neues Bundle bilden.
+zB wird die Executable file und Icon file Korrektur nicht wirksam.
+Zeigen was passiert. Tk und Console sofort laden. Puts.
+
+
+
+
+  0.062 WIN Starpack = EXE 
+
+Wird komplizierter zum Testen ohne Parallels. Aber ging in zwei Versuchen. 
+MakeExe.command  
+
+main.tcl
+package require starkit
+starkit::startup
+cd ../source
+source tfmain.tcl
+
+
+
+
+  0.063 Files kommentieren 
+
+Wort Load weglassen. Ist LoadForth oder LoadTcl = source. 
+openURL ok in Windows? ja
+
+
+
+
+  0.064 Beginn Version 0.4 - Dropbox Migration 
+
+Worte zeigen: ShowWords => words.
+
+
+
+
+  0.065 V04, MakeAPP, MakeEXE, SOURCE 
+
+Interpreterfenster "04" 
+
+MakeAPP auf Dropbox korrigieren. 
+- cd /Users/wolf/Dropbox/Holonforth/HolonTF/Starpack
+=> neue App ok. 
+
+Help/Forth ruft Starting Forth 
+
+MakeEXE auf Dropbox korrigieren
+=> neue Exe ok.
+
+MakeSOURCE 
+=> Copy Sourcefiles zu /SOURCE
+
+Kopie von Ordner APP => TclForth-OSX-04 -- Zip => TclForth-OSX-04.zip
+do. mit EXE => WIN
+do. SOURCE
+
+Test von WIN auf HP Notebook
+
+Upload zu GoogleCode: Summary angeben sonst kein Submit möglich
+
+
+
+
+  0.066 Rev. 0.5 
+
+Bei einem Fehler den bisher geladenen Code zeigen. 
+- Bei Commandline und Sourcefile
+
+Bei Eingabe einer Leerzeile (Return zweimal drücken oder so), das Codefenster löschen. 
+
+! Die Commandline akzeptiert nur eine Definition, mit Leerzeilen darin. Die Leerzeile ist kein Terminator.
+- das ist inkonsequent. Leerzeile erfassen.
+
+
+
+
+  0.501 Rev. 0.5 weiter 
+
+13.4.2014
+
+
+
+
+  0.502 div. 
+
+okprompt mit Klammern um Stack. Damit eine Ausgabe vom Stack trennen. 
+--
+Tk Message: config könnte auch configure sein? also neu definieren als message configure: ja
+-- fand config wohl kürzer und cooler...? 
+-- 
+Console mit Scrollbar wird zu komplex für jetzt.
+--
+Fehlermeldung ohne "Sorry:"
+--
+
+
+
+
+  0.503 div. 
+
+" als Forth Wort weglassen, will einen extra space wenn der String mit einem Space beginnt. 
+--
+Tcl Info Help kommt nicht
+
+
+
+
+  0.504 Stack mit { -- } 
+
+Es muss gehen mit {--} weil das macht wirklich Sinn.
+Deutet an das es Tcl gern hat. 
+Deutet an dass es Locals sind, das hat Forth200x gern.
+- CompileStack
+- Stackdiagramme korrigieren in den .fth Files
+- Doku korrigieren im Source
+
+
+TEST
+TclForth 0.4 läuft
+Lade:  CompileStack in die Tcl-Console. ok
+Lade:   code !s { -- } set ::stack ""  : ok   die  {} wirken
+weiter korrigieren -- und es ist gemacht. 30 min.
+und läuft
+
+bei den Objecttypes ist noch ein Problem: can't read "object": no such variable
+--
+Locals ansehen: Array locals existiert nach einer Definition die Locals definiert.
+array exists locals => 1
+Bsp  { | xx -- }  erzeugt  set locals(xx) variable
+Ansehen: puts $locals(xx) => variable
+--
+ShowWords neu laden:  puts $locals(fw) => list  :: cast funktioniert
+Nur GetWords rufen: ok
+und: fw setlist: Fehler
+0.503 setlist geändert in Speichern bei Index. Warum?  -- jetzt wieder set statt !list -- ok
+--
+Was habe ich bei 503 geändert?: nichts mit Listen -- ws eine Tutorialsache, Listen zeigen.
+--
+Stackkorrektur zuende bringe: Chess.fth
+
+
+- Setup Menu: Codefenster ein/aus schalten
+
+
+
+
+  0.505 Labelframes 
+
+Labels Forth Console, Tcl compiled code 
+Labels sehen nicht gut aus mit dem Strich durch den Text. Strich weglassen möglich? : -relief flat 
+=> machbar. Aber ich habe etwas geschafft.  Gefällt nicht, ohne Labels viel cooler.  Nein... Ohne Label magerer. Also mit Labels. Nein doch cooler fahren.
+Keine Labels und keinen Rahmen für Console, nur für Codewindow.
+
+
+
+
+  0.506 \-Mystery  OpenURL 
+
+OpenURL war in V0.4 drin, warum ist es raus und wann und wie??
+--
+Warum wird \ am Anfang manchmal nicht akzeptiert, obwohl deutlich ein Leerzeichen folgt.
+Die Zeichen als ASCII drucken, gesamtes Codefenster.
+
+proc \-mystery {} {
+     set text [$::view(code) get 1.0 end]
+     set end [string length $text]
+     set i 0; 
+     while {$i<$end} { 
+          set ab [ascii [string index $text $i]] ;
+          if {$ab==10} {
+               puts $ab
+          } else {
+               puts -nonewline "$ab "
+          }
+          incr i;
+     } 
+	return;
+} 
+
+
+
+Testtext im Codefenster
+
+\ hallo dies
+\ ist 
+\ die seite
+
+
+  0.507 Tk-Widget 
+
+Generierendes Tk Wort widget - für alle Widget Typen
+
+objecttype tkwidget   { type .name -- }
+     instance  {uplevel #0 {set obj [pop]; eval [concat [pop] $obj]} 
+     {}         {push $obj}
+     config     {eval $obj [concat configure [pop]]}
+     set        {eval $obj [concat config [pop]]}
+     pack       {eval [concat pack $obj [pop]]}
+     bind       {eval [concat bind $obj [pop]]}
+	...
+
+"text" ".forth" tkwidget Console  ok sobald alle Text Messages drin sind ....
+--
+tkcanvas ist speziell.
+--
+tkwait ist interner tk-Command, Message wait
+--
+HideTclConsole:  console hide
+uvm
+
+
+
+
+  0.508 div. 
+
+drop korrigiert
+sqrt neu
+alias neu
+!S CC
+--
+warum cast nur locals? macht Sinn, weil locals immer erst 'variable' sind.
+--
+ok> lassen, ok allein wirkt nicht - oder? nein: ok ist elegant -- aber ok> ist besser erkennbar in der Console!!
+--
+doi,j,k sind global aber keine Forthworte.
+do loops können geschachtelt sein in anderen Worten, funktionieren trotzdem.
+Verstehe nicht mehr warum...
+--
+
+
+
+
+  0.509 Console in Forth 
+
+Eigentlich sollte die Console voll in Forth definiert sein. Als Beispiel. Und Vorbild.
+--
+end-code könnte helfen,   ';'  do.
+--
+Menus später ...
+
+Print muss prefix bleiben, oder viel grübeln in den Tcl Befehlen.
+
+
+
+
+  0.510 Menus 
+
+widget tkMenu name 
+
+".tkname" tkmenu menu
+"command" "script" menu addcommand
+"label" "menu" "menubar" addmenu
+
+
+
+
+  0.511 tkwidgets => Widget 
+
+Reihenfolge der Argumente umkehren. Typ vor tkwidget.
+
+".forth" "text" tkwidget Console
+
+"$::top.f" "frame" tkwidget frame 
+
+".t" "toplevel" tkwidget top
+
+--
+
+TF widgets = Grossbuchstabe:  Widget  Menu  Canvas
+
+
+
+
+  0.512 Typen in Grossschrift? Nein 
+
+Wie die Widgets auch alle Typen grossschreiben als Forth Worte
+Kontrast zu Tcl Typen.
+ 
+compiler => Compiler - ok
+! TF akzeptiert beides, grosser und kleiner Anfangsbuchstaben.  mit "tolower"
+
+Alle Definer Gross oder klein akzeptiert. Mache sie Gross im Source.
+
+- HideTclConsole weg, Tcl console garnicht erst laden. - Doch. Muss console am Anfang laden, sonst funktioniert sie später nicht. (Warum ???)
+
+- code => Code - ok 
+- objecttype => Objecttype - ok
+
+- variable => Variable => variable
+Entweder oder.  variable ist nicht mehr dabei. Wie ist es bei den Locals? ??
+Nein: Typen bleiben in Kleinschrift.
+
+
+
+
+  0.513 Source beenden 
+
+Widget2 anwenden, Widget instantiieren inklusive Configuration, wie Tk. - Nein. Es ist genug.
+--
+Source einpacken und Systeme bilden.
+
+
+
+
+  0.514 Update 0.51... 
+
+ok> mit space, sieht einfach sauberer aus.
+Aber die Leute wollen es wahrscheinlich 
+(88) ok hier beginnen
+ok>zeigt hier den Anfang
+also ok und space oder ok>und kein space 
+--> ok> und space, aber der Befehl kann direkt hinter ok> beginnen.
+--
+nehme die Zeile ab ok> und trimme Leerraum beidseitig weg (das bisher schon).
+Die alten command lines werden immer nach dem Space gesetzt weil prompt "ok> " schreibt.
+--
+So geht es.
+--
+(update test)
+
+
+
+
+  0.515 Testcommit 
+
+Jetzt sollte die vorige Version = Revision in Dropbox gespeichert sein als Backup. Ist aber nicht.
+=> Die hdb-Datei muss voll geschlossen werden, damit Dropbox sie akzeptiert
+
+
+
+
+  0.516 Linux Version 
+
+Der Source lädt nicht aus dem Terminal wegen 'show console'.
+console Befehle alle catchen! 
+--
+SetupMenu hatte zweimal Open Tcl console.
+--
+TF in Linux laufen lassen aus dem Terminal funktioniert wenn das Terminal verschwindet bevor TF den Source lädt.
+Und das geht mit nohup und exit,  wenn tclkit85 auch im Source liegt.
+
+cd ---/TclForth-Source-05
+nohup ./tclkit85 tfmain.tcl & exit
+
+
+
+
+  0.517 Bug in ShowWords 
+
+ShowWords hat ein pop zuviel.
+Grund: list join - wurde 0.514 geändert in   {set obj [join $obj [pop]]} -- warum? ws weil join 2 Argumente hat (optional)
+! Es hat nur ShowWords betroffen, der Rest funktioniert.
+
+
+
+
+  0.518 Bugs 
+
+asciiOf  
+ruft das TF ascii, muss also den Text auf dem Stack liefern.
+--
+."  
+PushText  appendcode "print \[pop\] ; " 
+ ." 888"  
+? wrong # args: should be "PushText" (ohne Argumente) 
+es fehlt ein ; hinter Pushtext.  => Compiler ."  PushText ; appendcode "printnl \[pop\] ; " 
+und mit printnl - man will ja eine neue Zeile.
+-- 
+Neue Version 052 -- In ConsoleWindows ändern
+-- 
+HolonTF jetzt in neuem Repo holonforth/tclforth.
+
+
+
+
+  0.519 Updates 
+
+Update: Wort % => mod
+--
+[ und ] sind noch nicht definiert.
+--
+
+
+
+
+  0.520 Neue Rev nach Commit und Sync 
+
+eine korrekur für den neuen git test 13.10.2014
+
+
+
+
+  0.521 HolonTF mit Git-Repo vereinigt 
+
+Github ist genial. Mit dem passenden .gitignore kommt nur das ins remote Git was dort sein soll.
+
+
+
+
+  0.522 Vorbereiten für GitHub 0.55 + 
+
+Menu: Import -> Load 
+Stack immer zeigen in Commandline, oder doch nicht. Wählbar.
+Console-Worte als Package benennen: consoleShow ? vorerst nicht.
+tclforth.command fehlt, ist nicht in git Repo mitgekommen, eingesetzt 
+.gitignore ergänzt 
+--
+Version: 0.55 vorläufig 
+--
+ForthConsole ohne Console wait !!!! - dann wird die Tcl Console nicht blockiert - ich Aff ... 
+--
+Help Menu: TclForth Words, Tcl Commands 
+--
+weiter geändert nach commit als 0.55 - beachten bei späterer Archeologie. 
+(alles in Fluss bis 0.6 offizielle Version. 0.55 ist greifbar aber so what, 0.6 wird kompatibel sein, vielleicht, wen kümmerts?)
+
+
+
+
+  0.523 => 551 
+
+weiter zu 552
+
+
+
+
+  0.552 STATE 
+
+Immediate Aktion in der Command line bedingt State. Es geht nicht ohne. Jedoch wird auch der immediate Teil compiliert und dann ausgeführt. 
+Wenn comp(state)=0, code in comp(icode) sammeln. 
+--
+Funktioniert nicht, und idt auch nicht notwendig.
+=> aufgeben, [ ] herausnehmen. 
+Ohne STATE arbeiten.
+
+
+
+
+  0.553 ohne STATE, nur [ und ] 
+
+State Versuch beendet. Zurücksetzen:
+LoadLine 
+ji ij (waren [ ]) löschen
+comp(x) comp(state) comp(icode) löschen
+appendcode 
+--
+und dann kommt die gute idee
+und es ergibt sich.
+Ohne STATE aber mit [ und ]
+
+
+
+
+  0.56 GH Commit 
+
+Prozedere:
+Version = 0.559
+Commit => 0.560
+File headers anpassen
+Console Fenster anpassen
+Zu GH senden
+--
+Commit Summary:
+Version 0.56
+Description:
+Changes:
+- Menus
+- Tcl Console unblocked in terminal
+- list join, ." correct
+- % => mod 
+- immediate action on command line [ ]
+
+
+
+
+  0.561 [ ] u.a. 
+
+forth.fth mit [ und ] commited als 0.561 
+--
+forth.fth ." ohne newline
+
+
+
+
+  0.562 updates 
+
+HelpMenu zeigt auf GitHub Wiki 
+Tour: helpMenu => hMenu , u.a. 
+Console ganz sec: ohne Shortcuts Liste aber mit anderem Text über TF
+
+
+
+
+  0.563 Multiunits Console input 
+
+Leerzeilen in Consolentext soll Units/Definitionen/Zeilen beenden. Wie in Sourcefiles.
+--
+LoadFile und EvalText von Console kombinieren. 
+LoadUnit kann gleich sein, wenn der Text der Unit in comp(text), (in) und (end) liegt. - 
+Refactor LoadForth:
+- LoadUnit von GetText befreien. ok
+--
+EvalText erweitern: 
+- GetLine ist nicht anwendbar, weil das Ende der Line(s) durch den Insertcursor bestimmt ist.
+- Den ganzen Text übernehmen, dann in Units zerlegen.
+- Initteil von GetLine zu LoadLine zu Load Unit zu InterpretText zu SetupInterpreter geschoben	 
+--
+EvalUnit einführen, Zeilen mit \n joinen.
+--
+Zeilen mit Zahlen und Forthworten funktionieren, Leerzeile schliesst ab. ok.
+--
+Codefenster: löschen vor EvalText, Code sammeln für alle Units 
+Unit in History speichern
+--
+join => append -- join hat ein Problem mit { und } im Code weil dies auch Trennzeichen für die Liste sind. 
+append unit \n $zeile 
+- \n vor der $zeile einsetzen, sonst hat in GetItem die regexp ein leeres 'range' durch das trailing \n. -- Fehlermeldung: no variable range , oder so.
+--
+lädt eine lange Codedefinition, scheint ok. 
+Lädt die Tk App Codes, mehrere Worte zusammen. ok.
+
+
+
+
+  0.564 EvalText putzen 
+
+ShowCompCode mit Leerzeile - oder \n - zwischen Units.
+In EvalUnit nochmal Leerzeichen vorne und hinten abschneiden, trimmen.
+EvalUnit nicht auf neuen Zeilen beginnen, wenn Units neue Zeile wollen für Ausgabe können sie es selber machen.
+EvalText beginnt auf neuer Zeile.
+
+
+
+
+  0.565 String range, Console end, <ok> 
+
+String mit command/message/method range.
+--
+Exp. mit ok> & \n - also Befehl auf neuer Zeile eingeben. -> Arbeit! 
+In Textwidget ist end bezogen auf den Text effektiv "end -1 char".
+Wenn Tk Text end gelöscht wird, geht end auf die vorige Zeile.
+Klassische Version mit <ok> gefällt. Ist weniger dicht als bisher, dafür ist das Geschehen sauber dokumentiert. Leere Zeilen sind leer.
+Anfangs-ok mit cr. 
+=> Change: <ok> auf eigener Zeile
+
+
+
+
+  0.566 dummy nicht benutzt 
+
+
+
+
+
+
+  0.567 GetItem Bug: "Can't read range" 
+
+GetItem holt ein Wort als Text zwischen Leerraum. Leerraum ist Space und NewLine und Tab.
+Beim Kopieren aus Evernote können noch andere nicht sichtbare Zeichen in der Zeile sein, und das gibt den Fehler
+"? can't read "range": no such variable"
+Dies kommt bei normalen Programmeditoren kaum vor, dennoch ist es ein Grund für mögliche Probleme.
+E: Auf Leerraum testen als "Nicht-Sichtbare-erlaubte -Zeichen". Also Nicht:A-Za-z0-9:;,. usw. ASCII>31 UND <126
+=> regexp studieren. -- nein, zu komplex.
+--
+E: reg=0 testen (kein match gefunden) => comp(word)="" zurückgeben
+
+proc GetItem {} {
+	global comp
+	if {$comp(i)>=$comp(end)} {set comp(word) "" ; return $comp(word)}
+	set reg [regexp -indices -start $comp(i)  {\S+} $comp(text) range]
+if $reg==0 {set comp(word) "", return $comp(word)} 
+	set start [lindex $range 0]
+	set end [lindex $range 1]
+	set comp(word) [string range $comp(text) $start $end ] 
+	set comp(prev) $start
+	incr end; 	set comp(i) $end
+	if {$comp(word)=="."} {set comp(word) ".."}
+	return $comp(word)
+}
+Das hilft nicht. Evernote setzt merkwürdige Zeichen ein weil es die Seite mit HTML schreibt und bei Copy irgendwie HTML Zeichen drin bleiben. Dagger (Kreuze) habe ich mal gesehen. - Aber wer editiert Programmcode in EN. Ausser mir?? 
+=> diesen Bug ignorieren weil es ist kein TF Bug. Bis jemand wirklich Probleme hat.
+
+> Unter Debug in Wiki notieren.
+
+
+
+
+  0.568 okprompt 
+
+<ok> wird "ok", dann ist klar dass der Befehl nicht direkt danach folgt. 
+--
+Leerzeilen vermeiden. Wenn die Befehlszeile leer ist, ok hier schreiben ohne Zeilenvorschub.
+Das sieht sauber aus und geht sparsam um mit dem Konsolenplatz
+
+
+
+
+  0.569 div. / Monitor 
+
+list print ohne cr - nein print ist mit cr 
+--
+Der Monitor von Holon funktioniert auch in TF mit dem Unterschied:
+- source => LoadForth, weil wir ja Forth code verarbeiten wollen.
+noch feintunen, wo soll was geschehen?
+- In Commandline kopieren und ausführen? ja: LoadInConsole
+das funktioniert. Noch mit HolonU verbinden und publizieren. Später.
+
+
+
+
+  0.570 Version 0.6.0 
+
+Prozedere:
+Version = 0.570
+Commit => 0.600   offiziell v0.6.0
+File headers anpassen
+Console Fenster anpassen
+Zu GH senden
+--
+Commit Summary:
+Version 0.6.0
+Description:
+Changes:
+- Autonomous apps (Starpacks)
+-  
+
+--
+Status von GH holen!
+
+
+
+
+  0.571 Monitor Sachen 
+
+Bei Eingaben von holon.mon gibt es zwei zusätzliche Leerzeilen, die ich nicht orten kann.
+Vielleicht hängt es mit uplevel #0 in doit zusammen? 
+So what? Nehmen wir es als ein Signal dass wir hier remote arbeiten. 
+--
+Der Stand der Dinge, 061:
+
+TclForth061 greift auf holon.mon zu im selben Verzeichnis
+ |- TclForth061.app
+ |- holon.mon
+
+Remote steuern mit HolonU: HolonU = holon-osx  schreibt in holon-osx/source/holon.mon
+=> TclForth061 in Holonu/source legen,
+also 
+/holon-osx/source/TclForth061.app
+
+Do. mit .exe - testen: 
+als /holon-win/source/tclforth061.app abgelegt
+
+
+
+
+  0.572 GetItem debuggen 
+
+Der alte Fehler "Can't read range: no such variable".
+Es können nicht-space Zeichen im Leerraum sein. 
+- nicht nach space suchen sondern nacht non-printable chars.
+
+regexp -indices -start $comp(i)  {\S+} $comp(text) range
+
+\S+ sucht den folgenden Leerraum (space, tab, cr)
+
+Testsource momentane Array Definition, aus EN kopiert: hat im Leerraum etwas das man nicht sieht, das aber auch kein \S+ ist.
+
+E1: regexp = 0  setzt error "not found"  mit letztem erfassten Wort im source. 
+
+"_###_##_#_#_#_#__#_____"  string now      
+? Non-space control chars in source after: now
+
+ 
+damit getan.
+
+
+
+
+  0.574 TclForth mit externem Source 
+
+- do loop Indizes auch i,j,k Kleinschrift 
+- ConsoleWindows 0.7.0 
+- starten ohne CodeWindow
+- TclForthStart ohne Verzeichniswechsel - wir sind schon bei Source
+
+
+
