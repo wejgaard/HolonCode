@@ -1,0 +1,9 @@
+
+  0.575 Add revision chapter to public version 
+
+Comment:
+Make it a txt file for external logging.
+
+Code:
+proc example {} ..
+
