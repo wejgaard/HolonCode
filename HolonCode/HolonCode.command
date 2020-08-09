@@ -1,3 +1,2 @@
-#!/bin/bash
-cd `dirname $0`
+Cd ~/documents/Github/HolonCode/HolonCode
 tclsh ../src/holoncode.tcl HolonCode.hdb &
