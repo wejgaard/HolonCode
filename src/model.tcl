@@ -36,7 +36,7 @@ proc Running? {} {
 proc UpdateRunning {} {
 	SetBase running [clock seconds]
  	mk::file commit wdb
-	after 60000 UpdateRunning
+	after 6000 UpdateRunning
 }
 
 proc OpenDB {} {
@@ -51,7 +51,7 @@ proc OpenDB {} {
 		SetDBLayout
 		if {$newdb} {CreateStructure; return}
 	# exit if app is already running
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
 			wm iconify .  
 			tk_messageBox -type ok -message "This System is already running"
 			exit

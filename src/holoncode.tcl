@@ -31,7 +31,7 @@ proc OpenDB {} {
 	SetDBLayout
 	if {$newdb} {CreateStructure}
 	catch {
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
 			wm iconify .  ;# reduce window to icon, only message box is visible
 			tk_messageBox -type ok -message "System is already running"
 			exit
@@ -291,12 +291,14 @@ proc SetPanes {} {
 
 proc ShowPage {id} {
 	global view oldVersion color
+puts "<SHOWPAGE" 
 	set ::page $id
+puts "page $id"
 	set oldVersion 0
 	SetList $id
-	ShowTitle $id
-	ShowVersions $id; # ShowTest $id
-	ShowText $id
+	ShowTitle $id; 
+	ShowVersions $id; 
+	ShowText $id;      update
 	ShowCode $id
  	if {[Deleted $id]} {
 		$view(version) configure -state normal 
@@ -312,6 +314,10 @@ proc ShowPage {id} {
 	MarkInfoPages
 	StartVisitTime
 	SetTreePage
+puts "SHOWPAGE>
+
+" 
+
 }
 
 proc WriteSourceVersion {} {
@@ -350,5 +356,5 @@ wm geometry . [GetBase geometry]
 wm minsize . 870 450
 
 WriteAllChapters
-RunHolon  ; # stays here until the user ends the program
 
+if {[catch RunHolon result]} {puts stderr $result}
