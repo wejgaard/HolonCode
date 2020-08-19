@@ -21,7 +21,8 @@ HolonCode handles program units in a CMS as structure of sections and chapters l
 
 ### Guide
 HolonCode is special. Explore a new programming experience.
-The first Holon-GUI version [HolonU](https://www.holonforth.com/holonu.html) includes a detailed manual that may help.
+
+The first Holon-GUI version [HolonU](https://www.holonforth.com/holonu.html) includes a detailed manual that may help. 
 
 ### Runscripts
 The runscripts act on HolonCode in your local GitHub Desktop
