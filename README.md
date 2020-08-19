@@ -16,7 +16,7 @@ HolonCode handles program units in a CMS as structure of sections and chapters l
 * Chapters correspond to files. 
 * The files contain the present state. Changes are instantly updated.
 * HolonCode runs in Windows, macOS and Linux. 32-bit and 64-bit.
-* More: holonforth.com/holons.html
+* Based on ! [HolonS] {https://www.holonforth.com/holons.html}
 
 
 ### Guide
