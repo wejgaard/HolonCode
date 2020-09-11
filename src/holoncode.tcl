@@ -14,6 +14,37 @@ source $dir/develop.tcl
 source $dir/interfaces.tcl
 source $dir/sourceversion.tcl
 
+proc UpdateChapters {} {
+	global Chapters view 
+	if {[Editing]} {SaveText}
+	set active [$view(chapters) curselection]	
+	if {$active == ""} {return}
+	# msg "chapter $active"
+	SetChapter [lindex $Chapters $active]  
+	ShowPage [Chapter]	
+}
+
+proc UpdateSections {} {
+	global Sections view 
+	if {[Editing]} {SaveText}	
+	set active [$view(sections) curselection]
+	if {$active == ""} {return}
+	# msg "section $active"
+	SetSection [lindex $Sections $active]
+	ShowPage [Section] 
+}
+
+proc UpdateUnits {} {
+	global Units view 
+	if {[Editing]} {SaveText}
+	set active [$view(units) curselection]
+	if {$active == ""} {return}
+	# msg "unit $active"	
+	SetUnit [lindex $Units $active]  
+	Text&CodePanes; 
+	ShowPage [Unit]
+}
+
 proc ProjectDB {} {
 	global argv appname 
 	set db [lindex $argv 0]
@@ -57,6 +88,24 @@ proc CreateStructure {} {
     		SetPage $u next $s
     		SetBase revpage $u
 		mk::file commit wdb
+}
+
+proc ListboxSelection {} {	
+	bind . <<ListboxSelect>> {
+	     switch -glob -- %W {
+	          *chapters {UpdateChapters; }
+	          *sections {UpdateSections;}
+	          *units    {UpdateUnits; }
+	     }
+	}
+}
+
+proc msg {msg} {
+	puts $msg; flush stdout;
+}
+
+proc Section {} {
+	return [lindex [GetPage [Chapter] active] 0]
 }
 
 proc AboutHolonCode {} {
@@ -120,18 +169,10 @@ proc AskSetup {} {
 proc EndSetup {} {
 	global setup view
 	SetBase safe $setup(safe)
-	SetBase fontsize $setup(size); SetBase codesize $setup(codesize); AdjustFontsize
-	SetBase codecolor $setup(codecolor); if {![Editing]} {ShowCode [CurrentPage]}
-	if {[GetBase extension]!=$setup(extension)} {
-		SetBase extension $setup(extension); RefreshChapters
-	}	
-	if {[GetBase extension]==0} {
-		$view(lists).cf configure -text "  Chapters" -fg #888
-		$view(treeframe) configure -text "  Chapters" -fg #888
-	} else {
-		$view(lists).cf configure -text "  Chapters" -fg #888
-		$view(treeframe) configure -text "  Chapters" -fg #888
-	}
+	SetBase fontsize $setup(size); 
+	SetBase codesize $setup(codesize); 	
+	SetBase codecolor $setup(codecolor);  if {![Editing]} {ShowCode [CurrentPage]}
+	if {[GetBase extension]!=$setup(extension)} {SetBase extension $setup(extension); RefreshChapters }	
 	destroy $setup(win)
 }
 
@@ -290,15 +331,13 @@ proc SetPanes {} {
 }
 
 proc ShowPage {id} {
-	global view oldVersion color
-puts "<SHOWPAGE" 
-	set ::page $id
-puts "page $id"
+	global view oldVersion color page
+	set page $id
 	set oldVersion 0
 	SetList $id
-	ShowTitle $id; 
-	ShowVersions $id; 
-	ShowText $id;      update
+	ShowTitle $id
+	ShowVersions $id; # ShowTest $id
+	ShowText $id
 	ShowCode $id
  	if {[Deleted $id]} {
 		$view(version) configure -state normal 
@@ -306,7 +345,10 @@ puts "page $id"
 		$view(version) insert end "\[deleted\]" deleted
 		$view(version) configure -state disabled 
 	}
-	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {$pane configure -bg $color(pagebg)}	
+	
+	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {
+		$pane configure -bg $color(pagebg)
+	}	
 	TextCodePanes $id
 	ShowLinPage $id
 	ShowTree $id
@@ -314,10 +356,6 @@ puts "page $id"
 	MarkInfoPages
 	StartVisitTime
 	SetTreePage
-puts "SHOWPAGE>
-
-" 
-
 }
 
 proc WriteSourceVersion {} {
@@ -337,7 +375,7 @@ if [namespace exists starkit] {
 	if [osx] {cd ../../..}
 }
 
-Running?
+# Running?
 
 OpenDB
 set sysdir [pwd]
@@ -354,7 +392,8 @@ set version [GetBase version]
 wm title . "[string toupper $appname 0 0]"   
 wm geometry . [GetBase geometry]  
 wm minsize . 870 450
+# tk_focusFollowsMouse
 
 WriteAllChapters
+RunHolon  ; # stays here until the user ends the program
 
-if {[catch RunHolon result]} {puts stderr $result}

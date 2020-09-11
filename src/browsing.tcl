@@ -14,33 +14,25 @@ proc SetCurrent {type} {
 
 proc SetList {id} {
 	global view
-puts <SETLIST 
 	foreach l "$view(chapters) $view(sections) $view(units)" {
 		$l selection clear [$l index active]
 	}	
 	if {[Deleted $id]} {return}
-	set type [GetPage $id type]      
+	set type [GetPage $id type]
 	switch $type {
 		chapter {
-			SetChapter $id ;  puts setchapter
+			SetChapter $id 
 		}
 		section {
-			SetChapter [GetChapter $id]; 
-		 	SetSection $id ; 
+			SetChapter [GetChapter $id];  SetSection $id
 		}
 		unit {
-			set s [GetSection $id]; 
-			set c [GetChapter $s] ; 
-			SetChapter $c;  
-			SetSection $s;   
-			SetUnit $id	;  
+			set s [GetSection $id]; set c [GetChapter $s]
+			SetChapter $c; SetSection $s; SetUnit $id	
 		}
 	}	
-	GetChapters;  
-	GetSections;  
-	if {![NoSections]} {GetUnits} ;  
-	SetCurrent $type;  
-puts "SETLIST> $id $type "
+	GetChapters; GetSections; if {![NoSections]} {GetUnits}
+	SetCurrent $type
 }
 
 proc SetHeight {h} {

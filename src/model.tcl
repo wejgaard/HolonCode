@@ -51,7 +51,7 @@ proc OpenDB {} {
 		SetDBLayout
 		if {$newdb} {CreateStructure; return}
 	# exit if app is already running
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
 			wm iconify .  
 			tk_messageBox -type ok -message "This System is already running"
 			exit
@@ -259,8 +259,8 @@ proc SavePage {id text code who newName cursor test changed} {
 set page 0
 
 proc CurrentPage {} {
-	return $::page
-
+	global page
+	return $page
 }
 
 proc PageStack {} {

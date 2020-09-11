@@ -310,7 +310,6 @@ proc UpdateChapters {} {
 	GetSections
 	if {![NoSections]} {GetUnits}
 	ShowPage [Chapter]
-#	GetSyntax
 	focus $view(chapters)
 	# keep active chapter in center of pane
 	$view(chapters) yview [expr {$active-$view(height)/2}]
@@ -373,11 +372,13 @@ proc RefreshSections {} {
 proc UpdateSections {} {
 	global Sections view active
 	if {[Editing]} {SaveText}
-	focus $view(sections)  
+#	focus $view(sections)  
 	if {[NoSections]} {FocusSections; return}
+	
 	unmark $view(sections)      
 	set active [$view(sections) curselection]
 	mark $view(sections) $active 
+	
 	SetSection [lindex $Sections $active]
 	ShowPage [Section]
 	focus $view(sections)     
@@ -431,6 +432,23 @@ proc ClearUnits {} {
 	$view(units) delete 0 [$view(units) size]
 }
 
+proc UpdateUnits {} {
+	global Units view active
+	if {[Editing]} {SaveText}
+	if {[NoSections]} {return}
+	focus $view(units) 
+	if {[NoUnits]} {FocusUnits; return}
+	unmark $view(units)
+	set active [$view(units) curselection]
+	mark $view(units) $active 
+	SetUnit [lindex $Units $active]  
+	Text&CodePanes; ShowPage [Unit]
+	focus $view(units) 
+	# show active unit in center of pane
+	$view(units) yview [expr {$active-$view(height)/2}]
+	after 500 {$view(units) activate $active}
+}
+
 proc GetUnits {} {
 	global Units view
 	ClearUnits
@@ -450,23 +468,6 @@ proc RefreshUnits {} {
 	ShowPage [Unit]
 	$view(units) selection set [iActiveUnit] 
 	focus $view(units)
-}
-
-proc UpdateUnits {} {
-	global Units view active
-	if {[Editing]} {SaveText}
-	if {[NoSections]} {return}
-	focus $view(units) 
-	if {[NoUnits]} {FocusUnits; return}
-	unmark $view(units)
-	set active [$view(units) curselection]
-	mark $view(units) $active 
-	SetUnit [lindex $Units $active]  
-	Text&CodePanes; ShowPage [Unit]
-	focus $view(units) 
-	# show active unit in center of pane
-	$view(units) yview [expr {$active-$view(height)/2}]
-	after 500 {$view(units) activate $active}
 }
 
 proc FocusUnits {} {
