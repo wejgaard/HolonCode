@@ -8,7 +8,7 @@ Like a book.
 
 I have built applications the holon way since 1989 and release the full version as an open source project.  
 
-![HolonCode](https://www.holonforth.com/images/holoncode1.jpg)
+![HolonCode](https://www.holonforth.com/images/holoncode1.png)
 
 
 ### Features
