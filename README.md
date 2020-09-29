@@ -45,7 +45,7 @@ Use the Issues for Comments, Questions, Ideas.
 HolonCode provides clarity and immediacy. 
 I have built applications the holon way since 1989 and release the full version as an open source project.  
 
-![HolonCode](https://www.holonforth.com/images/holoncode.jpg)
+![HolonCode](https://www.holonforth.com/images/holoncode4.png)
 
 
 ### Features
