@@ -1,20 +1,7 @@
-proc AskSetup {} {
-	global setup color
-	set setup(win) .setup
-	if [winfo exists $setup(win)] {raise $setup(win); return}
-	toplevel $setup(win)
-	wm title $setup(win) "Preferences"
-	.setup config -bg $color(pagebg)
-	SetupRevision
-	SetupOperation
-#	SetupPrinting
-	SetupOK
-	wm protocol $setup(win) WM_DELETE_WINDOW {EndSetup}
-}
-
 proc SetupRevision {} {
 	global setup frev color
-	set frev [labelframe $setup(win).frev -text "Revision" -borderwidth 1 -padx 10 -pady 5 \
+	set frev [labelframe $setup(win).frev -text "Revision" \
+		-borderwidth 1 -padx 10 -pady 5 \
 		-relief solid -bg $color(setup)]
 	grid $frev -sticky we
 	grid configure $frev -padx 20 -pady 5
@@ -81,36 +68,40 @@ proc SetupPrinting {} {
 	grid $fpnt.sl $fpnt.sb1 $fpnt.sb2   -sticky w -pady 2
 }
 
-proc SetupOK {} {
-	global setup color
+proc SetupOK {} { 
+	global setup color setOK
+	set setOK 0
 	set fok [frame $setup(win).fok -borderwidth 20 -bg $color(setup) ]
 	grid $fok 
-	button $fok.ok -text OK -command {EndSetup} -padx 25 -pady 5 \
+	button $fok.ok -text OK -command {set setOK 9} -padx 25 -pady 5 \
 		-relief raised -border 2 -bg $color(setup)
 	pack $fok.ok  -pady 5
-	bind $setup(win) <Return> {EndSetup}
 }
 
 proc EndSetup {} {
-	global setup view
-	SaveSetupVersion	 $setup(version); 
+	global setup view 
+	SaveSetupVersion	$setup(version); .b.rev config -text "Rev. $setup(version)"
 	SetBase safe $setup(safe)
-	SetBase fontsize $setup(size); SetBase codesize $setup(codesize); AdjustFontsize
-#	SetBase codefont $setup(codefont)
+	SetBase fontsize $setup(size); 
+	SetBase codesize $setup(codesize); AdjustFontsize
 	SetBase codecolor $setup(codecolor); if {![Editing]} {ShowCode [CurrentPage]}
 	if {[GetBase extension]!=$setup(extension)} {
 		SetBase extension $setup(extension); RefreshChapters
 	}
-	if {[GetBase extension]==0} {
-		$view(lists).cf configure -text "  Chapters" -fg #888
-		$view(treeframe) configure -text "  Chapters" -fg #888
-	} else {
-		$view(lists).cf configure -text "  Files" -fg #888
-		$view(treeframe) configure -text "  Files" -fg #888
-	}
-#	SetBase comdel $setup(comdel)
-#	SetBase pagesize $setup(pagesize)
+}
+
+proc AskSetup {} {
+	global setup color setOK
+	set setup(win) .setup
+	toplevel $setup(win)
+	wm title $setup(win) "Preferences"
+	.setup config -bg $color(pagebg)
+	SetupRevision
+	SetupOperation
+	SetupOK
+	vwait setOK
 	destroy $setup(win)
+	EndSetup
 }
 
 set AboutElemente ""
@@ -386,16 +377,12 @@ proc License {} {
 	global licensed keytext
 	if [winfo exists .license] {return}
 	toplevel .license
-	wm title .license "HolonS/L License"
+	wm title .license "HolonCode License"
 	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
 	pack $lt -side top -fill both -expand true
-	if $licensed {
-		$lt insert 1.0 "THIS COPY OF HOLON-S/L IS LICENSED TO:\n\n"
-		$lt insert	end $keytext\n\n
-		$lt insert end $::LicenseText
-	} {
-		$lt insert 1.0 "TRIAL VERSION OF HOLON-S/L\n"
-		$lt insert end $::LicenseTextTrial
-	}	
+	$lt insert 1.0 "Open Source License\n"
+	$lt insert end $::LicenseText
+	$lt configure -state disabled
+
 }
 

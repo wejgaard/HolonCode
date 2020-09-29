@@ -17,20 +17,17 @@ proc CreateStructure {} {
 			textcolor #ffffff codecolor 1 pages 2 comdel //  running 0 \
 			runcmd "../tclkit ./main.tcl" syntax Tcl safe 0 \
 			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 12 revpage 1
-		set c [AppendPage type chapter name "Chapter" mode source]
+		set c [AppendPage type chapter name "Revisions" mode source]
     		SetBase list $c active $c
     		SetPage $c next ""
-    		set s [AppendPage type section name "Section"]
+    		set s [AppendPage type section name "Setup"]
     		SetPage $c list $s active $s
     		SetPage $s next $c
-    		set u [AppendPage type unit name "Unit"]
+    		set u [AppendPage type unit name "0.001"]
     		SetPage $s list $u active $u
     		SetPage $u next $s
     		SetBase revpage $u
 		mk::file commit wdb
-}
-
-proc Running? {} {	
 }
 
 proc UpdateRunning {} {
@@ -39,23 +36,29 @@ proc UpdateRunning {} {
 	after 6000 UpdateRunning
 }
 
+proc ProjectDB {} {
+	global argv appname 
+	set db [lindex $argv 0]
+	set db "./$db"  
+	set appname [file rootname [file tail $db]]
+	return $db
+}
+
 proc OpenDB {} {
-	global wdb argc argv appname db  newdb
-	# get path of db and name of host=app=project
-		if {$argc} {set db [lindex $argv 0]} else {set db [tk appname].hdb}
-		set db "./source/$db"  
-		set appname [file rootname [file tail $db]]
+	global wdb db
+	set db [ProjectDB]
 	# open or create DB  
-		set newdb [expr ![file exists $db]]
-		mk::file open wdb $db -shared        ;# wdb is handle of db-file
-		SetDBLayout
-		if {$newdb} {CreateStructure; return}
-	# exit if app is already running
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
-			wm iconify .  
-			tk_messageBox -type ok -message "This System is already running"
+	set newdb [expr ![file exists $db]]
+	mk::file open wdb $db -shared                 ;# wdb is handle of the db-file
+	SetDBLayout
+	if {$newdb} {CreateStructure}
+	catch {
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
+			wm iconify .  ;# reduce window to icon, only message box is visible
+			tk_messageBox -type ok -message "System is already running"
 			exit
-		}
+		}	
+	}	
 	UpdateRunning
 }
 

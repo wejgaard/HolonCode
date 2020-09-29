@@ -95,12 +95,11 @@ proc ButtonBar {} {
 
 proc CreateMenu {} {
 	menu .menubar  
-	. config -menu .menubar
+	. config -menu .menubar 
 	FileMenu 
 	ViewMenu 
 	ConfigurationMenu
-#	HolonMenu
-#	HelpMenu
+	HolonMenu
 }
 
 proc FileMenu {} {
@@ -137,8 +136,9 @@ proc ConfigurationMenu {} {
 	set menu(version) [menu .menubar.version -tearoff 0 ]
 	$menu(version) add command -label "Preferences" -command AskSetup
 	$menu(version) add command -label "Commit" -command Commit
-	$menu(version) add command -label "About" -command AboutHolon
-#	ShowProject
+	$menu(version) add command -label "About" -command AboutHolonCode
+	$menu(version) add command -label "License" -command License
+#    ShowProject
 }
 
 proc HolonMenu {} {
@@ -169,26 +169,21 @@ proc TargetMenu {} {
 	
 }
 
-proc AboutHolon {} {
+proc AboutHolonCode {} {
 	if [winfo exists .about] {return}
 	toplevel .about
-	wm title .about "About Holon"
+	wm title .about "About HolonCode"
 	set abouttext [text .about.t -width 80 -height 27]
 	pack $abouttext -side top -fill both
 	AnzahlElemente
   	$abouttext insert 1.0 "
-  Holon Master Version $::sourceversion 
-  Copyright 2008-17 Wolf Wejgaard
+  HolonCode Version $::sourceversion 
+  Copyright 2008-20 Wolf Wejgaard
   All Rights Reserved
     
   Current # Elements:
   $::AboutElemente 
     
-  Credits:
-  I am indebted to Jean-Claude Wippler, Equi4 Software, http://equi4.com, 
-  for two great tools that make Holon efficient and reliable: 
-  Metakit - a widely proven database engine
-  Tclkit - a self-contained Tcl/Tk runtime 
 "
 }
 
@@ -496,10 +491,8 @@ proc DisableMotionEvents {} {
 
 proc EndSession {} {
 	DisableMotionEvents
-#	SetBase geometry [wm geometry .]   
-	SetBase geometry 1100x800+300+60   
+	SetBase geometry 1000x600+40+40   
 	CloseDB
-# 	file delete $::runfile
 	destroy $::topwin 
 	exit
 }

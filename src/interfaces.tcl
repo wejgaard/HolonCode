@@ -401,7 +401,9 @@ proc ImportChapter {file} {
 }
 
 proc Import-hml {} {
-	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir ./source ]
+	global appname
+#	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
+	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir ./$appname ]
 	if {$file==""} {return}
 	ImportChapter $file
 }

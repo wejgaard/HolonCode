@@ -1,0 +1,2489 @@
+
+  2.027 Revisionsseite, Buttonpress 
+
+Ctrl+Button1 macht Revisionsseite (wie Ctrl+r)
+Button zeigt zuerst den gedrückten Zustand, dann ruft er den Befehl. 
+Click auf den Pageframe löscht Find. 
+Versuch mit Framefarbe: heller, weiss => Systemfarbe beibehalten
+
+
+
+
+  2.022 Commit 
+
+Changetext löschen. Meldung 1 sec zeigen.
+
+
+
+
+  2.021 div. 
+
+Statusbar breiter. 
+
+Revisionstext schwarz auf grau. - Damit sind auch die Buttons nicht mehr so gewaltig.
+
+E: Hypertextlinks auch zu Sections und Chapters anzeigen. - Nein: Links sind für Codedefinitionen gedacht. Sections und Chapters kann ich mit Find (Right-Button) suchen.
+ 
+E: Buttons weniger hoch, -height 1. Und dafür Abstand oben unten, -pady 15 -- ungewohnt, nicht dumm, -pady 12, wie reine Schrift früher, nur jetzt als Taste erkennbar.
+Tasten nicht so auffällig. Sollten reagieren wenn Maus darüber. Oder besser nicht, irgendwie nervös. - 
+E: groove inaktiv, raised bei enter/hover
+- height 1 ist Gewohnheitssache, raised normal, sunken bei hover, bd 1  - oder nicht reagieren bei enter. s. holonweb/web/images/fractal-unit-kleinetasten.png
+=> height 2 ist grosszügig, füllt den Raum besser, zeigt die Tastennatur. !! Text ohne Rahmen wäre besser !! aber man muss die Taste sehen.
+
+
+
+
+  2.020 Buttons 
+
+Buttons in WIN raised, in OSX flat zeigen? In WIN ist raised nicht so übel. 
+Tasten verbreitert von 6 auf 8 Zeichen, sieht auch in OSX brauchbar aus. Die Befehlszeile wird grosszügiger. 
+In WIN und OSX Tasten raised zeigen.
+
+
+
+
+  2.019 Style Infopane, Buttons 
+
+Infopane: Den Titel im Frame zeigen, voll ausgeschrieben: "Visited Pages",... 
+
+Buttons: Sollte zeigen dass es Tasten sind. Normal raised. - Sunken war auch nicht schlecht, aber weniger deutlich.
+In WIN sieht es besser aus als in OSX. Die Tasten sind breiter. 
+E: OSX Buttons ohne Rahmen
+
+
+
+
+  2.018 Style bearbeiten 
+
+Style einführen für List-, Info- und Treeframes, und für Listboxen.
+
+Mit eval geht das. Löst den String mit den Optionen auf in eine Liste der Optionen. 
+	Wenn ein Argument wieder ein String ist, eine {} Klammer um option und argument legen. Bsp. UnitList :  {-yscrollcommand "$unitsScroll set"}	 
+	Und wenn Spaces im Text:    -text {"  Units "}
+
+Die Listenframes sind immer noch am besten mit einem Rahmen. Schrift wie in der Liste, Schrift und Rahmen schwarz. 
+-- Damit ist ein Abgrenzen des Kontrollteils (Tasten und Eingabefelder) weniger dringend. --
+
+
+
+
+  2.017 Logpage / History 
+
+Neue Logpage: Eine neue Unit einsetzen mit dem Namen (= Titel) gleich Nummer und Beschreibung der aktuellen Revision. Ctrl+r setzt die Logunit hinter, Ctrl+R setzt sie vor der aktuellen Unit ein. -- [Diese Seite habe ich noch von Hand gebildet.]
+
+Logpage aufrufen: Ein Click auf das Label "Revision nnn" in der Statusbar ruft die Logpage auf. Die Logpage kann irgendwo sein im Projekt, also nicht unbedingt am Ende. Die id der Logseite speichern als Basisvariable revpage. Bei einem neuen Projekt ist revpage false und der Click ist ohne Wirkung.
+
+History: Neue Seiten erst neutral einsetzen ohne Revisionsnummer und ohne Eintrag in die History. 
+Revnummer und Historyeintrag gibt es erst, wenn die Seite editiert worden ist, also eine Persönlichkeit bekommt.
+
+
+
+
+  2.028 spielen mit dem UI 
+
+Breite der Infospalte: bisher 18, neu 30 (zuviel), 20 (zuschmal), 25 ok angenehm fürs Auge
+Info Hintergrund weiss? grau unterscheidet besser zum Source 
+Infopane teilen in Info oben und Revisions unten. 
+	Info enthält Visited oder Found, 
+	Revisions enthält die Edited Pages (aktuelle Revision) und die Pages der früheren Revisionen. Datum ganz hell. Sieht heiss aus. Teilung der Infopane ist ok.
+	E: auch frühere Einträge hell, sodass heute heraussticht. - Besser alle Einträge gleich.
+
+Was bestimmt die relative Grösse der beiden Subpanes?
+
+
+
+
+  2.100 Infopane 
+
+* Infopane oben Visited oder Found, unten Revisions. 
+* Revisions updaten wenn Page changed.
+* Titel je im Feld, Labelframe "Info", auch für Found
+* Menu reduziert auf Clear, die anderen Buttons sind obsolet. Clear zeigt Visited.
+* Findfelder Find, Replace, Clearbutton und ShowFoundPages mit EditFarbe hinterlegt
+--
+Revisions Version&Datum Zeilen hell sind unruhig, jetzt dunkler. 
+Bei Start Revisions zeigen.
+-- Ohne Buttons Visited, Edited, History sieht der Befehlsbalken mager aus!
+
+
+
+
+  2.101 Rev 2.100 bereinigen 
+
+Source aufräumen.
+# Besuchte Seiten gehen nicht in die Visited History oder werden nicht gezeigt. 
+# Revisions immer anzeigen auch bei neuer Logpage, scheint jetzt ok 
+# ShowRevision nnn in Revisionfeld, Farbe ändern von Revisionsfeld und Clearbutton. Clear schaltet zurück zur ganzen Revisionenliste. 
+Infoseiten sind soweit ok. 
+# ShowHistory wird ShowRevisions
+
+
+
+
+  2.102 Infopane, Find, Revision 
+
+# In Findzustand nicht VisitedPages updaten/zeigen
+# ClearFind => ClearAll
+# ShowHistory => ShowRevisions
+Infopane Zustände:
+	Visited & Revisions (History)  <-- Clear Button
+	Find & Revisions 
+	Visited & Revision (eine bestimmte) 
+	Find & Revision  -- Clear nicht brauchen solange ich weiter Suche.
+# Info mit Sash - InfoPane0 ist die Vorversion mit Revisionsgeschichte, InfoPane ist die neue. 
+	E: Neuen Code in alte Version kopieren.
+# Info  Farbe weiss? besser als grau, aber hellgrün noch heisser? - länger testen
+# Exit ohne Commit - Version bewusst ändern, nicht unbedingt bei Ende der Session.
+# Visited Zeit erhöhen auf 1.5 sec
+
+
+
+
+  2.104 Revision & Statusbar & Buttons 
+
+- Bei Commit wird eine Revisionsseite hinten angehängt im Programm, und in History eingetragen.
+- Die Logfunktion und die Eingabezeile in der Bedienungsfläche ist obsolet. Die aktuelle Version ist im Revisionspane ersichtlich.
+- Find&Replace in Buttonzeile schieben = Statuszeile in Buttonzeile integrieren.
+- Buttons weniger hoch, ohne Rahmen
+
+
+--
+? Zugriff auf die RevSeite über die Rev&Datumzeile in Revisions. Revseite nicht in die History nehmen oder nicht anzeigen?
+
+
+
+
+  2.105 UI Feinarbeit 
+
+Statuszeile ist nach oben geschoben, mit Find&Replace, ohne Revisionteil. 
+StatusTask entfernt
+StatusFindReplace => FindReplace
+LogChangeText entfällt, Logmechanismus ist durch Rdie evisionsseiten ersetzt.
+
+
+
+
+  2.106 UI, Buttons, Frames, 
+
+Esc = Exit 
+Source polieren Rev 2.100 ff 
+
+Treeliste gleich breit wie Infopane 
+Leerraum um Listen, -relief flat -bd 5 
+Frames ohne Titel,  YEAH !
+
+Button Edit gelöscht
+Button Rev angehängt - öffnet die aktuelle Revisionsseite 
+Bei Start und Commit Button Rev mit aktueller Version beschriften.
+
+
+
+
+  2.107 UI Zeilenabstände Font 
+
+Zeilenabstand in Info +1, in Tree und Code +2 
+Rahmenfreiraum in Listen -bd 5 ist ok 
+
+Der Listenfont kratzt noch, ist 1 Punkt grösser als Info und Tree. Gleich setzen? 
+Listfont = Infofont: erster Eindruck mickrig, Zeilenabstand kleiner. Auf zweiten Blick ok. --> Länger testen! Doch zu klein!
+Treefont ist bisher wie Info, jetzt auch wie Listen? ja, dafür Zeilenabstand reduzieren zu +1. 
+
+ShowTree mit Chapters fett oben und unten, unten zusätzlich markiert wenn gewählt. 
+
+HolonH PackButtons
+
+
+
+
+  2.108 Info ohne Farbwechsel 
+
+Bei Find und Zeigen der Liste einer Revision wird bisher das Fenster hellgrün, ich fand das elegant. 
+Aber heute stört es, wirkt gekünstelt. Zuviel des Guten.
+Die Listen sind klar beschriftet und die Aufmerksamkeit ist ohnehin auf die Info gerichtet in diesem Moment.
+Daher jetzt kein Farbwechsel in Info. KISS.
+
+
+
+
+  2.109 Visited unten, Found und Revisions oben 
+
+view(info) => view(rev), InsertInfo => InsertRevisionline, ClearInfo => ClearRevision
+Visited bleibt erhalten und das beruhigt
+Aber vielleicht sollte das was ändert oben sein, also Visited in der unteren Pane zeigen? - Test: scheint vernünftig, länger testen.
+	Visited oben gefällt mir besser, Fenster kann klein sein sodass unteres Fenster hoch kommt (Found und Revisions)
+
+Infomode ist obsolet, VisitedPages ist immer vorhanden für update.
+
+HolonH Menu ohne Edit.
+
+
+
+
+  2.110 infomode 
+
+Infomode ist nicht obsolet, VisitedPages ist immer vorhanden für update, ABER bei Found wird eventuell eine gefundene Seite editiert und in die Revisionsliste eingetragen und diese ist nicht sichtbar weil hier die Foundliste liegt. - Also bei Eintrag in History die Revliste nicht immer zeigen.
+
+ShowFoundpages setzt infomode=found
+ShowRevisions setzt infomode=revisions
+ShowVisited ändert infomode nicht
+ShowRevision macht ClearAll -- und setzt infomode=revision
+
+ClearInfo => Clearvisited
+
+
+
+
+  2.111 Infopane FindLoop 
+
+Heute in Ruhe eine saubere Lösung finden für die Infopane. 
+
+FindText ist der Findloop.  => Umbenennen in FindLoop. 
+Wird bisher immer wieder geöffnet unnötigerweise, Aufruf entfernen aus den Suchworten SearchWord und Find.
+FindLoop sucht wenn findText ändert und zeigt ShowFoundPages. Wenn der Text gelöscht ist, zeigt es ShowRevisions. 
+
+ShowRevision muss findText und searchText löschen, sonst macht der FindLoop ShowRevisions. Und mit ShowFoundText die Foundmarken löschen.
+E: ShowRevisions => ShowHistory - ??
+ 
+In der Revisionsliste stört die leere Logpage, nur Nummer ohne Inhalt. Daher die Logpage nicht ins Archiv eintragen. 
+E: Die Logpage aufrufen mit dem Zwischentitel rev#&date.
+
+
+
+
+  2.112 div. 
+
+Clear Button nach links schieben besser erreichbar. 
+
+Revisionsnummern view(version) disabled lassen. Damit kein Text hineingeschrieben werden kann, wie es manchmal vorkommt. 
+
+Titelpane verlängern auf 50 Zeichen auf Kosten der Versionsnummern. 
+
+Find und Replace Felder ohne Label? E: mit    ? ............. ! ...............
+
+
+
+
+  2.113 UI Zeilenabstände, Frameübergänge, Info grau 
+
+Zeilenabstände korrigieren kleiner, wie früher.  spacing3 = 0   
+
+Listenabstand wie korrigieren? -- habe nichts notiert??? Ist auch nicht geändert!!! 
+
+Saubere Linien zwischen Buttonbar und Listen, Treen Info
+	set style(frame) { -relief sunken -bd 0     -bg $color(frame) -fg $color(listfg) 		-pady 2 -font default	} 
+		relief kann auch flat sein
+	set style(box) { -relief sunken -bd 1    -bg $color(listbg) -fg $color(listfg) 	-font listFont -activestyle none }
+		-bd > 1 gibt Rahmen :: Text kann nicht vom Rand weg verschoben werden mit -bd
+Mit dem geänderten Framestyle gibt es  auch eine gute Trennung zum Titelpane in Page
+=> UI sieht gut aus.
+
+Aber die Listen sind wieder linksbündig. =>	
+	Mit Space links verschieben. Units, Sections, Chapters ein Space mehr Freiraum links.
+
+Infopane wieder grau, als Systeminfo separat von Programmtext. Scheint doch leichter zu sein für das Auge.
+ 
+Tree ohne "Chapters" als Titel, ist nicht nötig. 
+
+--
+das ist genug für heute.
+aber ein sauberes UI schafft eine gute Arbeitsatmosphäre!
+
+
+
+
+  2.114 RevButton  ButtonCursor 
+
+RevButton öffnet die Logseite, zeigt auch die aktuell editierten Seiten und löscht Find. 
+
+Cursor über Button macht Schrift blau. Wollte Cursor als Hand aber UNIX hat nur komische Form. 
+-- blau nervt, wieder schwarz lassen.
+
+
+
+
+  2.115 Webkonstanten 
+
+Webconstanten = ein Wert (value) der überall im Source ersetzt wird, in html, css, js und php.
+Konstanten werden im Text markiert mit §§name§§
+Die Konstante wird definiert als <name> value <wert>,  
+Beispiel:    blau value #700    --   aaa§§blau§§bbb  wird beim Laden im Code ersetzt durch  aaa#700bbb
+ 
+{Beim Testen gibt es von MakeFile ein "bumm" bei php-Files. 
+Kommt vom Refresh (F5) von Firefox wenn FF nicht auf dem Schirm sitzt}
+
+
+
+
+  2.116 Webkonstanten 2 
+
+Codeworte können nicht bleibend aufgelöst werden, da der Code beim Laden nicht gespeichert wird. Codeworte setzen ihren source ein in den Webcode. Man müsste also ein extra Codefeld einführen für den beim Laden des Wortes gespeicherten Code.
+
+Colonworte erzeugen fertigen Webcode, daher die Konstanten auflösen im erzeugten Coloncode. Also in CompileColon 
+
+Das Array webcon global machen in CompileColon. Dann kann ich im Target die webcon Werte direkt setzen per Compiler: Worten, also auch mehrere Konstanten in einer Unit definieren.
+
+
+
+
+  2.117 Eval Targetcode 
+
+Versuch: Statt in zwei Schritten Hostcode zu bilden mit 1. compcode definieren mit Compilerwort, 2. compcode ausführen durch Laden als Colonwort, direkt den Compcode ausführen mit eval.
+In LoadWort "eval" erkennen.  -- Es ist eval, nicht compile!
+
+
+
+
+  2.118 LinearText  $::Edit 
+
+LinearText Titel.
+Button Edit fehlt doch. Die Buttonzeile wird unangenehm lang, aber beim Editieren sollte Save/Load alternativ sichtbar sein.  Jedenfalls so lassen vorerst.
+
+
+
+
+  2.119 HolonH update Chapterfile bei Save 
+
+Wenn das Chapter ein File ist (.js, .css). 
+Variable import definieren für WriteChapter erster Versuch. 
+Chapterfile in Verzeichnis web schreiben.  = WriteSourcefile 
+
+Webkonstanten werden im Sourcefile ersetzt, 
+d.h. die Webkonstanten müssen definiert sein vor dem ersten Editieren eines Chapterfiles. 
+ 
+§§ => %% 
+
+2.120 Kein Fileupdate bei Save.
+
+
+
+
+  2.120 HolonH Loading 
+
+Sourcefiles (styles, scripts)  
+- Save:
+	 kein Fileupdate.
+- Load Chapter, Section, Units:  
+	WriteFile mit Expansion der Webkonstanten. Refresh FF =  SendTarget
+
+Seitencode
+- Save:
+	 saven, kein File
+- Load: 
+	LoadChapter und Sections laden die eigenen Units. 
+	LoadUnit lädt den Code, zeigt ihn im Codefenster. Setzt Refresh.
+
+Run  
+- LoadAll 
+- ruft FF mit dem aktuellen Wort, wenn es eine Webseite ist, 
+		startet sonst die Homepage.
+
+ 
+---
+LoadButton ruft LoadUnit, muss Name behalten in HolonH weil das HolonQ Wort überladen wird. 
+Fileinhalt in Textwrangler ansehen bei Click auf File.
+ 
+[Dies ist ein Versuch mit einer Revisionsseite für ein Entwicklungsdetail, das aber bei weiteren Korrekturen auch andere Revisionen betrifft.
+Alternative sind die Projektseiten, die ich früher angelegt habe. Das könnte der noch bessere Ort sein für die Entwicklungsentscheide und Versuche zu einem Thema.]
+s. ph-Loading
+
+
+
+
+  2.121 Buttonbar Abstände Find Replace flat 
+
+Die Buttons näher rücken, bisher 8 Zeichen pro Button, neu 6 sind zu wenig, also 7 - ok
+
+? Find und Replacefelder kürzen: bisher 20, neu 16 -  ok 
+? Zwischenraum kleiner: minimal = 1 Leerzeichen - ok
+? Relief flat: :: -bd 0  - ok - mal damit leben
+
+? Version# absetzen:  " Commit  |  2.121 "  -  ok
+
+
+
+
+  2.122 Revisionenliste Mauszeiger 
+
+Einige Units haben inzwischen eine lange Liste von Revisionen, zu lang für die Revisionenpane. 
+- Liste auf einer Zeile, vorne abschneiden, aktuelle Nummer rechtsbündig. : -wrap none -- ok 
+
+Mauszeiger Versuch im Versionenfenster: ShowVersions . Zeiger ändern bei Enter und Leave von Tag.
+
+
+
+
+  2.123 Infopane aktuelle Seite markieren 
+
+Links nicht markieren bei Mausbewegung. 
+Bei ShowPage aktuelle Seite markieren in Infoview und Revisionview.
+do. bei ShowVisited. Das genügt.
+-- erst alte Markierung löschen: die vorhandenen go$id Tags entmarkieren. Muss mir nicht merken was vorher markiert war. Ein schneller CPU macht das Programmieren einfach!
+Back macht jetzt Spass, Wirkung in Visited verfolgen.
+
+
+
+
+  2.124 Button-Mauszeiger 
+
+Cursor in Buttonbar im Freien xterm (Text), auf den Buttons arrow. 
+? Find aktiv = relief sunken, inaktiv = flat -- komplex, entweder immer flat oder sunken, vorerst flat -- sunken ist technischer, flat 'eleganter'
+
+
+
+
+  2.125 Lineartext 
+
+Schrift kleiner -- ok
+Comment gerade (nicht kursiv)
+"Chapter  ", "Section  "
+Markierung später feilen.
+? Zeilennummern -- wären schön, aber ist grosser Eingriff?
+	Bsp. StreamCode macht 	$ltext insert end [GetPage $u source]\n, setzt also den ganzen Code mit allen Zeilen ein.
+	Wie kriege ich da auf jede Zeile eine neue Nummer?
+Zeilenzahl HolonTest: puts [.lin.text index end] => 8309.0
+
+
+
+
+  2.126 Find&Replace 
+
+Felder mit Rahmen, bei langen Texten Grenze zeigen.
+
+
+
+
+  2.127 HolonT reaktivieren 
+
+
+
+
+
+
+  2.128 Leere Listen bewusstmachen / HolonH Run 
+
+Bisher wird nicht angezeigt, wenn eine leere Liste aktiv ist, also eine neue Seite dort hingehen würde. Die Oberliste bleibt markiert.
+Also die Markierung der Oberliste wegnehmen. Erst selection clear (blau entfernen), dann mark (grau).
+Für Chapters und Sections.
+ 
+--
+
+HolonH - Run ruft  ..sourcedir/web/  ohne name = homepage, wenn die aktuelle Unit keine Webpage ist 
+
+Command+m == CopyUnit
+
+
+
+
+  2.129 Buttonbar Clear links? 
+
+Clear und Find rechts machen Sinn. Lieber eine Cleartaste erfinden. -- Habe ich ja: Ctrl+f = Start Finding, Cursor in Find
+
+
+
+
+  2.130 Commit mit Fossil, Backup & Changelist obsolet. 
+
+In Commit:  	exec fossil commit -m $version  -- 	Fossil ist fest verdrahtet.
+
+Und wenn kein Fossil vorhanden, also Repo nicht eingerichtet? 
+Exp. HolonT Commit => Meldung "Applikationsfehler: fossil: not within an open checkout"
+
+Neue Chapterfiles und Webfiles müssen gemeldet werden, damit sie in den nächsten Commits dabei sind. 
+Hierzu vor jedem Commit noch "fossil add . " machen. Nehme an dass jeweils alle Files im Verzeichnis überwacht werden.
+
+Wenn Files von Hand gelöscht werden, muss ich das Fossil mitteilen: fossil rm <file>
+
+Das bisherige Backup kann entfallen. ::  Backup entfernt aus Commit und Menu Configuration.
+
+Menu Configuration neue Option Fossil, öffnet den Webzugang zum Repositorium. - Fehlermeldungen erscheinen im Terminal. 
+Funktioniert nur wenn das OSX Terminal aktiv ist.
+
+Alte Liste der Revisionen (Changelist) herausnehmen. Ist ersetzt durch die Logpages. 
+
+Holon auf Fossil einstellen.
+
+
+
+
+  2.131 Backup, Changes obsolet 
+
+Clear = Ctrl+Space 
+
+Backup entfernen 
+
+Changes entfernen -- Feld mit den Revisionsnummern und Kommentaren eingegeben in der Revisionszeile im Statusfeld.
+-- Changelist bleibt, das ist die Liste der Versionnummern einer Page.
+
+
+
+
+  2.132 WriteChapter universal 
+
+File-Extension   				Aktion
+-----------------------------------------------
+keine				keine 				-- internes Dokument, Revisionen
+.txt				Text und Code   				-- Textfile
+sonst				Code    				-- Source 
+
+Text schreiben ist gar nicht so leicht. Der PageText ist Tcl-Text-Widget Code. 
+Muss den Text Printen. Aber der Printer ruft zum Schluss einen Editor. 
+Oder einfach die Tags entfernen mit RemoveTags. - Das geht.
+ 
+ !Print erzeugt Files im Projektverzeichnis, die in Fossil aufgenommen werden. Darf sie nicht entfernen.
+Oder: fossil rm *.txt
+ 
+Chapterfiles im Textview ansehen, aber auch in einem externen Editor ! 
+:: Man editiert in Holon und hat den konventionellen Editor für eine lineare Darstellung verfügbar. 
+
+HolonH mit neuem WriteChapter, also nicht überschreiben und inaktivieren. 
+Sourcetext in Chapterfile für Fossil. Dazu Chapters mit Extension .web führen. 
+
+do. HolonT. Gibt Sourcefiles .fth und .tcl.
+
+
+
+
+  2.133 Fossil ff 
+
+Fossil rufen von Configurationmenu über Commandfile fossil.com im Projekt. 
+fossil.com individuell für Projekt wegen Directorywahl.
+Bsp. für HolonTest: 
+	cd ~/holon/holontest   
+	fossil ui &
+Oder fossil.command im Finder rufen.
+
+
+
+
+  2.134 uChanges=edits 
+
+E: Bei jedem Save die vorige Page speichern, wie OldPages, aber für die aktuelle Revision:
+
+- Neuer mkView Edits 
+	-- mk::view layout wdb.edits {link text source type test name}
+
+- Bei Commit wird Edits geleert  (sonst wächst hdb rasant.)
+	--  mk::view size wdb.edits 0
+	-- E: hdb darf wachsen, kann Edits speichern für frühere Revisionen.
+
+- Neues Feld in Pages: edits
+
+- Beim ersten Edit nach Commit wird Oldpage geschrieben und edits-Feld geleert.
+	-- SaveText:  	if {[TextChanged] && $version!=[lindex $changelist end]} {	...  SetPage $id edits "" ...}
+
+- Bei weiteren Edits der Page wird die vorige Seite in Edits gespeichert und der Zeiger in das edits-Feld gelegt.
+	-- SaveText:  SaveEdit $id  - wie StoreText  Felder title text source
+
+- ShowVersions zeigt die edits-Liste, mit aktiven Tags wie Changelist. 
+ 
+- Ein Click auf einen edits-Eintrag holt die Seite.
+
+- Die gezeigte Seite wird gesaved.
+
+--
+
+!! Es ist viel Arbeit. -- Und ich habe inzwischen diese Seite ca. 20 Mal verlassen, das gäbe 20 Edits in der Liste, ist das sinnvoll?
+Scheint mehr Aufwand als ab und zu Texte beim Testen zu zwischenspeichern.
+
+E: Edit saven bei Load. Dann war es ein wichtiger Edit.
+
+
+
+
+  2.135 Controlpane Buttons Fields 
+
+Back Button ist obsolet, Visited Info genügt, direkter Zugriff. 
+Find und Replace anschreiben. 
+Button markieren wenn berührt. Sonst zu cool? +: Zeigt Revisionnummer als Button. 
+	- Nein! macht nervös, lieber cool. Cursorwechsel zu Pfeil genügt. - E: Farbe eine Spur heller, weiss -- testen
+View => Tree/Lists ? schon probiert und abgelehnt. -- trotzdem mal eine Zeitlang testen.
+Edit wegllassen, nur New und Load? -- testen. 
+--
+Nach Test 2.136 gefällt:
+View  New  Load  Clear  |  Commit  2.123                 Find _________  Replace ___________
+
+
+
+
+  2.136 Housekeeping 
+
+SetupMenu, ButtonMenus 
+Configurationmenu ohne Commit 
+? FTP raus -- ist eigene Revision! 
+? Book lassen oder raus. -- eigene Revision! 
+Packbuttons update auch in HolonH, T
+
+
+
+
+  2.137 Fonts 
+
+Size 14 ist deutlicher, size 15 too much. Size Info, Tree, List gleich. 
+Dagegen wirkt Size 13 (bisher) miniatur. Auch lesbar.  => Mit Size 14 testen. 
+Fixed = Monaco, Grösse 12 ist ok also Size-2. 
+Tree und Listen kleiner, dafür in Verdana, macht sie etwas 'wichtiger'.
+AdjustSize in InitHolon, d.h. Grössen werden hier bestimmt.
+--
+Grössen bleiben wie zuvor, Schrift Verdana für alles ausser Code, Monaco für Code.
+--
+Der Monaco Code hat in Textmate etwas mehr Zeilenabstand, das macht ihn besser lesbar. Das kann Holon auch: CodePane: -spacing3 1
+
+
+
+
+  2.138 Fonts, Info 
+
+Fonts - weiter probieren. Fixed = Verdana ist besser lesbar als Courier und Monaco. Also fixed = Verdana 14 
+Alle Fonts sind gleich. Testen. 
+
+Info - Bei Find ist Visited unten. - Macht Sinn. 
+? Found-Titel: "Found" genügt? der Suchstring steht gerade darüber im Find-Feld. - Nein besser zeigen was gefounded
+
+
+
+
+  2.139 (Info Revision(s)) 
+
+Info - Normal aktuelle Revision zeigen. 
+Rechter Mausclick auf Rev.Nummer holt die History.
+
+
+
+
+  2.140 Info Revision(s) 
+
+Info - Normal aktuelle Revision zeigen. 
+Rechter Mausclick auf Rev.Nummer holt die History. 
+
+Sashposition beibehalten. Funktioniert, braucht Pause für das Setzen des Sash, der Sash springt dann.
+
+
+
+
+  2.141 Info Found/Visited anders 
+
+Es gibt eine einfachere Lösung: Visited je in view(info) oder view(rev) schreiben gemäss infomode found. Dann fällt die Sashsache weg. 
+Muss nur den Infomode rechtzeitig setzen. 
+IRRTUM - Die erste Lösung ist besser. Visited umschalten zwischen view(info) und view(rev) kollidiert mit dem Auffrischen von Find.
+Zurücksetzen!
+
+
+
+
+  2.142 Commit in Menu 
+
+Habe mehrmals aus versehen Commit gedrückt. Sollte indirekter sein?
+E: Nur in der aktuellen Logpage Commit möglich. - Muss also sehen was geschehen ist und ob das ok ist oder noch Text braucht
+- Commit aus der Buttonbar nehmen: Buttonbar/Kontrollleiste ist klarer.
+- "Revision ####" als Button?: ok, besser als "Rev. ####"
+- Clear vor Revision?: ok, dann auch "Rev. ####" möglich, aber 
+      View New Load Clear | Revision 2.094    gefällt 
+- Commit in Configurationmenu. wie früher. ok 
+?	- erst zur Logpage gehen,	- wenn in Logpage, committen 
+- ContextMenu auf Revisionsbutton
+
+
+
+
+  2.143 Fossil ff 
+
+Hatte sich ein "automatisch gesichertes" File aus Finder in Fossil gelegt. Das nicht im Verzeichnis existiert, das es transient von Textedit erzeugt war. Muss es löschen (fossil rm ...) um weitere Commits zu machen.
+Kontextmenu im Rev.Button funktioniert.
+
+Commit enthält 	
+	exec fossil add .
+	exec fossil rm *.txt
+	exec fossil commit -m $version
+weiss nicht ob es das wirklich macht. 
+.txt Files sind noch da. - Werden erst beim nächsten Commit gelöscht?
+
+
+
+
+  2.144 RevisionMenu 
+
+Menu mit Revisionshistory. 
+Commit ohne Versuch, txt-Files nicht mitzunehmen: 	fossil add . und fossil rm *.txt
+Aber neue Sourcefiles zufügen: fossil add source/*.* -- vorhandenes wird nicht dupliziert.
+
+
+
+
+  2.145 HolonH Sourcefiles 
+
+Bisher keine Sourcefiles geschrieben in source/
+Aber Skript und Stilfiles, .css und .js, in web/
+Neu Sourcechapter .web nennen und in source/ schreiben. 
+
+Also in HolonH wird bei Save = Load je nach Extension des Chapters
+	bei .css und .js ein Sourcefile in web/ gelegt
+	bei .web ein Sourcefile in source/ gelegt und die Worte geladen
+	bei .txt ein Textfile in source/ gelegt
+	bei "" (keine Extension) nichts gemacht.
+
+
+
+
+  2.146 Back als Button-2 in Buttonbar 
+
+Back als Button-2 in Buttonbar.  Nein: = Clear
+Backbutton wieder einsetzen, vermisse ihn.
+
+
+
+
+  2.147 Info Found unten 
+
+Das Wechseln von Visited verwirrt mehr als es freut Foundworte oben zu sehen.
+
+
+
+
+  2.148 Für Screencast 
+
+?Font Monaco für Source. Commandzeile Verdana (Buttons und Find&Replace Titel). 
+Syntax Color an Textwrangler angepasst, Farben etwas blasser wäre besser.
+Nein: bleibe bei Verdana, ist Holonfont. Doch: muss länger Monaco testen. 
+
+FTP Repository aus Setup nehmen. 
+
+Titlepane wieder kürzer. 40 Zeichen sollten reichen. 
+
+Syntax Färbung Name nicht betonen oder doch, Farben von Textmate Dawn übernehmen. 
+Etwas halbwegs Vernünftiges gefunden. 
+Farben mit OSX DigitalColor Farbmesser erfassen. 
+
+?Text Font Lucida Grande: nein, zuviele Fonts, Verdana ist ruhiger.
+
+
+
+
+  2.149 Fonts an Source anpassen 
+
+Source ist relativ zu klein gegen Liste und Tree und Info. Commenttext Grösse beibehalten.
+Normale Grösse in Preferences ist 12 pt = Listenfonts. Textfont und Buttons haben 13pt.
+Ich möchte es gut lesen können.
+
+Fonts umbenennen, fixed => code, default=>text,
+
+
+
+
+  2.150 Fonts und Farben und Buttons 
+
+Cancel und Load (Editzustand) verlieren ihre Farbe beim Hovern.
+
+
+
+
+  2.151 Source reinigen - Model 
+
+FTP entfernen. Viel komplizierter Kram kommt raus.
+
+
+
+
+  2.152 Source - StructureView 
+
+Abstände links egalisiert, endlich. Da waren also noch Worte von Version1.
+
+
+
+
+  2.153 Source - no book - kein Bock 
+
+Die Book Variante wird nicht benutzt. Kann auch mit Textchapters realisiert werden. 
+RTF Print löschen, ist nicht korrekt. 
+CreateBookScript => CreateImportScript - für Export/Import 
+
+DB base: mode obsolet 
+mode brauchen für Chapters: SetBase [Chapter] mode text/source - SetDBLayout - CreateStructure
+
+
+
+
+  2.154 Source - Pageview 
+
+Testpane muss vorhanden sein - unsichtbar - weil der Inhalt (jetzt "") mit Oldpages gesaved wird.
+
+
+
+
+  2.155 Source - Mainview 
+
+
+
+
+
+
+  2.156 Source - Browsing 
+
+u.a. Leerraum links korrigieren, erste Version ist immer noch vorhanden, Leerzeichen statt Tabulator. 
+iActiveUnit, iLastUnit einsetzen in Forthmanier, war nicht überall. Source wird einfach VIEL klarer. 
+Link-Erkennung ausgeweitet auf Delimiter "," und "."
+
+
+
+
+  2.157 Source - Editing 
+
+UpdateName (Titel in Liste sofort ändern) endlich aufgeben, ist zu elegant.
+DoubleClick ?
+bind . - Befehle zusammenfassen in BindGlobal, ersetzt BindNew und BindSearch
+Revisionen neue Section ab Juli 2012
+
+
+
+
+  2.158 Source - Develop 
+
+setup(search) obsolet, immer in Text und Code suchen. Also auch search Attribut in Base weglassen. 
+
+Variable sourceversion wird von sourceversion.tcl eingelesen beim Start. Warum nicht aus Database übernommen? Weil es die Source ist des Hosts, nicht des Targets. Die Datenbank enthält das Targetprojekt. sourceversion == hostversion
+
+uChanges Versuch weglassen
+
+
+
+
+  2.159 Source - Interfaces 
+
+Print ASCII ok aber: Viel Platz zwischen Units, ? eine Zeile weniger: Nein, zwei Zeilen ist klarer, und wir würden kaum Papier sparen. 
+Print RTF ist obsolet. Halbbatzig, tut in OSX nicht. 
+
+Clearall auch mit Button-1 in Controlpane. 
+
+Monitor und Umbilical Connection geschliffen, Nomenklatur.
+
+
+
+
+  2.160 Source - Holon 
+
+codecolor ist "syntax coloring" , Notlösung statt neues symbol, aber name passt doch! 
+Test auf #ffffff ist überholt seit 1.284, nehme das raus.
+
+
+
+
+  2.161 Source - Webstuff HolonH 
+
+von HolonT Teilen gesäubert.
+
+
+
+
+  2.162 TclForth 
+
+Kleiner Interpreter zum Anfang - Forth beginnt mit QUIT 
+Analyse der Anpassungen von HolonT Code an TclForth:
+- SetPage, GetPage, Unit, id, => Wordlist
+- GetSource => Sourceblöcke vom File lesen. 
+-- viel mehr nicht, hoffe ich
+
+
+
+
+  2.163 TclForth Routinen 
+
+Laderoutine, Unitsource holen. 
+Testen mit tkCon anstelle der Console von HolonT, weil da ist der HolonT code drin und ich weiss nicht was da eventuell mitgebraucht wird, was in TclForth nicht vorhanden ist. 
+
+- TkCon in Holon Verzeichnis starten.
+- tclforth.tcl aus Holon/source laden mit  source tclforth.tcl
+- LoadForth forth.fth
+
+
+
+
+  2.164 TclForth Units compilieren 
+
+Holon Units ersetzen durch Array units() 
+SetPage, GetPage, GetUnit werden Zugriff auf Array. 
+Testen: Hole Sourcefile _Forth aus HolonT zu holon/source, wird forth.fth
+Textmate: Anfangs Compiler: Worte löschen.
+
+TkCon starten in holon/holon
+cd source
+source tclforth.tcl
+LoadForth forth.fth
+-- Der Forth Source ist vorhanden fertig zum Compilieren. 
+Tcl source wird direkt in Tcl geladen
+Definer Tcl ist überflüssig.
+Proc wird direkt geladen. Name wird nicht gespeichert. 
+Code compiliert Stack, schreibt Eintrag in wordcode.
+Colon vorerst ohne Locals, vorbereitet
+Erst noch Compilers bilden. ok. Legt compcode in wordcode(name)
+Message gibt es auch noch, machen vorerst nichts.
+do. Objecttype
+alle Definer tolower
+Damit ist alles definiert aber : ist nicht getestet.
+File mit : Definitionen machen: colon.fth
+Leerzeilen müssen wirklich leer sein: auf Leerzeichen testen, damit sie als Worttrenner gültig sind!
+-- string trim und EmptyLine hilft, jetzt kann beliebig Leerzeug in einer Zeile sein.
+code muss den Code noch in Tcl laden.
+Alles paletti.
+
+Testprozedere eleganter: TkCon starten mit Laden von tclforth.tcl in Verzeichnis TclForth, 
+dort auch Testcode colon.fth u.a. und Ladescript tftest.tcl
+
+Also code : und Tcl Code werden geladen.
+Und ; ? Akzeptiert mit "compiler ; "   (ohne Aktion)
+End-Code braucht es nicht, wäre scheusslich unelegant.
+
+
+
+
+  2.165 TclForth Objekte 
+
+Fliege wieder auf den level rein. #0 ist global. Fall default  {uplevel #0 {eval $comp(code)} 
+Objecttype variable compiliert. 
+
+! Tcl Code muss deklariert werden um zu unterscheiden von Definitionscode für Objekte. 
+Bsp.: 0 variable Var  muss als Forth Code compiliert werden: push 0, MakeObject, rufe instance Methode. 
+MakeProc, MakeTcl, 
+default Definer ist MakeForth 
+MakeMessage - Eintrag in wordcode mit "CompMessage $message" 
+Es geht vorwärts, sobald ich global wordcode einsetze...
+CompMessage nicht mehr aktiv, macht Fehlermeldung falls die Message nicht von einem Objekt gefressen worden ist. Also kein Prefix. Postfix ist in!
+> GetItem mit skip und scan könnte eleganter sein. Leerzeichen am Schluss hat Mist gebaut.
+> Und ) Klammer wird nicht erkannt, wenn es letztes Zeichen ist.
+GetItem mit regexp gebaut.
+
+TclForth exportieren in ein eigenes Projekt.
+
+
+
+
+  2.166 Dropbox Websites in Localhost öffnen? 
+
+Geht nicht. Localhost ist auf Verzeichnis Websites eingestellt. 
+
+TclForth => HolonTF
+
+
+
+
+  2.167 
+
+
+
+
+
+
+  2.168 Neues Projekt: Revisionpage & Fossil flag 
+
+Jetzt ist ein Fossil Flag in der Base, aber kann HolonForth selbst noch Fossil machen?
+Ja, mit SetBase fossil 1.
+
+
+
+
+  2.169 HolonH Defaultformat p 
+
+Der Text einer Seite besteht vorwiegend aus Paragraphen p. Dies als default nehmen, also statt eines Fehlers einfach p annehmen. 
+=> keine Fehlermeldungen, sondern ev. falsches Rendern der Seite. 
+? kann der Host p rufen, ausführen? simpel: 	appendcode <p>;	InsertText;	appendcode </p>
+TEST
+Es funktioniert, und macht Sinn. Bis jetzt.
+
+
+
+
+  2.170 Codefont / Dropbox Anpassungen 
+
+* Projekte in Dropbox Ordner Holonforth
+* Webseiten in Ordner Sites/<Website> = Appname -- bsp HolonWeb , Ego, Ivo
+* Pages mit MakeFile ablegen, set dir ~/sites/::appname/
+* Stylefiles mit WriteSourcefile ablegen, do.
+* DoRun ruft http://~wolf/$::appname/$name
+
+
+
+
+  2.171 Fossil, 
+
+
+
+
+
+
+  2.172 div 
+
+- Bei Exit die Fensterlage begrenzen auf den Hauptschirm - damit in Airbook sichtbar. 
+- Printfiles in /text/ legen. Bei Startprint /text/ bilden -- dann tut es in allen Versionen. 
+- HolonH Sourcefile speichern ohne  puts dir 
+- MakeXML für Magento
+- MakeCode für <?xml> Tag. Muss ganz am Anfang eines Files stehen. 
+- HolonH Treeview width 30
+- Oldpage auch Textpane kopierbar machen
+
+
+
+
+  2.173 div 
+
+Fossil ist noch aktiv in HolonMaster, aber die Anwendungen sind ohne Fossil, werden in Dropbox gelegt. 
+--
+MakeCodepage mit ExpandWebconstants
+-- 
+Button-1 shows Oldpage AND OldRevisions.
+-- 
+MakeCodepage ohne Leerzeile am Anfang 
+--
+
+
+
+
+  2.174 View(code) Offset speichern u.a. 
+
+Neuer Parameter offset im Pagerecord. 
+ShowCode schiebt Text um offset, wenn offset < 1.0 ist. 
+offset wird in altem Parameter cursor gespeichert.
+--
+$view(code) yview  liefert zwei Bruchteile (0 bis 1.0): Anteil Text offscreen am Anfang und Anteil sichtbarer Text 
+$view(code) yview moveto x  schiebt den Text so dass der Bruchteil x offscreen ist.
+--
+Es gibt schon den Parameter cursor. Kann als offset wirken. 
+cursor > 1.0 wird nicht verwertet, weil es kein Offset ist. Daher sind alte Seiten problemlos.
+Ausser OldPages, haben kein cursor Feld -- kein Problem, andere Lösung in ShowCode.
+--
+Fossil in Revisionmenu weglassen.
+--
+HolonH LoadAll bei Start
+
+
+
+
+  2.175 Find in Page 
+
+FindInPage 
+global found initiert zu 1.0 in ShowFoundText, inkrementiert hinter der aktuellen Fundstelle.
+Seite verschoben auf die Fundstelle.
+Nur Editing. In Text und Code.
+Control-F = Ctrl+Sft+f = Find in Page.
+tk::TextSetCursor $page $found  -- setzt Zeiger auf Fundstelle
+
+
+
+
+  2.176 Tabs einsetzen 
+
+Tab einsetzen am Anfang einer Zeile:
+eventuelle Leerzeichen vor dem Text Löschen
+dann TAB einsetzen. 
+--
+Tab Taste erfassen: 
+	bind $view(code) <Escape> {if {[Editing]} {SaveIt}}
+--
+Provisorische Lösung:
+Find " "  - ein Leerzeichen, zeigt alle Leerzeichen am Anfang.
+Replace ist leer (nimmt leider kein Tab an)
+Am Anfang der Zeile klicken und Tab(s) einsetzen.
+--
+bindTabCode: Versuch alles mit Tab zu machen. 
+Also bei Tab den Leerraum löschen ausser vorhandene Tabs, und dann einen Tab zufügen.
+Komplex wegen den Randbedingungen (auf aktuelle Zeile begrenzen, und so)
+--
+Besser: Leerraum markieren, löschen durch Tab einsetzen
+weniger elegant wenn vorhandene Tabs auch gelöscht werden
+aber sicherer.
+
+
+
+
+  2.177 div. 
+
+Button Create weglassen. 
+RunHolonH Treepane nicht verbreitern, bleibt bei 20 
+Codewindow in Viewmenu
+
+
+
+
+  2.178 Find in Page 
+
+Routine ausbauen. 
+Find in Page auch bei Click im Find Entry. Nicht gut weil Focus muss im Codeview sein.
+Find zu letztem Fundstück gehen.
+
+
+
+
+  2.179 div 
+
+Commit ohne Fossil
+--
+Auch php Files auffrischen
+--
+Bei Commit die hdb speichern für Backup in Dropbox.  
+- mk::file commit wdb 	
+Funktioniert nicht. Muss das System schliessen, damit die hdb als neue Version erkannt wird.
+--
+holon.mon in ~/Wolf/ legen.
+--
+Button Clear einfügen, wenn kein Run, Bsp HolonS - Zeile ist harmonischer
+-- 
+ViewMenu: CodeWindow nur in HolonH
+
+
+
+
+  2.180 Controlpanel 
+
+Run-Button bei Crosscompilern HolonH, HolonTF
+Clear-Button bei Master Holon, HolonS
+Revision => Rev.
+Find&Replace Felder 14 lang Font Courier
+Codefont Monaco einstellen in hdb
+
+
+
+
+  2.181 Datum zeigen bei Revision 
+
+Leider kompliziert da ich nicht von der Revisionsnummer direkt auf den Record und damit auf das Datum zugreifen kann.
+Müsste durch alle Records durchsuchen mit der Rev# und dann noch die eigentliche Revisionsseite herausfiltern aus den geänderten Seiten.
+
+
+
+
+  2.182 git einbauen wie fossil optional 
+
+
+
+
+
+
+  2.183 Runfile für RunTest in Dropbox 
+
+In HolonTF testen.
+File holon.runs testen bei Start und abbrechen wenn es existiert.
+File holon.runs bilden und löschen bei Quit
+- EndSessionTF
+- RunHolonTF
+- SetSourcedirTF
+
+=> HolonTF startet in Airbook obwohl HolonTF in iMac läuft und holon.runs existiert !!
+Es funktioniert nicht. -- Funktioniert doch wenn der Source stimmt. Dumme Fehler.
+--
+Allgemein einführen für alle Systeme.
+
+
+
+
+  2.184 Running? algemein 
+
+Running? Doppelrun-Test in Holon Master einbauen für alle Systeme 
+--
+Neues Wort Running? 
+- testen in TF: ok
+- Running? in alle SetSourcedir
+- Altes Running? wird online?, testet ob eine Monitor läuft im Target
+- RunHolon wie vorher
+- EndSession allgemein mit  	file delete $::runfile
+--
+In HolonH wird zuerst die DB gebildet weil dabei auch appname generiert wird was wir brauchen für das Webverzeichnis. Und dabei wird auch der alte Doppelruntest ausgeführt. Nachher kommt der neue Test, falls der alte nicht geht weil das System auf einem anderen Rechner geöffnet wird. Genau so wie es sein soll.
+
+
+
+
+  2.185 Stil 
+
+Texte neu stylen, Tree und List und Info weniger stark
+Text mehr Zeilenabstand, grössere Schrift für HolonWrite.
+und so. etwas eleganter.
+
+
+
+
+  2.186 HolonH ReloadPage 
+
+Bisher wird SendTarget überschrieben mit HolonH Version. Das gibt ein Problem, das ich nicht verstehe.
+Lieber ein eigenes Wort erfinden und in Page einbauen. Nein, nicht in den Definer page sondern in LoadH.
+LoadUnit ruft LoadH egal ob eine Page gebaut wird oder ein ColonWort. -- Damit wird der Browser "Google Chrome" upgedatet.
+--
+Flag ispage setzen in MakeFile.
+--
+Page is MakeFile !
+
+
+
+
+  2.187 Sites Ordner Problem 
+
+HolonH - Subordner von sites/ frischen das Timestamp nicht auf bei einer Korrektur der Files. 
+Muss den Finder relaunchen (alt+cmd+esc). Oder OSX neu starten. Andere Ordner haben das Problem nicht.
+
+
+
+
+  2.188 Editor	Ctrl Tasten: bold italic normal 
+
+Ctrl-b == TextBold
+Ctrl-i == TextItalic
+Ctrl-space == TextNormal 
+
+Ctrl-F == Find (next) in page
+
+
+
+
+  2.189 HolonT Sachen 
+
+Forth command line Teil einsetzen 
+erscheint in der Titelleiste. -- ws so einmal arrangiert.
+
+
+
+
+  2.190 HolonW 
+
+HolonW(rite) Sachen
+
+
+
+
+  2.191 HolonS 
+
+Chapter Holons.tcl
+Buttonbar mit Edit statt Load
+"Clear" Button weglassen
+Bei Vergrössern eines Fensters ohne Code kann der Trennbalken sichtbar werden. Update? - Kompliziert, lassen.
+--
+URL erkennen damit Click möglich ist ohne den Editor zu öffnen. Kompliziert => URL weglassen. E: Edit mit Doppelclick zurück. Tests abwarten.
+--
+Neue Unit in eine leere Liste einsetzen - gut überlegen. Ist nicht dringend. Neu einsetzen von Deleted. Und dann weiter.
+--
+TextMenu (Markieren): Ohne URL, ohne IMG
+--
+Info "Edited Rev. 2.191"
+--
+Info Pane etwas schmäler?  Nein, Problem nur wenn die UI zu klein. - Muss sie expandieren, auch bei Start!
+CreateStructure {} {
+		mk::row append wdb.base ...		geometry "1100x700+50+50"
+--
+Setup/Preferences - Safe delete weglassen.
+
+
+
+
+  2.192 HolonS ff 
+
+Test. Edit mit Doppelclick: 	bind $view(text) <Button-1> {Click $view(text)} 	=> <Double-Button-1> für Title, Text, Code
+=> ja, ist besser. Muss gezielt in den Editor gehen. Kann ein Wort im Text suchen mit Rechtsclick ohne den Editor zu öffnen.
+- warum markiert der Doppelclick den Leerraum bis zum Mauszeiger? Ist eine Tk-Text Sache. Vermeiden mit break. Aber dann wird der Cursor nicht gesetzt am Ort wo man clickt. => lauter komische Sachen. => zurück zu Edit mit Einzelclick.
+
+Bold, Italic mit Control-b,i ? - nein tut leider nicht. DOCH: mit break dahinter.
+--
+Aber: die Maus muss darüber stehen damit das tut, geht es auch anders? ja: range bestimmen mit: tag range sel
+
+
+
+
+  2.193 holons.runs nicht im Demo 
+
+
+
+
+
+
+  2.194 Anzahl Elemente zählen 
+
+Elemente in About zeigen.
+AnzahlElemente berechnet abgeleitet vom Suchen der letzten Unit. 
+Glücklicherweise beginnt die Suche beim ersten Kapitel und so war es leicht zu realisieren.
+Wir bilden einen String und liefern ihn an das Aboutfenster zum Einsetzen. 
+--
+Revisionen nicht mitzählen.
+
+
+
+
+  2.195 HolonS nur Apps 
+
+Keine Kits für OS X. Eventuell Linuxspiele. 
+Protected. 
+--
+Starpack: main.tcl:
+package require starkit
+starkit::startup
+set dir $starkit::topdir
+cd $dir/app-holons
+source holons.tcl
+
+keine Statusvariable holonapp, holonkit 
+
+Appname finden:
+OSX: "tk appname" funktioniert nicht (liefert main.tcl)
+glob *.app liefert HolonS.app => daraus db HolonS.hdb bilden 
+--
+HolonCode hat das genau so gemacht. => ProjectDB
+
+
+
+
+  2.196 Listen beschriften 
+
+Es ist wahrscheinlich klarer für die Casts, wenn die Listen beschriftet sind.
+Chapter -- Sections -- Units -- State
+gelobt seien die Vorbereitung mit Listframes.
+Bei der Infopane muss der Text nochmal ersetzt werden, damit die Leerzeichen akzeptiert werden. 
+--
+Eigentlich ist es klarer so.
+Nur die Menu Buttons sind etwas verloren durch die unruhige Unterline. Abwarten. 
+Test: Listframe text auf weissem Grund: Command Pane steht etwas mehr heraus 
+aber: Titel kann mit Eintrag verwechselt werden, ist zu ähnlich 
+Schrift weniger schwarz: #777 ok
+Linie weglassen: -bd 0 - ok aber fast zu dezent. So lassen 
+Treeview mit leerer Zeile, 
+dazu eine leere Titelzeile in Pageframe einsetzen. In Listviews die Titelzeile nicht zeigen. 
+--
+Starten in Listview - Treeview kann den Pagetitel noch ncht setzen. 
+--
+LinearText aktuell=hellblau
+
+
+
+
+  2.197 Listen ohne Titel, HolonCode 
+
+Rev. 2.196 rückgängig machen. St. Exypery glauben! 
+- Auf den ersten Blick sind die Titel befriedigend, man sieht was die Listen enthalten, nur weiss man noch nicht was Chapter, Sections und Units sind. Und wenn man es weiss sind die Titel überflüssig. Auch ziehen Andere vielleicht eine eigene Klassifikation vor. Macht das System kleinlicher, weniger sportlich.
+--
+Getan. Gefält dem alten Entwickler besser. Kein Schnickschnack. 
+--
+HolonCode anpassen
+
+
+
+
+  2.198 Infopane Teiler 
+
+Die Infopane teilen beim Titelbalken. 
+.info.panes sash place 0 0 163
+
+
+
+
+  2.199 Vorbereiten für Casting 
+
+Schriftgrössen korrigieren auf OSX El Capitan.
+
+
+
+
+  2.200 #Elemente, Doppelstart, 
+
+Anzahl Elemente inklusive Revision, sonst Verwirrung wenn es nicht stimmt mit der Anzeige.
+
+Doppel-Start-Schutz-Anzeige: Im Starpack stimmt die Appname nicht. Bei OSX merkt der Finder wenn wie App schon läuft und öffnet das betreffende Fenster. Bei WIN (.exe) kommt die Fehlermeldung, neu ohne $appname: "System is already running". 
+! es gibt ein eigenes OpenDB für HolonS 
+--
+Der holons.runs File Schutz ist sowieso übetrieben, stört mehr als er nützt. Schalte ihn generell aus.
+
+
+
+
+  2.201 .fml Files importieren 
+
+Konventionelle Files importieren.
+.fml - für konventionelle Files - ImportSource
+.hml - für Holon DB - ImportChapter
+
+Tags werden tolower gewandelt, Chapter == chapter.
+<chapter> ist obsolet, wird bei Import automatisch gebildet - Name gleich Filename
+<section> name  bildet eine Section und eine Unit mit diesem Namen.
+Text bis nächstes Tag wird Source von Unit
+
+
+
+
+  2.202 .fml Files Struktur 
+
+ImportSource Feinheiten 
+
+.fml File Struktur 
+<section> am Anfang des Files bsp. "File Class"
+<unit>
+<unit>
+<unit>
+<section> 
+<unit>
+<unit>
+<section> 
+<unit>
+<unit>
+<section> 
+<unit>
+<unit>
+<section> End of File
+
+
+
+
+  2.203 Bei Start Sourceversion.tcl schreiben 
+
+
+
+
+
+
+  2.204 CLF Source Text auf 72 Zeichen pro Zeile begrenzen 
+
+Für Usenet Meldungen sollten die Zeilen <= 72 Zeichen lang sein.
+zu komplex für mich jetzt. Lieber in TclForth machen.
+Andererseits kann man schön schreiben im Source Panel und gerade kontrollieren was passiert. -
+Und die Begrenzung kann allgemein im Source wirken! Fest eingebaut.
+
+Zeilen-Arithmetik ist schwierig, lieber linear arbeiten in einem Textbuffer.
+
+
+Bei 0 beginnen und spätestens bei 72 ein \n einsetzen 
+wenn es vorher keines gab. 
+Nach \n wieder bei Null anfangen.
+
+set buf [$pane get 1.0 end]  
+set len [string length $buf]
+set char [string index $buf $i]
+for {set i 0} {$i<$len} {incr i} {
+	set char [string index $buf $i]
+	if {$char ne "\n"}  {puts -nonewline $char}
+} 
+
+set i 0; while {$i<$len} {
+	set char [string index $buf $i]
+	if {$char ne "\n"}  {puts -nonewline $char}
+	incr i
+} 
+
+set i 0; while {$i<$len} {
+	set char [string index $buf $i]
+	puts -nonewline $char
+	incr i
+} 
+
+s. 2.205
+
+
+
+
+  2.205 CutLines auf 72 Zeichen 
+
+Es funktioniert. CutLines rufen mit <Ctrl-U> je in Text und Code Pane
+
+Text auslesen in Buffer, bearbeiten und zurückschreiben in die Pane. Der Record wird also verändert.
+
+Kann auf alle Texte angewendet werden. Z.B. kann eine CLF Meldung in das Sourcefeld kopiert sein inklusive Referenzmarken ">>" und ich schreibe im Comment/Textfeld die Antwort und setze sie nachher an den jeweiligen Stellen im Sourcefeld ein. Das Sourcefeld ist meine CLF Antwort.
+
+Shortcut für die Signatur <Ctrl-W> 
+"
+--
+Wolf Wejgaard
+http://holonforth.com
+"
+
+
+
+
+  2.206 .fml mit <Chapter> 
+
+Filename ohne .fml wird nicht Chaptername, 
+weil wir auch Verzeichnisse im Namen haben möchten.
+
+Der Chaptername wird also wieder mit <Chapter> dir/name gebildet - 'dir' ist optional  
+Text bis <Section> wird Chapter Text. - Kommt nicht in Sourcefile.
+
+Neue Comment Tags: 
+- //<chapter>  bzw //<file>, do. //<section> und //<unit>
+- regexp anpassen
+- Länge der Textstücke anpassen -- (string range $line 10=?? end])
+
+
+
+
+  2.207 Oforth 0.9.25 \ Import-.of 
+
+Kommentarzeichen sind jetzt Forth "\"
+Damit lauten die Zeilen mit den Tags:  
+\ <File>  name     
+\ <Section> name
+\ <Unit> name   oder  \ <Word> name
+ 
+ImportOforth 
+ohne Tags
+Tags im Browser sind hässlich. 
+
+WriteChapter => WriteOFile  schreibt in /oforth
+mit Tags - also Tags erst beim Schreiben der Files zufügen
+
+OpenWriteOFile 
+schreiben in /oforth statt /source 
+Im dir-Path  "source" ersetzen durch "oforth" mit regsub
+
+WriteOSection
+erste Unit nicht schreiben, wird beim Import von Section erzeugt
+
+
+
+
+  2.208 Running?, Titellänge 
+
+Running update alle 60 sec, ev. warten bis neustart 90 sec, falls Jitter beim Update
+Grund: Dropbox speichert beim Update .hdb wieder neu - das gibt eine lange History im DB Speicher. Dort ist genug Platz, aber du musst lange grübeln, bis du zu einer früheren Sitzung zurückgekommen bsit. Bisher 12 Versionen pro Minute!, jetzt 1/min.
+
+
+
+
+  2.209 HolonSO Version 
+
+HolonS für Oforth.
+--
+/source/ wird /oforth/ 
+- SetSourceDir klar
+- ProjectDB - aus OpenDB genommen in HolonS
+- ImportChapters - nicht in Funktion, Import Project Sache, do. CreateImportScript
+d.h das sollte alles sein 
+--
+ImportOFile mit Markup im Comment
+--
+WriteFile wie jedes andere
+
+
+
+
+  2.210 HolonSO keep Import Tags 
+
+Importtags im Kommentar behalten
+
+
+
+
+  2.211 HolonSO Syntax Keywords 
+
+Die Keywords für Oforth. 
+--
+Syntax Sprache im Base setzen für das Projekt ? - NEIN hartcodiert für Oforth
+
+
+
+
+  2.212 HolonSO Tags / Case sensitive 
+
+Der Source wird klarer ohne die Tags. Und wenn sie niemand braucht ist das wohl besser so. 
+--
+Die Tagzeilen hatten im HolonSO File einen Space nach <section> verloren.  
+--
+Oforth is Case Sensitive
+- GetUnit: -globnc => -glob
+- SearchList: -globnc => -glob 
+- ShowFoundText: -nocase weg
+
+
+
+
+  2.213 HolonSO Files mit Tags 
+
+Bensusan möchte die Tags mitgeben im Source. ok.
+
+
+
+
+  2.214 HolonX/Code 
+
+9.4.2017 - Versuch HolonS als HolonX a la HolonCode mit Lizenz zu vertreiben - aufgegeben
+
+
+
+
+  2.215 fossil und git entfernen 
+
+
+
+
+
+
+  2.216 Holontalk 
+
+Die Basisversion von Holonforth. 
+Vor allem ohne Revisions-Funktionen.
+
+
+
+
+  2.217 Holontalk = HolonSL ff 
+
+Bug - can't read "setup(version)": no such element in array
+    while executing
+"SaveSetupVersion	 $setup(version)"
+    (procedure "EndSetup" line 3)
+    invoked from within
+"EndSetup" 
+- setup(version) ist die aktuelle Version, wird gesetzt bei AskSetup - in Holontalk ausgeklammert, weil keine Version verwaltet wird
+=> EndSetup ohne SaveSetupVersion.
+ 
+- Microview +- mit kleineren Stufen? Nein: es sind schon nur 4 Stufen Unterschied!  Lieber 2 Stufen!
+- Import.of raus 
+- "clear" raus aus Buttonbar 
+
+- Project Menu = ImportChapter / ExportChapter / Quit  -  Holon markiert die .hml Files - 
+"Chapter" weil auch Section oder Unit aktiv sein könnten. "Export .hml" wäre unklar.
+
+
+
+
+  2.218 ImportSourcefile / .fml / .of 
+
+HolonSO Filemenu: Import .of 
+HolonSL und HolonS Filemenu: Import .fml
+--
+Sourcefiles importieren wie OForth, aber variable Filetypes daher .fml noch angehängt - chess.fth.fml
+Tags schreiben für Austausch mit Fileeditoren. 
+Eigentlich muss dann jedes File marked-up sein, einmal für den Import, und dann immer.
+Also jeder Filetyp wird als markiert angenommen für den Import.
+Und dann auch merkiert gescrieben. Damit ist die Freundschaft mit Fileeditoren möglich.
+--
+Jedoch: jeder Filetyp hat eigene Kommentarzeichen.
+D.h. ein Projekt muss sich für den Austausch auf eine Programmiersprache festlegen.
+Und HolonWeb hätte Probleme mit html, js, css, ...
+--
+Also: Kooperation HOLON & EMACS wäre möglich, wenn das wirklich jemand will. 
+--
+
+Incr/DecrView je 4 Items
+
+Kommentarzeichen ohne Leerzeichen
+- SetBase comdel [string trim $setup(comdel)] 
+
+---
+Chapter als Markup schreiben WriteMarkedChapter 
+- noch mit Comdel aus Base:
+
+
+
+
+  2.219 HolonS/SL div. 
+
+OpenDB hatte Problem mit GetBase running, das keine Zahl lieferte. Die .hdb muss beim Ausstieg vermurkst worden sein. UpdateRunning im falschen Moment gestört.
+=> Running-Test in catch {} gelegt
+
+view(height) 6 - nützt nichts, die Tk Listbox muss default 10 eingestellt haben. 
+DecrList beim Starten - wirkt doppelt?? Weglassen. - view(height) muss 10 sein bei Start.
+
+
+
+
+  2.220 HolonS Buttons Load Run 
+
+Load - LoadUnit ist Teil von Holon als Section Host. Lasse es so und dupliziere es lieber für HolonS.
+SetBase monitor 0
+MonitorFile ::holon.mon 
+das funktioniert
+
+Für Platz beim horizontalen Zusammenschieben:
+Revision 2.196 => Rev. 2.196   
+oder Zwischenstrich rausnehmen 
+oder Find Priorität geben 
+oder Clear raus 
+
+Infopane schmäler: infosize 24 => 20  - unsymmetrisch in Tree, aber mager und 24 doch besser... 
+
+Run als Contextmenu von Load 
+Run-Command in DB runcmd - Eingabe in Terminal 
+(lernt der Kunde gerade das Terminal und andere Holon-Aspekte kennen) 
+DoRun schaltet auf Sourcedir für Run und dann zurück zu Project-Directory 
+
+Codefont umschalten immediate:
+font configure code -family monaco
+font configure code -size 12
+SetBase codefont monaco 
+// Font monaco hat gewissen Reiz und gefällt den Kunden!
+
+
+
+
+  2.221 Keyfile aktivieren 
+
+Testperiode 20 Tage damit man sich hineinarbeitet und gerne weitermachen möchte.
+Lizenztext: "This copy of HOLON-S/L is ... " deckt beide Versionen ab.
+SetDatabase: GetKey: Keyfile testen
+License im Trial lässt 30 Tage Nutzung zu. Widerspruch mit 20 Tage pro Projekt? 
+Dr. Wolf Wejgaard, Forth Engineering
+
+Test 5 Tage - für Zeit bis die Lizenz kommt (Keyfile) und kurze intensive Tests - 
+GetKey:  set start [GetBase start] ; 	set days [expr ($now-$start)] ;  if {$days<6} {set demo true}
+GetKey setzt start=$now beim ersten Lesen der neuen projekt.hdb
+
+die Apps könnnen an offener Adresse geholt werden, allerdings gebe ich sie nur Interessenten an.
+
+
+
+
+  2.222 HolonS => HolonSP 
+
+ConfigurationMenu
+License
+AboutHolonS
+ 
+
+
+
+TEST:
+HolonSP System laden 
+> holonsp.command, 
+> HolonSP.app
+
+
+
+
+  2.223 Lizenz und Demo HolonSP 
+
+Lizenz wirkt nicht, HolonCode Teil ist nicht übernommen.
+! EditIt war nur geblockt in HolonCode
+
+Flags:
+licensed? = Keyfile ok - exists and demumbled
+trial? = project-time < trial-time  - Projekt jünger als 10 (5) Tage
+closed? = not (key? or trial?)
+
+Lizenzen:
+licensed = key?
+trial = trial? and no-key?
+closed = no (key? or trial?)
+
+Nur Editing abstellen ohne Lizenz
+- EditIt mit licensed und trial
+- wird überall gerufen zum Editieren, ausser:
+- CreateButtons 
+- BrowserButtons mit EditIt
+
+Trialtime = 5  days
+ 
+--
+Lizenz und HolonSP testen wenn fertig
+
+
+
+
+  2.224 sourceversion.tcl 
+
+Enthält die Version des Hosts zur Verwendung in einer Target-app.
+Allgemein macht HolonSP keine Tcl Programme, daher ist dieses File obsolet.
+Ausser in den HolonForth Apps made by Holon.
+=> in HolonSP etc weglassen.
+
+
+
+
+  2.225 Command Zeile einfacher 
+
+- Back weglassen 
+- Visited wird Edited:
+- Revision => Rev. 
+- Clear nötig? unschön - Bereich vor Find ist gross genug für Click
+- Load ohne Run
+
+
+
+
+  2.226 .app Filename holen 
+
+? für OSX-App aus Content:
+Nein. 
+Dafür die alte Routine vereinfacht  
+- bisher nur in HolonSP. 
+	if [namespace exists starkit] {
+		set dir [pwd]; if [osx] {set type app} {set type exe}
+		set file [lindex [glob *.$type] 0]
+		set db [lindex [split $file .] 0].hdb 
+Liefert das erste File mit .app/.exe.
+
+
+
+
+  2.227 UI 
+
+Lists minimum 3 Einträge.  Incr, Decr je 2 Elemente. Macht Sinn.
+
+
+
+
+  2.228 HolonSL 
+
+Korrekturen von SP übernehmen 
+--
+- Titelzeile lang, keine Rev.#:  $view(title) config -width 100
+- Create Structure first unit = "unit" - nicht 0.001 for Revision. 
+- Button Clear weglassen, Spacebar löscht die Finds
+- About, Lizenz, uvam 
+- No Commit
+- No sourceversion.tcl
+- "Editor is closed"
+
+
+
+
+  2.229 Codefont 
+
+Codefont ist Menlo Regular 13 - ansprechend, Grösse ok - zu gross, die Zeichen flattern etwas.
+Aber Monaco 12 ist gleich Textwrangler und sieht gut aus. Gleich Menlo 12 aber mehr Luft zwischen den Zeilen
+Noch in .exe testen.
+Monaco und Menlo sind beide Apple Fonts.
+
+
+
+
+  2.230 Setup Preferences Holon 
+
+Kein Printing, 
+Kein "Currentchapter = source/text"
+Safe Deleting mit Shift+Delete
+Comment-Delimiter ist nötig für Export-.fml, also später
+
+Versuch Codefont und Size - warten 
+
+HolonMaster mit About
+
+
+
+
+  2.231 Lists mit Titel uam 
+
+Info panes vertauschen, Found oben ? -- gewöhnen, erst mal Found unten lassen 
+Titel grau #888  =  Chapters, Sections, Units, Find, Replace 
+"Find" und "Replace" sind Clear Buttons
+
+
+
+
+  2.232 Listen Titel Problem 
+
+Bei bestehender .hdb werden keine Titel geschrieben, ausser bei der Info-Frame
+Ist das ein Timing Problem? => Titel separat schreiben 
+- ein Chapter in dieser hdb hatte einen subfolder/ im Namen und der existierte nicht.
+- weiss nicht warum das störte ohne WriteChapter
+
+
+
+
+  2.233 Tree und Info Namen show 
+
+Frames betiteln wie in Lists - "Tree"  "Page"  Info leer
+
+Page nur in Tree betiteln, bei Lists ist es überflüssig und gibt nur einen breiten Balken im View.
+Beim Umschalten von Tree/Lists machen.
+
+Statt "Tree" etwas wie TOC oder Content oder Book oder Structure oder Chapters!
+
+Info-Font gleich gross wie der Rest? Nein kleiner ist dezenter.
+
+
+
+
+  2.234 Import .fml ohne comdel 
+
+Comment delimiter in HolonSL und SP fest = \   für .fml
+
+
+
+
+  2.235 E: Safe Editing 
+
+Aussteigen nur mit Buttons Save oder Load
+SaveIt mit Test auf  GetBase safe wenn nicht mit SAVE oder LOAD gerufen 
+oder Ctrl-S oder Shift-Return oder?
+
+
+
+
+  3.001 Chapters/Files 
+
+Chapters=ohne .ext, Files=mit .ext
+gelungen, wenn auch mit Mühe. Sollte einiges faktorisieren...
+Find, Replace sind Clear-Buttons, daher Button-Farbe.
+
+
+
+
+  3.002 Codepane HolonSL, Codesize 
+
+HolonSL: 
+- In der Codepane den Leerraum in Zeile 1 stehen lassen. Kein string trim
+	? trim vorne und hinten weg, dadurchsammelt sich das extra CR an bei jedem Save
+	=> strim trimright - nur hinten
+- Codesize eingeben in Setup und sofort wechseln.
+
+
+
+
+  3.003 Import Files .fml 
+
+je File und Section Kommentare ablegen
+
+
+
+
+  3.004 HolonSL trial 
+
+Kopfzeile mit Projektname und Anzahl Resttage oder Editor closed, register to reopen.
+Min. Grösse 700x400
+
+
+
+
+  3.005 HolonSL frei 
+
+Gebe HolonSL frei. Habe viel von JCW u.a. profitiert. Fühle mich wohler. 
+--
+Lizenzkram löschen in HolonSL  
+--
+Immer "Chapters"
+
+
+
+
+  3.006 Poliert 
+
+Edit Hintergrund etwas grüner  - 	set color(editbg)  #F1FFFF  statt F8FFFF
+
+Safe Mode: 
+- Delete Meldung "Shift-Delete?"
+- Editor verlassen mit Save/Quit -- nicht glücklich. Lassen wie ist. Warten bis gewünscht. GIT zeigt alte Version.
+
+Text und Code Bindings zusätzlich:  
+- Ctrl+a = Select All, 
+- Ctrl+Left/Right an Anfang/Ende der Zeile.
+Wie in einem anständigen normalen Editor
+
+
+
+
+  3.007 HolonSL 
+
+Project nur Import .fml
+
+
+
+
+  3.008 HolonSLTalk=>HolonTalk 
+
+Mit dem neuen Projektkonzept 
+- .hdb im .app Verzeichnis, alles hat den Projektnamen, .hdb und source in Kleinschrift. 
+- In allen Varianten Chapterlist Name "Chapter" 
+- view(height) = 8,  zu Beginn  -- neu 7 (ungerade!)
+
+
+
+
+  3.009 Test Dunkel mit HolonTalk 
+
+Projekt HolonTalk extra Section Dunkel 
+
+Der Font wird weiss gestellt in den Views.
+
+
+Die Infopane ist ein Problem. Der Hintergrund kommt mit: view(info) -bg black
+aber die Liste ist immer noch schwarz bis auf  die Markierung des aktuellen Eintrags. Muss wohl die tags configurieren
+- $view(info) tag configure normal -font infoNormal -foreground white   
+Die Info Liste wird immer inaktiv gesetzt, warum? damit ich keinen Text reinschreibe.
+> Info Text weiss wie? tags machen farbe -- später
+
+Stand: Listen und Text sind schwarz auf weiss. Sieht brauchbar aus. 
+
+Die Scrollbalken stören, sind weiter weiss. Dünner möglich -width 3
+-> Scrollbars schwarz. wie?
+
+- Systemfarbe schwarz macht Menuleiste oben schwarz 
+
+UND DAMIT HAT ES SICH JETZT - VORERST BRAUCH ICH DAS NICHT.   
+HOLON IST LITERATE, BÜCHER SIND SCHWARZ AUF WEISS.
+
+
+
+
+  3.010 HolonSL-Tool 
+
+Fertig machen als Trial 
+HolonTalk nicht dunkel
+
+
+
+
+  3.011 Ttk ist in Tk in tclsh 
+
+Ttk für gerade Frames ohne Ecke. 
+kann ich mit tclsh haben. auch ohne ttk
+problem mit tclsh: console verfügbar? ja:
+
+cd ~/desktop/holonsl/
+tclsh ~/dropbox/holonforth/holon/source/holonsl.tcl HolonSL.hdb &
+
+lädt HolonSL als App mit Ttk-frame ohne Ecke.
+Console ist verfügbar.
+do. für Holon Master
+--
+ABER es gibt Differenzen in Tk: Bei Umschalten von Units zu Sections: (Umschalten innerhalb Units ist ok)
+
+bad listbox index "": must be active, anchor, end, @x,y, or a number
+bad listbox index "": must be active, anchor, end, @x,y, or a number
+    while executing
+"$w itemconfigure $i -fg #0000aa -bg #eeeeee"
+    (procedure "mark" line 3)
+    invoked from within
+"mark $view(units) $active "
+    (procedure "UpdateUnits" line 9)
+    invoked from within
+"UpdateUnits" 
+--
+Infofont Grösse == Textfont 
+--
+Keine Änderungen im Listencode mehr.
+
+
+
+
+  3.012 Listen umschalten lernen 
+
+Es gibt ein Problem in tclsh mit meiner Art der Navigation in den Listen. 
+Vielleicht habe ich das Argument 'active' falsch verstanden. Es ist ein Name für eine Zahl. Nein:
+Die Listennavigation liest die curselection falsch weil das status anders erfasst wird in Ttk. 
+- Zuviel zu ändern nur wegen der Ecke im Rahmen.
+
+=> Holon lassen wie es ist. Mit tclkit85 verwenden.
+Updates vereinfacht in HolonSL. In Holon lassen wie es war.
+
+
+
+
+  3.013 HolonQ Sachen 
+
+LoadSection soll auch die Page reloaden.
+
+
+
+
+  3.014 Keyfile 
+
+
+
+
+
+
+  3.015 HolonTalk mit neuer Struktur 
+
+Name.app  name.hdb  /name
+--
+Import-hml startet im app-dir, statt in /source. Sollte in /source aber das heisst jetzt wie die app = ./$appname 
+Im app-dir ist ok, kann das hml im ./appname Source Verzeichnis finden. Oder der schlaue Anwender legt das hml gerade ins app-dir.
+
+Trial ist nicht mehr, aber lasse den Code drin und deaktiviere ihn - wie bisher - durch set licensed true und set trial false.
+
+Der Kunde ist Client. Seine Daten im Master eingeben. Ablauf:
+1. Daten ändern  2. MakeApps clicken
+
+
+
+
+  3.016 HolonTalk Trial 
+
+Doch mit Trial. Bessere Verbreitung. Einfachere Updates. 
+12 Tage Test. Import Export bleibt offen.
+ 
+App Menuzeile mit Help-Menu - OSX schiebt Searchzeile hinein weil "Help" => Name ändern: HolonInfo - OSX lässt sich nicht täuschen, oder Tcl? - Menu(Help) hat Searchzeile
+=> Menu(Holon) 
+
+
+Syntaxcolor(.ext) - lassen und warten
+
+
+
+
+  3.017 HolonTalk Menus 
+
+About soll zu License und Projects verweisen. ?
+About ohne Units per Chapter etc. 
+License Fenster nicht editierbar setzen
+
+
+
+
+  3.018 Treeview Page(Type)? 
+
+"Page" sagt zu wenig, => "Chapter"  "Section"  "Unit"  =
+> klar auf welcher Ebene wir sind
+und der breite Command-Streifen hat noch mehr Sinn 
+Page Titel wird umgeschaltet bei Änderung druch Maus und Tasten.
+ListNavigation: FocusChapter, FocusSections, FocusUnits
+
+Pagetitel wird bisher fix "Page" in  SetTreeView
+Mit Focus... umschalten: 
+$view(page) configure -text "  Page"  -fg #888
+view(page) ist ein Labelframe
+
+Listview schaltet Pageframe Label wieder leer
+Treeview soll das Label schreiben je nach Focus
+
+JEDOCH:
+ 
+es ist komplex, ich verstehe es nicht, sonst wäre es schon gemacht.
+Was wiederum heisst, der Pagetitel sollte "Page" bleiben, was es auch ist:  die Page vom aktuellen Element.
+(habe früher schon daran herumgedoktert...)
+---
+
+NOCHMAL ganz ruhig - die geladene Seite weiss wann Tree und welcher Typ
+
+SetTreePage in ShowPage
+
+OK ;-)
+
+
+
+
+Chapters immer "Chapters" (nicht "Files")
+
+
+
+
+  3.019 Holontalk weiter 
+
+Titelzeile ganze Länge (ohne Rev.) - ist schon Länge 100 genügt. 
+
+HolonMenu und Configuration bearbeitet.
+
+
+
+
+  3.020 div 
+
+Anzahl Revisions zeigen alle.
+
+
+
+
+  3.021 Running? 
+
+Proc Running? ist inaktiv, bezog sich auf die Runfile Lösung. - 
+
+Holon speichert die Startzeit und dann die Updatezeit in der Base. Wenn die UPDATE Zeit weniger als 10 min vor NOW liegt, läuft das System irgendwo. Du musst 10 min warten mit dem neuen Start. 
+> Oder Start mit SHIFT gedrückt.?
+NICHT FUMMELN JETZT - 
+lieber Dropbox entlasten d.h. Holonsysteme lokal lassen. 
+Kopieren wenn gebraucht.
+
+Oder DB abstellen beim Entwickeln
+
+
+
+
+  3.022 GetKey? 
+
+HolonTalk startet nicht 
+probieren ohne getkey
+
+
+
+
+  3.023 Running? entfernen 
+
+UpdateRunning inaktiv
+Running ist schon inaktiv 
+Der Doppelrun Test ist auch für denselben Rechner, nicht nur Dropbox!! 
+
+File Running? entfernen aber nicht den Doppelruntest in Basis.
+
+
+
+
+  3.024 Holonweb .hweb 
+
+.web -> .hweb weil Dropbox .web als URL interpretiert.
+:: Webchapters mit .hweb kennzeichnen!
+
+Bug: Holontalk lädt nicht weil Getkey ausgeschatet, dadurch Days nicht bestimmt aber nachher für die Titelzeile verwendet weil ich zwar  Getkey ausschalte aber trotzdem auf Key teste...
+
+Bug: "Section" berechnet sich in ewigem Loop 
+  		 
+-------
+
+dieses bereits im HolonMaster korrigiert als lokale Version in iMac ~wolf/holonforth, was jetzt obsolet und verschwunden ist, weil wieder Dropbox regiert. 
+ 
+Kopie daraus: 3.025
+aus Versehen Commit im Master weil der hat es auch im Configuration Menu, und das wollte ich ausprobieren...
+- weiter mit HolonTalk:
+proc Section hat puts " Section = [Section]" seit meinem Spiel mit ttk in 3.012
+das ist dumm solange der Inhalt von Section auch Section ist, sich also dauernd ruft.
+
+OK? JA!
+
+
+
+
+  3.025 (3.024) 
+
+Bug: Holontalk lädt nicht weil Getkey ausgeschatet, dadurch Days nicht bestimmt aber nachher für die Titelzeile verwendet weil ich zwar  Getkey ausschalte aber trotzdem auf Key teste...
+
+Bug: "Section" berechnet sich in ewigem Loop 
+  		 
+-------
+
+dieses bereits im HolonMaster korrigiert als lokale Version in iMac ~wolf/holonforth, was jetzt obsolet und verschwunden ist, weil wieder Dropbox regiert. 
+ 
+Kopie daraus: 3.025
+aus Versehen Commit im Master weil der hat es auch im Configuration Menu, und das wollte ich ausprobieren...
+- weiter mit HolonTalk:
+proc Section hat puts " Section = [Section]" seit meinem Spiel mit ttk in 3.012
+das ist dumm solange der Inhalt von Section auch Section ist, sich also dauernd ruft.
+
+OK? JA!
+
+
+
+
+  3.026 
+
+
+
+
+
+
+  3.027 HolonTalk ohne Limits? 
+
+Kein GetKey, keine Verschlüsselung.
+warten
+ 
+> SaveText bei Exit wenn Editor offen ist
+
+
+
+
+  3.028 
+
+
+
+
+
+
+  3.101 holonTest 
+
+Test Pane einsetzen und aktivieren
+
+
+
+
+  3.102 Testpane 
+
+Testpane ist drin. 
+Hintergrund bisque (hellbraun), beim Editieren grün.
+Rahmen und Trennline farbig? nein
+Beim Editieren schwarzer Rand weil relief flat, => sunken
+> minimale Höhe 10 px? - damit immer sichtbar 
+StoreText - Testcode gespeichert 
+
+
+RUN/TEST Button
+bei Unit & Testcode: TEST 
+bei Save und Load check ob Textcode ex. => TEST Button - erst umbennen 
+TEST lädt Testcode in Holon.mon zum Target
+LOAD Button lädt Sourcecode zu Holon.mon
+
+sonst RUN - startet Target mit RunCode
+---
+
+E:
+Testresultat zeigen im Test Button: bg grün oder rot
+
+
+
+
+  3.103 HolonTest aufräumen 
+
+Widgets klarer gestalten:
+	text $view(test) -width 72 -height 10 -pady 5 -padx 10 -bd 1 -relief sunken \
+		-highlightthickness 0 -bg bisque -yscrollcommand "$pt.scroll set" \
+	 	-font code -wrap word -undo true  -tabs {1c 2c 3c 4c 5c 6c} \
+		-state disabled -exportselection 1 
+
+Bei Exit Editor schliessen und Text speichern
+
+Button Run/Test .b.Run reagiert aber zeigt den Click nicht an (sunken). ?
+
+Sash1 zwischen Code und Testpanes sichtbar am Anfang
+
+
+
+
+  3.104 Holon Talk=>Code 
+
+leider unter 3.103 importiert als Kopie von HolonTalk vom 5.12.2019 wie HolonTest. 
+Revisionen 3.103 gemischt mit HolonTest Korrekturen. 
+--
+Source auf HolonCode ändern
+
+
+
+
+  3.105 Projekt als Kopie von Host 
+
+Projektname aus dem Appnamen bilden statt aus dem Namen der .hdb
+Geht nicht bei Laden des Source in tclsh. 
+Dann ist 'tclsh' der Appname.
+Will argc vermeiden da nicht in Python. 
+Würde Python jetzt laden ohne argc?
+
+
+
+
+  3.106 
+
+
+
+
+
+
+  4.001 HolonCode => HolonCode 
+
+Open Source
+Revisionen wieder einsetzen.
+So einfach und elegant.
+
+
+
+
+  4.002 Neues Projekt mit Rev-Chapter 
+
+Browser startet mit:  Revisions  Sections  0.001 
+Nachher <Chapter> <Sections> <Units>  
+Namen dann ändern - nein so blöd sind die Leute nicht => 4.003
+
+
+
+
+  4.003 Editorsachen 
+
+Im Codepane geht beginnt der Cursor auf Zeile 2. Wenn ich weiter unten clicke :: es gibt eine Leerzeile oben - vielleicht soll es.
+
+<Name> ist too much!  Chapter Section Unit genügt !! 
+(<Name> sieht so leicht aus - je nach Stimmung - Nachteil: dreimal drücken - es gibt wichtigeres)
+
+
+
+
+  4.004 Curselection in Ttk 
+
+
+
+
+
+
+  4.005 ListVariables probieren 
+
+HolonCode zusätzliches Segment OverloadLists 
+wenn das in 64-bit läuft bin ich glücklich und zufrieden 
+tut es nicht. Zurück zu ListBoxen.
+
+
+
+
+  4.006 Listboxen 
+
+SetList setzt alles sobald id bekannt ist. ?? 
+
+Currentpage als globale Variable führen gezielt, 
+::page wird thepage
+
+
+
+
+  4.007 ListBoxSelection 
+
+ListBoxSelection mit Switch zur ListBox scheint immer eins weiter zu switchen, weil am Ende eine Box curselected wird die nicht aktiv ist... 
+Probiere Bindings für jede Listbox. Statt Switch. Geht auch nicht. Immer wieder wird in inaktiver Box curselect ausgeführt und liefert einfach alle indizes der Box. Womit SetList nichts anfangen kann.
+
+SetList ist das Problem. Bzw. dort bleibt es hängen.
+
+
+
+
+  4.008 SetList mit ListVariablen 
+
+Section OverloadLists wieder einsetzen
+Listenboxworte in OverloadHolon löschen
+
+
+
+
+  4.009 Ohne Listvariabeln 
+
+Zurück zu 4.004 
+Selectmode single löschen, ist wieder browser. Auf/Ab sollten funktionieren weil das eine Tk Funktion ist.
+
+
+
+
+  4.010 Focus verstehen u.a.m Lösung! 
+
+Focus ist Input Fenster.
+Ist es auch das Fenster für curselect?
+tk_focusFollowsMouse sollte das Fenster unter der Maus aktiv setzen
+Wird gesetzt wenn Proc beendet ist.
+--
+Gelernt:
+
+Problem: Tk 64-bit liest bei einem Listenwechsel curselect erst aus der alten Liste, 
+wobei active zu "" wird, woran der Browser hängen bleibt, bzw Holon immer in die alte List zurück will.
+
+Lösung: active = "" ignorieren, nochmal Update rufen.
+
+
+
+
+  4.011 Aufbereiten für GitHub 
+
+
+
+
+
+
+  4.012 HolonCode 
+
+The 64-bit HolonHost.
+
+
+
+
+  4.013 div. 
+
+Überladene Teile einsetzen im Code, also die Masterteile ersetzen. - später, unwichtig
+EndSetup ist ohne AdjustFontsize. - aber nicht hier sondern in src Files?
+
+
+
+
+  4.014 
+
+
+
+
+
+
+  4.015 Prunen und Mac2 Preferences ok 
+
+HolonCode Korrekturen, Overloads, in die Holonfiles verteilen 
+
+Configuration/Preferences neu organisiert: 
+Fenster öffnen, 
+Elemente einsetzen und in Betrieb nehmen
+Auf OK warten
+Aussteigen, Fenster schliessen
+In Main die Setup-Werte verwerten.
+
+
+
+
+  4.016 Preferences polieren 
+
+in 4.015 gelöst für Mac2. 
+Hier noch Feinarbeit
+
+
+

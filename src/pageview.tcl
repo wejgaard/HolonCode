@@ -41,7 +41,7 @@ proc TitlePane {} {
 
 	# the title space
 	set view(title) $view(titleversion).title
-	text $view(title) -width 30 -undo true	-font title -pady 7  \
+	text $view(title) -width 40  -undo true	-font title -pady 7  \
 		-height 1 -state disabled -relief flat -padx 9 -bg $color(menu) \
 		-highlightthickness 0 -highlightcolor white
 	pack $view(title) -side left -fill both 
@@ -475,8 +475,8 @@ proc ClearPage {} {
 }
 
 proc ShowPage {id} {
-	global view oldVersion color
-	set ::page $id
+	global view oldVersion color page
+	set page $id
 	set oldVersion 0
 	SetList $id
 	ShowTitle $id
@@ -489,10 +489,12 @@ proc ShowPage {id} {
 		$view(version) insert end "\[deleted\]" deleted
 		$view(version) configure -state disabled 
 	}
-	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {$pane configure -bg $color(pagebg)}	
+	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {
+		$pane configure -bg $color(pagebg)
+	}	
 	TextCodePanes $id
 	ShowLinPage $id
-	ShowTree $id     
+	ShowTree $id
 	ShowFoundText 
 	MarkInfoPages
 	StartVisitTime

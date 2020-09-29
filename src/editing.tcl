@@ -98,7 +98,8 @@ proc StoreText {} {
 	$view(text) tag remove foundit 1.0 end
 	set title [string trim [$view(title) get 1.0 1.end]]
 	set text [$view(text) dump 1.0 "end - 1 char"]
-	set code [string trim [$view(code) get 1.0 end ]]; 	set cursor [lindex [$view(code) yview] 0]
+	set code [string trimright [$view(code) get 1.0 end ]]; 
+	set cursor [lindex [$view(code) yview] 0] 
 	set test " "; 	# set test [string trim [$view(test) get 1.0 end]]
 	SavePage [CurrentPage] $text $code local $title $cursor $test $changed
 }
