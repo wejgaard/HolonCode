@@ -19,7 +19,7 @@ HolonCode provides clarity and immediacy.
 * Internal version control.
 * HolonCode works in Windows, macOS and Linux.
 * Based on [HolonS](https://www.holonforth.com/holons.html)
-
+* Inspired by Forth and Smalltalk.
 
 ### Guide
 HolonCode is special. Explore a new programming experience.
