@@ -6,7 +6,6 @@ Source Content Management System
 HolonCode handles program units in a CMS as a structure of sections and chapters. 
 Like a book.  
 
-I have built applications the holon way since 1989 and release the full version as an open source project.  
 
 ![HolonCode](https://www.holonforth.com/images/holoncode1.jpg)
 
