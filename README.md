@@ -15,15 +15,11 @@ HolonCode provides clarity and immediacy.
 
 * Clear presentation of the program code.
 * Instant update of code files
-* Chapters correspond to files. 
+* Chapters are files. 
 * The files contain the present state. Changes are instantly updated.
-* Internal version control
-* HolonCode runs in Windows, macOS and Linux. 32-bit and 64-bit.
+* Internal version control.
+* HolonCode works in Windows, macOS and Linux.
 * Based on [HolonS](https://www.holonforth.com/holons.html)
-
-
-### [Issues](https://github.com/wejgaard/holoncode/issues) 
-Use the Issues for Comments, Questions, Ideas. 
 
 
 ### Guide
