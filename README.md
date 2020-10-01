@@ -14,9 +14,8 @@ Like a book.
 HolonCode provides clarity and immediacy.
 
 * Clear presentation of the program code.
-* Instant update of code files
 * Chapters are files. 
-* The files contain the present state. Changes are instantly updated.
+* The files are instantly updated with changes in the program
 * Internal version control.
 * HolonCode works in Windows, macOS and Linux.
 * Based on [HolonS](https://www.holonforth.com/holons.html)
@@ -24,8 +23,6 @@ HolonCode provides clarity and immediacy.
 
 ### Guide
 HolonCode is special. Explore a new programming experience.
-
-The first Holon-GUI version [HolonU](https://www.holonforth.com/holonu.html) includes a detailed manual that may help. 
 
 ### Runscripts
 The runscripts act on HolonCode in GitHub Desktop
