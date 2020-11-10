@@ -1,0 +1,5 @@
+
+*.mon
+.DS_Store
+*.hdb
+info.plist

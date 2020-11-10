@@ -1,3 +1,2 @@
-Code ItemGet { w tag field -- value }  
-	set value [$w itemcget $tag $field]
+
 
