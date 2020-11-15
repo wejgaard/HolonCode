@@ -1,4 +1,4 @@
 #!/bin/bash
 cd `dirname $0`/../../..
 echo `pwd`
-tclsh holonCodeGH/holoncode.tcl holonCodeGH.hdb &
+tclsh holonCode/holoncode.tcl holonCode.hdb &
