@@ -24,16 +24,16 @@ HolonCode provides clarity and immediacy.
 ### Guide
 HolonCode is special. Explore a new programming experience.
 
-### Runscripts
+### Start HolonCode
 
 #### Windows
-tclsh holonCode\holoncode.tcl holonCode.hdb
+tclsh holonCode\src\holoncode.tcl holonCode.hdb
 
 #### macOS
 cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
 
 #### Linux
-#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/holoncode.tcl holonCode.hdb &
+#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holonCode.hdb &
 
 
 
