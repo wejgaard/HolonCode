@@ -27,6 +27,21 @@ HolonCode is special. Explore a new programming experience.
 ### Runscripts
 The runscripts act on HolonCode in GitHub Desktop
 
+#### Windows
+tclsh holonCode\holoncode.tcl holonCode.hdb
+
+#### macOS
+cd ~/documents/Github/HolonCode/HolonCode
+tclsh ../src/holoncode.tcl HolonCode.hdb &
+
+#### Linux
+#!/bin/bash
+cd `dirname $0`
+tclsh holonCodeGH/holoncode.tcl holonCode.hdb &
+
+
+
+
 ### Example Application HolonTF
 
 
