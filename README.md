@@ -24,7 +24,7 @@ HolonCode provides clarity and immediacy.
 ### Guide
 HolonCode is special. Explore a new programming experience.
 
-### Start HolonCode
+### Run HolonCode
 
 #### Windows
 tclsh holonCode\src\holoncode.tcl holonCode.hdb
