@@ -25,16 +25,15 @@ HolonCode provides clarity and immediacy.
 HolonCode is special. Explore a new programming experience.
 
 ### Runscripts
-The runscripts act on HolonCode in GitHub Desktop
 
 #### Windows
 tclsh holonCode\holoncode.tcl holonCode.hdb
 
 #### macOS
-cd ~/documents/Github/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
+cd ~/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
 
 #### Linux
-#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCodeGH/holoncode.tcl holonCode.hdb &
+#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/holoncode.tcl holonCode.hdb &
 
 
 
