@@ -1,1 +1,1 @@
-tclsh holonCode\holoncode.tcl holonCodeGH.hdb
+tclsh holonCode\holoncode.tcl holonCode.hdb
