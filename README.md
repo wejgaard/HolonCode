@@ -31,15 +31,10 @@ The runscripts act on HolonCode in GitHub Desktop
 tclsh holonCode\holoncode.tcl holonCode.hdb
 
 #### macOS
-cd ~/documents/Github/HolonCode/HolonCode<br>  
-tclsh ../src/holoncode.tcl HolonCode.hdb &
+cd ~/documents/Github/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
 
 #### Linux
-#!/bin/bash  
-
-cd `dirname $0`  
-
-tclsh holonCodeGH/holoncode.tcl holonCode.hdb &
+#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCodeGH/holoncode.tcl holonCode.hdb &
 
 
 
