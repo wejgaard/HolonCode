@@ -30,7 +30,7 @@ HolonCode is special. Explore a new programming experience.
 tclsh holonCode\holoncode.tcl holonCode.hdb
 
 #### macOS
-cd ~/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
+cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
 
 #### Linux
 #!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/holoncode.tcl holonCode.hdb &
