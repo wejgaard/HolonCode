@@ -22,7 +22,7 @@ HolonCode provides clarity and immediacy.
 * More at [HolonS](https://www.holonforth.com/holons.html)
 
 ### Guide
-See online manual in [HolonU](http://www.holonforth.com/holonu.html)
+...in construction...
 
 ### Run HolonCode
 HolonCode runs in Tcl/Tk. Install https://docs.activestate.com/activetcl/8.6/
