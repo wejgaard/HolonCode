@@ -19,12 +19,13 @@ HolonCode provides clarity and immediacy.
 * Internal version control.
 * HolonCode works in Windows, macOS and Linux.
 * Inspired by Forth and Smalltalk.
-* See [HolonS](https://www.holonforth.com/holons.html)
+* More at [HolonS](https://www.holonforth.com/holons.html)
 
 ### Guide
-HolonCode is special. Explore a new programming experience.
+In construction, see also HolonU.
 
 ### Run HolonCode
+HolonCode runs in Tcl/Tk. Install https://docs.activestate.com/activetcl/8.6/
 
 #### Windows
 tclsh holonCode\src\holoncode.tcl holonCode.hdb
@@ -37,7 +38,7 @@ cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCod
 
 
 ### Example Application HolonTF
-The actual HolonCode project that created TclForth.
+HolonCode project that created TclForth.
 With full source.
 
 
