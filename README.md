@@ -31,6 +31,8 @@ HolonCode runs in Tcl/Tk. Install https://docs.activestate.com/activetcl/8.6/
 tclsh holonCode\src\holoncode.tcl holonCode.hdb
 
 #### macOS
+Using GitHub desktop:
+
 cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
 
 #### Linux
