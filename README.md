@@ -18,8 +18,8 @@ HolonCode provides clarity and immediacy.
 * The files are instantly updated.
 * Internal version control.
 * HolonCode works in Windows, macOS and Linux.
-* Based on [HolonS](https://www.holonforth.com/holons.html)
 * Inspired by Forth and Smalltalk.
+* See [HolonS](https://www.holonforth.com/holons.html)
 
 ### Guide
 HolonCode is special. Explore a new programming experience.
@@ -36,7 +36,9 @@ cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCod
 #!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holonCode.hdb &
 
 
-
 ### Example Application HolonTF
+The actual HolonCode project that created TclForth.
+With full source.
+
 
 
