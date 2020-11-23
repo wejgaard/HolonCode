@@ -22,8 +22,8 @@ Download Holoncode.zip
 or access HolonCode in GitHub Desktop
 
 
-### Project HolonTF, creating TclForth
-
+### Example Application HolonTF
+My Holoncode project that created TclForth
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
