@@ -7,7 +7,8 @@ HolonCode handles program units in a CMS as a structure of sections and chapters
 Like a book.  
 
 
-![HolonCode](https://www.holonforth.com/images/holoncode1.jpg)
+
+![HolonCode](https://www.holonforth.com/images/holontf.png)
 
 
 ### Features
