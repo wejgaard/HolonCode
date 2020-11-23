@@ -1,35 +1,36 @@
 # HolonCode
 
-Source Content Management System
-
 ### Overview
-HolonCode handles program units in a CMS as a structure of sections and chapters. 
-Like a book.  
-
-
+HolonCode handles program units in a structure of sections and chapters. 
+Like a book. 
 
 ![HolonCode](https://www.holonforth.com/images/holontf.png)
 
 
 ### Features
-HolonCode provides clarity and immediacy.
-
 * Clear presentation of the program code.
 * Chapters are files. 
 * The files are instantly updated.
 * Internal version control.
-* HolonCode works in Windows, macOS and Linux.
-* Inspired by Forth and Smalltalk.
-* More at [HolonS](https://www.holonforth.com/holons.html)
+* Works in Windows, macOS and Linux.
+* See also [HolonS](https://www.holonforth.com/holons.html)
 
-### Guide
-...in construction...
 
-### Run HolonCode
-HolonCode runs in Tcl/Tk. Install https://docs.activestate.com/activetcl/8.6/
+### Installation
+
+#### Tcl/Tk
+HolonCode uses Tcl/Tk. Install Tcl via https://docs.activestate.com/activetcl/8.6/
+
+### Code
+
+#### GitHub Desktop
+
+#### Holoncode.zip
+
+### Run HolonTF
 
 #### Windows
-tclsh holonCode\src\holoncode.tcl holonCode.hdb
+tclsh holonCode\src\holoncode.tcl holontf.hdb
 
 #### macOS
 Using GitHub desktop:
