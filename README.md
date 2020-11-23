@@ -17,8 +17,10 @@ Like a book.
 #### Tcl/Tk
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
-### HolonCode
-Download Holoncode.zip
+#### HolonCode
+Download Holoncode.zip 
+or access HolonCode in GitHub Desktop
+
 
 ### Example Application HolonTF
 HolonCode project that created TclForth.
