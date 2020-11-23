@@ -11,30 +11,22 @@ Like a book.
 * Chapters are files. 
 * The files are instantly updated.
 * Internal version control.
-* Works in Windows, macOS and Linux.
-* See also [HolonS](https://www.holonforth.com/holons.html)
-
+* Works in Windows, macOS and Linux, wherever Tcl/Tk runs.
 
 ### Installation
 
 #### Tcl/Tk
-HolonCode uses Tcl/Tk. Install Tcl via https://docs.activestate.com/activetcl/8.6/
+Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
 ### Code
-
-#### GitHub Desktop
-
-#### Holoncode.zip
+Download Holoncode.zip
 
 ### Run HolonTF
 
 #### Windows
 tclsh holonCode\src\holoncode.tcl holontf.hdb
 
-#### macOS
-#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
-
-#### Linux
+#### macOS and Linux
 #!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
 
 
