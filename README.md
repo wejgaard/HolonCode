@@ -43,7 +43,7 @@ HolonCode project that created TclForth.
 With full source.
 
 
-![HolonCode](https://www.holonforth.com/images/holontf.jpg)
+![HolonTF](https://www.holonforth.com/images/holontf.png)
 
 
 
