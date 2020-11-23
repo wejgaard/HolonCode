@@ -33,12 +33,10 @@ HolonCode uses Tcl/Tk. Install Tcl via https://docs.activestate.com/activetcl/8.
 tclsh holonCode\src\holoncode.tcl holontf.hdb
 
 #### macOS
-Using GitHub desktop:
-
-cd ~/documents/GitGub/HolonCode/HolonCode<br>tclsh ../src/holoncode.tcl HolonCode.hdb &
+#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
 
 #### Linux
-#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holonCode.hdb &
+#!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
 
 
 ### Example Application HolonTF
