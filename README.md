@@ -21,6 +21,11 @@ Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 ### Code
 Download Holoncode.zip
 
+### Example Application HolonTF
+HolonCode project that created TclForth.
+
+![HolonTF](https://www.holonforth.com/images/holontf.png)
+
 ### Run HolonTF
 
 #### Windows
@@ -28,14 +33,6 @@ tclsh holonCode\src\holoncode.tcl holontf.hdb
 
 #### macOS and Linux
 #!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
-
-
-### Example Application HolonTF
-HolonCode project that created TclForth.
-With full source.
-
-
-![HolonTF](https://www.holonforth.com/images/holontf.png)
 
 
 
