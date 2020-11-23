@@ -4,8 +4,7 @@
 HolonCode handles program units in a structure of sections and chapters. 
 Like a book. 
 
-![HolonCode](https://www.holonforth.com/images/holontf.png)
-
+![HolonCode](https://www.holonforth.com/images/holoncode.jpg)
 
 ### Features
 * Clear presentation of the program code.
@@ -42,6 +41,10 @@ tclsh holonCode\src\holoncode.tcl holontf.hdb
 ### Example Application HolonTF
 HolonCode project that created TclForth.
 With full source.
+
+
+![HolonCode](https://www.holonforth.com/images/holontf.jpg)
+
 
 
 
