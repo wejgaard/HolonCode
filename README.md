@@ -31,11 +31,12 @@ My Holoncode project that created TclForth
 ### Run HolonTF
 
 #### Windows
+
+```
 tclsh holonCode\src\holoncode.tcl holontf.hdb
-
+````
 #### macOS and Linux
+
+````
 #!/bin/bash<br>cd `dirname $0` <br>tclsh holonCode/src/holoncode.tcl holontf.hdb &
-
-
-
-
+```
