@@ -33,12 +33,12 @@ Holoncode project that created TclForth
 #### Windows
 
 ```
-tclsh holonCode\src\holoncode.tcl holontf.hdb
+tclsh holonCode\src\holoncode.tcl HolonTF.hdb
 ````
 #### macOS and Linux
 
 ````
 #!/bin/bash
 cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl holontf.hdb &
+tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
 
