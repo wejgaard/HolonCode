@@ -23,7 +23,7 @@ or access HolonCode in GitHub Desktop
 
 
 ### Example Application HolonTF
-A Holoncode project that created TclForth
+Holoncode project that created TclForth
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
