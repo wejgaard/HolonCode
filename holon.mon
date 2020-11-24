@@ -1,2 +1,3 @@
-
+Compiler begin  
+	appendcode "\nwhile 1 \{\n"
 
