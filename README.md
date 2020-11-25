@@ -61,7 +61,7 @@ opens the database and makes "MyProject" the name of the project.
 
 
 
-### Example Application HolonTF
+## Example Project HolonTF
 The HolonCode project that created TclForth.
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
