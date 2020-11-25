@@ -14,11 +14,11 @@ Like a book.
 
 ### Installation
 
-#### Tcl/Tk
+#### 1. Tcl/Tk
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
-#### HolonCode
-Download Holoncode.zip 
+#### 2. HolonCode
+Download Holoncode.zip<br> 
 or access HolonCode in GitHub Desktop
 
 ### Create a Project
