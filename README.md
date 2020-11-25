@@ -60,12 +60,8 @@ MyProject.hdb
 
 
 
-
-
-
-
 ### Example Application HolonTF
-Holoncode project that created TclForth
+The HolonCode project that created TclForth.
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
