@@ -12,7 +12,7 @@ Like a book.
 * Internal version control.
 * Works in Windows, macOS and Linux, wherever Tcl/Tk runs.
 
-### Installation
+## Installation
 
 #### 1. Tcl/Tk
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
@@ -45,18 +45,19 @@ tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 ````
 tclsh
 ````
-1. starts the Tcl app     
+starts the Tcl app     
 
 `````
 holonCode\src\holoncode.tcl 
 `````
-2. loads and starts HolonCode
+loads and starts HolonCode
 
 `````
 MyProject.hdb
 `````
-3. opens the database and makes "MyProject" the name of the project.
+opens the database and makes "MyProject" the name of the project.
 
+## Programming
 
 
 
