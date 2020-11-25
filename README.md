@@ -25,7 +25,22 @@ or access HolonCode in GitHub Desktop
 
 A HolonCode project consists of a database that contains the program units and a browser for handling the program. IOW, a content management system for source code
 
-To create a new project, say MyProject, use this command  "tclsh holonCode\src\holoncode.tcl MyProject.hdb". There are three parts:
+To create a new project, say MyProject, use this command  "tclsh holonCode\src\holoncode.tcl MyProject.hdb". 
+
+#### Windows
+
+```
+tclsh holonCode\src\holoncode.tcl MyProject.hdb
+````
+#### macOS and Linux
+
+````
+#!/bin/bash
+cd `dirname $0` 
+tclsh holonCode/src/holoncode.tcl MyProject.hdb &
+````
+
+#### The command has three parts:
 
 ````
 tclsh
@@ -41,21 +56,9 @@ Tcl loads and starts HolonCode
 MyProject.hdb
 `````
 HolonCode opens the database and makes "MyProject" the name of the project.
-Thus:
 
 
-#### Windows
 
-```
-tclsh holonCode\src\holoncode.tcl MyProject.hdb
-````
-#### macOS and Linux
-
-````
-#!/bin/bash
-cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl MyProject.hdb &
-````
 
 
 
