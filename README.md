@@ -12,18 +12,57 @@ Like a book.
 * Internal version control.
 * Works in Windows, macOS and Linux, wherever Tcl/Tk runs.
 
-### Installation
+## Installation
 
-#### Tcl/Tk
+#### 1. Tcl/Tk
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
-#### HolonCode
-Download Holoncode.zip 
-or access HolonCode in GitHub Desktop
+#### 2. HolonCode
+Download Holoncode.zip, or<br> 
+use HolonCode in GitHub Desktop
+
+### Create a Project
+
+A HolonCode project consists of a database that contains the program units and a browser for handling the program. <br>IOW, a content management system for source code
+
+To create a new project, say "MyProject", use the command  "tclsh holonCode\src\holoncode.tcl MyProject.hdb". 
+
+#### Windows
+
+```
+tclsh holonCode\src\holoncode.tcl MyProject.hdb
+````
+#### macOS and Linux
+
+````
+#!/bin/bash
+cd `dirname $0` 
+tclsh holonCode/src/holoncode.tcl MyProject.hdb &
+````
+
+#### The command has three parts:
+
+````
+tclsh
+````
+starts the Tcl app     
+
+`````
+holonCode\src\holoncode.tcl 
+`````
+loads and starts HolonCode
+
+`````
+MyProject.hdb
+`````
+opens the database and makes "MyProject" the name of the project.
+
+## Programming
 
 
-### Example Application HolonTF
-Holoncode project that created TclForth
+
+## Example Project HolonTF
+The HolonCode project that created TclForth.
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
@@ -33,12 +72,12 @@ Holoncode project that created TclForth
 #### Windows
 
 ```
-tclsh holonCode\src\holoncode.tcl holontf.hdb
+tclsh holonCode\src\holoncode.tcl HolonTF.hdb
 ````
 #### macOS and Linux
 
 ````
 #!/bin/bash
 cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl holontf.hdb &
+tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
 
