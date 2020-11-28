@@ -1,3 +1,2 @@
-cd /Users/wolf/Desktop/HolonS
-Tclsh ~/dropbox/holonforth/holon/source/holoncode.tcl HolonS.hdb &
-
+cd ~/documents/Github/HolonCode/HolonS
+tclsh ~/documents/github/HolonCode/src/holoncode.tcl HolonS.hdb &
