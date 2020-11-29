@@ -23,7 +23,7 @@ use HolonCode in GitHub Desktop
 
 ### Create a Project
 
-https://github.com/wejgaard/HolonCode/tree/master/Project
+[User Project](https://github.com/wejgaard/HolonCode/tree/master/Project)
 
 A HolonCode project consists of a database that contains the program units and a browser for handling the program. <br>IOW, a content management system for source code
 
