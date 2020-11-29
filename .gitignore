@@ -1,6 +1,5 @@
 
 *.mon
 .DS_Store
-*.hdb
 info.plist
 HolonTF/.DS_Store
