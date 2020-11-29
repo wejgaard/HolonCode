@@ -1,4 +1,4 @@
-# HolonCode
+# User Projects
 
 ### Overview
 HolonCode handles program units in a structure of sections and chapters. 
