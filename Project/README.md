@@ -8,7 +8,7 @@ Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 Download Holoncode.zip, <br> 
 or use HolonCode in GitHub Desktop
 
-### Create a new Project
+### Create a new Project  
 
 A HolonCode project consists of a database that contains the program units and a browser for handling the program. 
 IOW, HolonCode is a content management system for source code
