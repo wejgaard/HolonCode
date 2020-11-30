@@ -41,11 +41,6 @@ holonCode\src\holoncode.tcl   - loads and starts HolonCode
 MyProject.hdb  - opens the database and makes "MyProject" the name of the project.
 ````
 
-HolonCode starts and:
-
-1. Creates a new database file
-2. Accepts the name of the file as the name of the project
-3. Initializes the project browser with a chapter, section and unit
 
 ### Programming
 
