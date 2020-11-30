@@ -59,25 +59,3 @@ opens the database and makes "MyProject" the name of the project.
 
 ## Programming
 
-
-
-## Example Project HolonTF
-The HolonCode project that created TclForth.
-
-![HolonTF](https://www.holonforth.com/images/holontf2.png)
-
-
-### Run HolonTF
-
-#### Windows
-
-```
-tclsh holonCode\src\holoncode.tcl HolonTF.hdb
-````
-#### macOS and Linux
-
-````
-#!/bin/bash
-cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
-
