@@ -10,9 +10,17 @@ or use HolonCode in GitHub Desktop
 
 ### Create a new Project
 
-A HolonCode project consists of a database that contains the program units and a browser for handling the program. <br>IOW, a content management system for source code
+A HolonCode project consists of a database that contains the program units and a browser for handling the program. 
+IOW, HolonCode is a content management system for source code
 
-To create a new project, say "MyProject", use the command  "tclsh holonCode\src\holoncode.tcl MyProject.hdb". 
+To create a new project, say "MyProject", load holoncode.tcl with the new database: MyProject.hdb. 
+
+HolonCode starts and
+
+1. Creates a new database file
+2. Accepts the name of the file as the name of the project
+3. Initializes the database browser with a chapter, section and unit
+
 
 #### Windows
 
