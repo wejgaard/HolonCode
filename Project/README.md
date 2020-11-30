@@ -1,17 +1,5 @@
 # User Projects
 
-### Overview
-HolonCode handles program units in a structure of sections and chapters. 
-Like a book. 
-
-
-### Features
-* Clear presentation of the program code.
-* Chapters are files. 
-* The files are instantly updated.
-* Internal version control.
-* Works in Windows, macOS and Linux, wherever Tcl/Tk runs.
-
 ## Installation
 
 #### 1. Tcl/Tk
@@ -21,7 +9,7 @@ Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 Download Holoncode.zip, or<br> 
 use HolonCode in GitHub Desktop
 
-### Create a Project
+### Create a new Project
 
 A HolonCode project consists of a database that contains the program units and a browser for handling the program. <br>IOW, a content management system for source code
 
