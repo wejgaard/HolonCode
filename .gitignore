@@ -2,4 +2,4 @@
 *.mon
 .DS_Store
 info.plist
-HolonTF/.DS_Store
+*.DS_Store
