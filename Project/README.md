@@ -33,15 +33,11 @@ tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 
 #### The command has three parts:
   
-1. tclsh <br>
-starts the Tcl app     
+1. tclsh <br>starts the Tcl app     
 
-2. holonCode\src\holoncode.tcl  
-<br>loads and starts HolonCode, which opens the database
+2. holonCode\src\holoncode.tcl <br>loads and starts HolonCode, which opens the database
 
-3. MyProject.hdb
-<br>and makes "MyProject" the name of the project.
-````
+3. MyProject.hdb<br>and makes "MyProject" the name of the project.
 
 
 ### Programming
