@@ -32,7 +32,7 @@ tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 ````
 
 #### The command has three parts:
-
+  
 1. tclsh  - starts the Tcl app     
 
 2. holonCode\src\holoncode.tcl   - loads and starts HolonCode, <br>which opens the database
