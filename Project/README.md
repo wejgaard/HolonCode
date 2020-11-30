@@ -15,13 +15,6 @@ IOW, HolonCode is a content management system for source code
 
 To create a new project, say "MyProject", load holoncode.tcl with the new database: MyProject.hdb. 
 
-HolonCode starts and
-
-1. Creates a new database file
-2. Accepts the name of the file as the name of the project
-3. Initializes the database browser with a chapter, section and unit
-
-
 #### Windows
 
 ```
@@ -30,7 +23,7 @@ tclsh holonCode\src\holoncode.tcl MyProject.hdb
 #### macOS and Linux
 
 ````
-#!/bin/bash
+#!/bin/bash 
 cd `dirname $0` 
 tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 ````
@@ -45,5 +38,11 @@ holonCode\src\holoncode.tcl   - loads and starts HolonCode
 MyProject.hdb  - opens the database and makes "MyProject" the name of the project.
 ````
 
-## Programming
+HolonCode starts and:
+
+1. Creates a new database file
+2. Accepts the name of the file as the name of the project
+3. Initializes the project browser with a chapter, section and unit
+
+### Programming
 
