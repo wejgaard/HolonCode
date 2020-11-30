@@ -15,8 +15,8 @@ IOW, HolonCode is a content management system for source code
 
 To create a new project, say "MyProject", 
 
-1. start with a project folder MyProject and 
-2. load holoncode.tcl with a new (empty, not yet existing) database MyProject.hdb. 
+1. start with a new project folder MyProject and 
+2. make HolonCode create a new database MyProject.hdb <br>with the following script: 
 
 #### Windows
 
