@@ -1,13 +1,12 @@
 # User Projects
 
-## Installation
+### 1. Install Tcl/Tk
 
-#### 1. Tcl/Tk
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
-#### 2. HolonCode
-Download Holoncode.zip, or<br> 
-use HolonCode in GitHub Desktop
+### 2. Install HolonCode
+Download Holoncode.zip, <br> 
+or use HolonCode in GitHub Desktop
 
 ### Create a new Project
 
@@ -31,11 +30,11 @@ tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 #### The command has three parts:
 
 ````
-tclsh  # starts the Tcl app     
+tclsh  - starts the Tcl app     
 
-holonCode\src\holoncode.tcl   # loads and starts HolonCode
+holonCode\src\holoncode.tcl   - loads and starts HolonCode
 
-MyProject.hdb  # opens the database and makes "MyProject" the name of the project.
+MyProject.hdb  - opens the database and makes "MyProject" the name of the project.
 ````
 
 ## Programming
