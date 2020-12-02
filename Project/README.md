@@ -1,44 +1,48 @@
-# User Projects
+# User Project
 
 ### 1. Install Tcl/Tk
 
 Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 
 ### 2. Install HolonCode
-Download Holoncode.zip, <br> 
-or use HolonCode in GitHub Desktop
+Download Holoncode.zip - or -  use HolonCode in GitHub Desktop
 
 ### Create a new Project  
 
-A HolonCode project consists of a database that contains the program units and a browser for handling the program. 
-IOW, HolonCode is a content management system for source code
+A HolonCode project consists of a database that contains the program units and a browser. 
 
-To create a new project, say "MyProject", 
+To start a new project: MyProject 
 
-1. start with a new project folder MyProject and 
-2. make HolonCode create a new database MyProject.hdb <br>with the following script: 
+- Create a new folder and enter this code in the terminal
 
-#### Windows
+  ##### Windows
 
-```
-tclsh holonCode\src\holoncode.tcl MyProject.hdb
-````
-#### macOS and Linux
+  ```
+  tclsh holonCode\src\holoncode.tcl MyProject.hdb
+  ````
 
-````
-#!/bin/bash 
-cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl MyProject.hdb &
-````
+  ##### macOS and Linux
 
-#### The command has three parts:
-  
-1. tclsh <br>- starts the Tcl app:     
+  ````
+  #!/bin/bash 
+  cd `dirname $0` 
+  tclsh holonCode/src/holoncode.tcl MyProject.hdb &
+  ````
 
-2. holonCode\src\holoncode.tcl <br>- loads and starts HolonCode, which opens the database:
+***tclsh*** - starts the Tcl app    
 
-3. MyProject.hdb<br>- and makes "MyProject" the name of the project.
+***holonCode\src\holoncode.tcl*** - loads and starts HolonCode, which 
+
+***MyProject.hdb*** -  makes "MyProject" the name of the project.
+
 
 
 ### Programming
 
+The project is created with one each chapter, section and unit. 
+
+The rest is up to you...
+
+Hints: 
+
+ 
