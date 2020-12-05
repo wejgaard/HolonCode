@@ -4,7 +4,7 @@
 
 ## Project HolonTF
 
-The HolonCode project that created TclForth.
+The HolonCode project that creates TclForth.
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
@@ -33,9 +33,11 @@ tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
 
 ## TclForth
 
-eigenes Project  https://github.com/wejgaard/TclForth
+Separate Project  https://github.com/wejgaard/TclForth
 
-neuer Startcode 
+### Run TclForth
+
+Updated Runcode here:
 
 ##### Windows
 
