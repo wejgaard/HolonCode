@@ -9,11 +9,13 @@ Download Holoncode.zip - or -  use HolonCode in GitHub Desktop
 
 
 
-### Create a new Project  
+### Create a Project
 
 Say: MyProject 
 
-Create a folder MyProject and in the folder enter this code in the terminal
+- Create a folder MyProject 
+
+- In the folder enter this code in the terminal:
 
 ##### Windows
 
@@ -35,15 +37,11 @@ tclsh holonCode/src/holoncode.tcl MyProject.hdb &
 
 The project is created with one each chapter, section and unit. 
 
-The rest is up to you. But:
+The rest is up to you. Help:
 
-Import "User's Guide.hml"
-
-Made for HolonU, most of it still applies.
-
-- Menu: Project/Import .hml
-
-- From Project/project get "User's Guide.hml"
+- Import "User's Guide.hml"  -  Made for HolonU, most of it still applies.
+  - Menu: Project/Import .hml
+  - From Project/project get "User's Guide.hml"
 
   
 
