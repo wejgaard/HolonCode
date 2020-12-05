@@ -57,7 +57,7 @@ tclsh tfmain.tcl &
 
 #### [Using TclForth](https://github.com/wejgaard/TclForth/wiki)
 
-See TclForth Wiki in Repo TclForth
+TclForth Wiki in Repo TclForth
 
 
 

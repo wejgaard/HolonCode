@@ -49,3 +49,8 @@ tclsh holonCode/src/holoncode.tcl HolonS.hdb &
 
 ````
 
+
+
+# 
+
+müsste files vergleichen

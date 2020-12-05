@@ -7,33 +7,27 @@ Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 ### 2. Install HolonCode
 Download Holoncode.zip - or -  use HolonCode in GitHub Desktop
 
+
+
 ### Create a new Project  
 
-A HolonCode project consists of a database that contains the program units and a browser. 
+Say: MyProject 
 
-To start a new project: MyProject 
+Create a folder MyProject and in the folder enter this code in the terminal
 
-- Create a new folder and enter this code in the terminal
+##### Windows
 
-  ##### Windows
+```
+tclsh holonCode\src\holoncode.tcl MyProject.hdb
+````
 
-  ```
-  tclsh holonCode\src\holoncode.tcl MyProject.hdb
-  ````
+##### macOS and Linux
 
-  ##### macOS and Linux
-
-  ````
-  #!/bin/bash 
-  cd `dirname $0` 
-  tclsh holonCode/src/holoncode.tcl MyProject.hdb &
-  ````
-
-***tclsh*** - starts the Tcl app    
-
-***holonCode\src\holoncode.tcl*** - loads and starts HolonCode, which 
-
-***MyProject.hdb*** -  makes "MyProject" the name of the project.
+````
+#!/bin/bash 
+cd `dirname $0` 
+tclsh holonCode/src/holoncode.tcl MyProject.hdb &
+````
 
 
 
@@ -41,8 +35,33 @@ To start a new project: MyProject
 
 The project is created with one each chapter, section and unit. 
 
-The rest is up to you...
+The rest is up to you. But:
 
-Hints: 
+Import "User's Guide.hml"
+
+Made for HolonU, most of it still applies.
+
+- Menu: Project/Import .hml
+
+- From Project/project get "User's Guide.hml"
+
+  
+
+  
+
+  
+
+  
+
+   
+
+  
+
+
 
  
+
+
+
+
+

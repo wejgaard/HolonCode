@@ -7,23 +7,25 @@ Like a book.
 
 
 
-### Holon&Editor - showdown
+### HolonS.html
+
+https://holonforth.com/images/holontest.png
 
 FILE EDITOR       VERSUS    HOLONCODE   
 
-BILDER  == HOLONS.HTML
+BILDER  == **HOLONS.HTML**
 
 FEATURES AUCH DORT
 
 
 
+
+
+
+
 ### Content
 
-- **[HolonS](https://github.com/wejgaard/HolonCode/tree/master/HolonS)** - The full Holon code at your disposal
-
-- **[HolonTF](https://github.com/wejgaard/HolonCode/tree/master/HolonTF)** - Real project - creates TclForth
-
-- **[TclForth](https://github.com/wejgaard/HolonCode/tree/master/HolonTF)** - Forth in Tcl - offers the rich Tcl/Tk universe avaliable
+- **[HolonTF](https://github.com/wejgaard/HolonCode/tree/master/HolonTF)** - Holon project - creates TclForth
 
 - **[User Project](https://github.com/wejgaard/HolonCode/tree/master/Project)** - Using - How HolonCode works, DIY 
 
@@ -42,6 +44,8 @@ Download and install Tcl/Tk via https://docs.activestate.com/activetcl/8.6/
 ### Example Project HolonTF
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
+
+
 
 
 
