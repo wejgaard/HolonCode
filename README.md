@@ -5,15 +5,19 @@
 HolonCode handles program units in a structure of sections and chapters. 
 Like a book. 
 
+This Repo contains the actual HolonCode source files (/src) for free use under GPLv3.
 
 
-### HolonS.html
 
-https://holonforth.com/images/holontest.png
+## Features
+
+####  HolonS.html
+
+![HolonS](https://www.holonforth.com/images/holontest.png)
 
 FILE EDITOR       VERSUS    HOLONCODE   
 
-BILDER  == **HOLONS.HTML**
+
 
 FEATURES AUCH DORT
 
