@@ -2,28 +2,15 @@
 
 ### Overview
 
-HolonCode handles program units in a structure of sections and chapters. 
-Like a book. 
+HolonCode handles program units as a collection of pages in a structure of sections and chapters. Like a book. 
 
-This Repo contains the actual HolonCode source files (/src) for free use under GPLv3.
-
-
+The HolonCode is free for use under GPLv3.
 
 ## Features
 
-####  HolonS.html
-
 ![HolonS](https://www.holonforth.com/images/holontest.png)
 
-FILE EDITOR       VERSUS    HOLONCODE   
-
-
-
-FEATURES AUCH DORT
-
-
-
-
+See  [HolonS](https:holonforth.com.holons.html)
 
 
 
