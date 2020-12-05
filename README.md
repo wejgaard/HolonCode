@@ -10,7 +10,7 @@ The HolonCode is free for use under GPLv3.
 
 ![HolonS](https://www.holonforth.com/images/holontest.png)
 
-Details in  [HolonS](https://holonforth.com.holons.html)
+Details in  [HolonS](https://holonforth.com/holons.html)
 
 
 
