@@ -1,13 +1,30 @@
+ # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
+ #  
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 proc AskSetup {} {
-	global setup color
+	global setup color setOK
 	set setup(win) .setup
-	if [winfo exists $setup(win)] {raise $setup(win); return}
 	toplevel $setup(win)
 	wm title $setup(win) "Preferences"
 	.setup config -bg $color(pagebg)
+	SetupRevision
 	SetupOperation
 	SetupOK
-	wm protocol $setup(win) WM_DELETE_WINDOW {EndSetup}
+	vwait setOK
+	destroy $setup(win)
+	EndSetup
 }
 
 proc SetupRevision {} {
@@ -90,17 +107,15 @@ proc SetupOK {} {
 }
 
 proc EndSetup {} {
-	global setup view
+	global setup view 
+	SaveSetupVersion	$setup(version); .b.rev config -text "Rev. $setup(version)"
 	SetBase safe $setup(safe)
 	SetBase fontsize $setup(size); 
-	SetBase codesize $setup(codesize); 	
-	AdjustFontsize
-	SetBase codecolor $setup(codecolor); 
-	if {![Editing]} {ShowCode [CurrentPage]}
+	SetBase codesize $setup(codesize); AdjustFontsize
+	SetBase codecolor $setup(codecolor); if {![Editing]} {ShowCode [CurrentPage]}
 	if {[GetBase extension]!=$setup(extension)} {
 		SetBase extension $setup(extension); RefreshChapters
-	}	
-	destroy $setup(win)
+	}
 }
 
 set AboutElemente ""
@@ -187,30 +202,22 @@ proc Import-hml {} {
 }
 
 set LicenseText {
-LICENSE AGREEMENT
+License GPLv3
 
-This is a legal agreement between you and DR. WOLF WEJGAARD FORTH ENGINEERING. 
-You should carefully read the following terms and conditions before using this
-software. Your use of the software indicates your acceptance of this license 
-agreement and disclaimer of warranty. 
+Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
 
-DR. WOLF WEJGAARD FORTH ENGINEERING, hereinafter referred to as "WOLF WEJGAARD", 
-grants to you a permanent non-exclusive and non-transferable license to use the 
-Software on a single computer with one keyboard/display, i.e., a computer intended 
-to be used by one person at a time.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Furthermore, you agree not to modify, de-compile, disassemble, or otherwise reverse 
-engineer the Software at any time or under any circumstances. WOLF WEJGAARD's 
-software is under copyright and contains proprietary information belonging to FORTH 
-ENGINEERING and/or its partners. 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-THE SOFTWARE AND THE ACCOMPANYING FILES ARE PROVIDED "AS IS" AND WITHOUT WARRANTIES AS 
-TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIES WHETHER EXPRESSED OR IMPLIED. 
-NO WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE IS OFFERED. 
-
-THE USER MUST ASSUME THE ENTIRE RISK OF USING THE SOFTWARE. ANY LIABILITY OF FORTH 
-ENGINEERING OR ANY OF ITS PARTNERS WILL BE LIMITED EXCLUSIVELY TO A REFUND OF THE 
-PURCHASE PRICE PAID FOR THE SOFTWARE BY THE USER TO WOLF WEJGAARD. 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 --
 
@@ -236,7 +243,30 @@ proc License {} {
 	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
 	pack $lt -side top -fill both -expand true
 	$lt insert 1.0 "Open Source VERSION OF HOLONCODE\n"
-	$lt insert end  "Hier kommt der aktive Lizenz Text"
-	$lt configure -state disabled
+	$lt insert end  "License GPLv3
+
+Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+--
+
+CREDITS
+HolonTalk is programmed in TclTk and uses the Metakit database.
+License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
+License for Metakit:  http://equi4.com/metakit/license.html
+"
+$lt configure -state disabled
 }
 

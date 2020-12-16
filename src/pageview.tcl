@@ -35,20 +35,16 @@ proc TitleBindings {} {
 
 proc TitlePane {} {
 	global view color
-
 	# the frame for title and version 
 	set view(titleversion) [frame $view(page).tv -relief sunken -bd 1 -bg white]
-
 	# the title space
 	set view(title) $view(titleversion).title
-	text $view(title) -width 40  -undo true	-font title -pady 7  \
+	text $view(title) -width 100  -undo true	-font title -pady 7  \
 		-height 1 -state disabled -relief flat -padx 9 -bg $color(menu) \
 		-highlightthickness 0 -highlightcolor white
 	pack $view(title) -side left -fill both 
-
 	# the version space
 	pack [VersionPane] -side right -fill x -fill y -expand true
-
 	# configure
 	TitleTags
 	TitleBindings
@@ -272,139 +268,6 @@ proc CodeReturn {} {
 	}
 }
 
-proc TestReturn {} {
-	global view
-	set lineno [expr {int([$view(test) index insert])}]
-	set line [$view(test) get $lineno.0 $lineno.end]
-	regexp {^(\s*)} $line -> prefix
-	if {[$view(test) index insert]!=[$view(test) index "insert linestart"]} {
-		after 1 [list $view(test) insert insert $prefix]
-	}
-}
-
-proc TestTags {} {
-	global view
-	$view(test) tag configure marking -foreground blue -font link
-	$view(test) tag configure selection -background lightblue
-}
-
-proc TestKeyBindings  {} {
-	global view
-	bind $view(test) <Return> {TestReturn}
-	bind $view(test) <Shift-Return> {if {[Editing]} {SaveIt}}
-	bind $view(test) <Escape> {if {[Editing]} {SaveIt}}
-	bind $view(test) <Shift-Right> {continue}  ;# bypass CurRight	
-	bind $view(test) <Shift-Left> {continue}
-}
-
-proc TestMouseBindings  {} {
-	global edit view
-	bind $view(test) <Button-1> {Click $view(test)} 	
-	bind $view(test) <B1-Motion> {if $view(dragging) break}
-	bind $view(test) <ButtonRelease-1> {ButtonRelease $view(test)}
-	bind $view(test) <Control-Button-1> {SearchWord $view(test); break} 
-	bind $view(test) <$::RightButton> {SearchWord $view(test); break}
-	bind $view(test) <Motion> {MarkIt $view(test)}	
-	bind $view(test) <Leave> {$view(test) tag remove marking 1.0 end}
-}
-
-proc TestPane {} {
-	global view color
-	set pt [frame $view(panes).x -relief sunken]
-	set view(test) $pt.text
-	set testScroll $pt.scroll
-	text $view(test) -width 72 -height 10 -pady 5 -padx 10 -bd 1 -relief sunken \
-		-highlightthickness 0 -bg bisque -yscrollcommand "$pt.scroll set" \
-	 	-font code -wrap word -undo true  -tabs {1c 2c 3c 4c 5c 6c} \
-		-state disabled -exportselection 1 
-	scrollbar $testScroll -orient vertical -command [list $view(test) yview]
-	pack $testScroll -side right -fill y
-	pack $view(test) -side left -expand 1 -fill both
-	TestTags
-	TestKeyBindings ; TestMouseBindings
-	return $pt
-}
-
-proc ShowTest {id} {
-	global view color oldVersion 
-	$view(test) configure -state normal
-	$view(test) delete 1.0 end
-	if {$oldVersion} {
-		set test [GetOldPage $id test]
-	} {
-		set test [GetPage $id test] 	 
-	}
-	$view(test) insert end $test 
-	$view(test) configure -state disabled -bg bisque
-
-	if {[string length $test] > 1} {
-		.b.test configure -text Test   ; 	bind .b.test <Button-1> LoadTest
-	} {
-		.b.test configure -text Test  ;	 bind .b.test <Button-1> LoadTest
-	} 
-}
-
-proc SaveOldPage {id} {
-	global version
-	pagevars $id type text source changes old test name
-	set v [lindex $changes end]
-	if {$v==$version || $v==""} {return}
-	set oldpage	[mk::row append wdb.oldpages 	text $text  source $source \
-		link $old  type $type test $test name $name]
-	SetPage $id old [mk::cursor position oldpage]
-}
-
-proc MarkVersion {j} {
-	global view
-	$view(version) tag remove bold 1.0 end
-	set range [$view(version) tag ranges old$j]
-	eval {$view(version) tag add bold} $range  
-}
-
-proc ShowOldPage {j} {
-	global oldVersion
-	if [Editing] {SaveIt}
-	MarkVersion $j
-	set id [CurrentPage]
-	if {$j==0} {
-		set oldVersion 0
-		ShowPage $id
-		return
-	} 
-	set oldVersion 1
-	set id [GetPage $id old]
-	for {set i 1} {$i<$j} {incr i} {
-		set id [GetOldPage $id link]
-		if {$id==""} return
-	}
-	ShowTitle $id
-	ShowText $id;  $::view(text) configure -state normal 
-	ShowCode $id; $::view(code) configure -state normal
-	ShowTest $id
-}
-
-proc ShowVersions {id} {
-	global view changelist color
-	$view(version) configure -state normal 
-	$view(version) delete 1.0 end
-	set changelist [GetPage $id changes]
-	if {$changelist==""} return
-	set n [llength $changelist]
-	for {set i 0} {$i<$n} {incr i} {
-		set j [expr $n-$i-1]
-		set v [lindex $changelist $i]
-		$view(version) tag configure old$j
-		$view(version) tag bind old$j <Button-1> "ShowOldPage $j; ShowRevision $v"
-		$view(version) tag bind old$j <$::RightButton> "ShowRevision $v"
-		$view(version) tag bind old$j <Control-Button-1> "ShowRevision $v"
-		$view(version) tag bind old$j <Enter> {$view(version) config -cursor arrow}
-		$view(version) tag bind old$j <Leave> {$view(version) config -cursor xterm}
-		$view(version) insert end "$v " old$j
-	}
-	$view(version) tag add right 1.0 end
-	$view(version) configure -state disabled 
-}
-
 proc PageFrame {} {
 	global view color style
 	eval labelframe $view(page) $style(frame) 
@@ -420,8 +283,6 @@ proc CreatePage {} {
 		-sashrelief flat -opaqueresize 1 -sashwidth 3 -bg #f3f3f3
 	$view(panes) add [TextPane]
 	$view(panes) add [CodePane]
-#	$view(panes) add [TestPane]
-	TestPane  ;# exists but invisible
 	# arrange title and panes in page	
 	grid [TitlePane] -row 0  -sticky news
 	grid $view(panes) -row 1  -sticky news  
@@ -449,7 +310,6 @@ proc Text&CodePanes {} {
 proc NoCodePane {} {
 	global view
 	$view(panes) sash place 0 0 2000
-#	$view(panes) sash place 1 0 2000  -- no Testpane
 }
 
 proc TextCodePanes {id} {
@@ -475,12 +335,12 @@ proc ClearPage {} {
 }
 
 proc ShowPage {id} {
-	global view oldVersion color page
-	set page $id
+	global view oldVersion color
+	set ::page $id
 	set oldVersion 0
 	SetList $id
 	ShowTitle $id
-	ShowVersions $id; # ShowTest $id
+#	ShowVersions $id; # ShowTest $id
 	ShowText $id
 	ShowCode $id
  	if {[Deleted $id]} {
@@ -489,12 +349,10 @@ proc ShowPage {id} {
 		$view(version) insert end "\[deleted\]" deleted
 		$view(version) configure -state disabled 
 	}
-	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {
-		$pane configure -bg $color(pagebg)
-	}	
+	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {$pane configure -bg $color(pagebg)}	
 	TextCodePanes $id
 	ShowLinPage $id
-	ShowTree $id
+	ShowTree $id     
 	ShowFoundText 
 	MarkInfoPages
 	StartVisitTime

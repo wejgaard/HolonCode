@@ -37,7 +37,7 @@ proc Insert&Delete {} {
 	bind $view(units) <Shift-BackSpace> {InsertUDeleted after; break} 
 }
 
-proc NewPage {} {
+proc NewPage {} { 
 	if [Editing] {SaveIt}
 	switch [GetPage [CurrentPage] type] {
 		chapter {AddChapter}
@@ -100,20 +100,12 @@ proc StoreText {} {
 	set text [$view(text) dump 1.0 "end - 1 char"]
 	set code [string trimright [$view(code) get 1.0 end ]]; 
 	set cursor [lindex [$view(code) yview] 0] 
-	set test " "; 	# set test [string trim [$view(test) get 1.0 end]]
-	SavePage [CurrentPage] $text $code local $title $cursor $test $changed
+	SavePage [CurrentPage] $text $code local $title $cursor 
 }
 
 proc SaveText {} {
-	global version changelist oldVersion changed
-	if {![Editing]||$oldVersion} {return}
+	if {![Editing]} {return}
 	set id [CurrentPage]
-	set changed 0
-	# Save previous version.
-	if {[TextChanged] && $version!=[lindex $changelist end]} {
-		SaveOldPage $id ; UpdateChangelist $id 
-		set changed 1
-	}
 	StoreText
 	WriteChapter	         
 	BrowserButtons
@@ -153,14 +145,11 @@ proc EditPage {} {
 		$pane configure -state normal  -bg $color(editbg)
 		$pane edit reset
 	}
-	$view(test) configure -state normal  -bg bisque
 	if {$edit(pane)==""} {
 		set pane $view(title)
 	} else {
 		set pane $edit(pane); set edit(pane) "" ; set cursor $edit(pos)
 	}
-#	if {$cursor==""} {set cursor 1.0}   ;# new page
-#	$pane mark set insert $cursor
 	$pane mark set anchor insert	   
 	focus $pane
 	RefreshColors
@@ -505,36 +494,4 @@ proc TextMenu {} {
 #	$tm add command -label "image" -command TextImage
 	$tm add command -label "url" -command TextURL
 }
-
-proc CutLines {pane} {
-	set i 0; set j 0
-	set buf [$pane get 1.0 end]  
-	set len [string length $buf]
-	while {$i<$len} {
-		if {[string index $buf $i] eq "\n"} {set  j 0}
-		if {$j > 72} {
-			while {[string index $buf $i] ne " "} {
-				incr i -1;  if {$i<0} break
-			}
-			set buf [string replace $buf $i $i \n]
-			set j 0; 
-		}
-		incr i; incr j
-	} 
-	# Text zurückschreiben
-	$pane configure -state normal
-	$pane delete 1.0 end
-	$pane insert  end $buf
-}
-
-proc Signatur {pane} {
-	$pane insert end "
-- Wolf
---
-Wolf Wejgaard
-http://holonforth.com
-"
-}
-
-
 

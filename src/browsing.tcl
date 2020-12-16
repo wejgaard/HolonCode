@@ -130,7 +130,7 @@ proc InsertCDeleted {where} {
 }
 
 proc NewChapter {} {
-	set name "Chapter"
+	set name Chapter
 	set c [AppendPage name $name changes $::version date [clock seconds]]
 	SetPage $c list $c
 	InsertChapter $c 1
@@ -594,7 +594,7 @@ proc FoundColor {color} {
 	.s.replace config -bg $color
 }
 
-proc ShowFoundText {} {
+proc ShowFoundText {} { 
 	global view searchText found
 	set found 1.0;   # für FoundInPage
 	foreach pane "$view(title) $view(text) $view(code)" {

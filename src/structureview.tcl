@@ -105,7 +105,6 @@ set view(version) ""
 set view(text) ""
 set view(code) ""
 set view(info) ""
-set view(test) ""
 set view(treeactive) ""
 
 set view(sash0) "0 50"     ;# Position of sash Text/Code
@@ -416,16 +415,6 @@ proc ClearUnits {} {
 	$view(units) delete 0 [$view(units) size]
 }
 
-proc UpdateUnits {} {
-	global Units view 
-	if {[Editing]} {SaveText}
-	set active [$view(units) curselection]
-	if {$active == ""} {return}
-	SetUnit [lindex $Units $active]  
-	Text&CodePanes; 
-	ShowPage [Unit]
-}
-
 proc GetUnits {} {
 	global Units view
 	ClearUnits
@@ -445,6 +434,16 @@ proc RefreshUnits {} {
 	ShowPage [Unit]
 	$view(units) selection set [iActiveUnit] 
 	focus $view(units)
+}
+
+proc UpdateUnits {} {
+	global Units view 
+	if {[Editing]} {SaveText}
+	set active [$view(units) curselection]
+	if {$active == ""} {return}
+	SetUnit [lindex $Units $active]  
+	Text&CodePanes; 
+	ShowPage [Unit]
 }
 
 proc FocusUnits {} {

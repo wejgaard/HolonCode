@@ -7,23 +7,21 @@ proc SetDBLayout {} {
 	mk::view layout wdb.pages \
 		{name page date:I who type next list active cursor source text \
 		 changes old compcode test mode}
-	mk::view layout wdb.archive {name date:I who id:I version}
-	mk::view layout wdb.oldpages {link text source type test name}
 }
 
 proc CreateStructure {} {
-		mk::row append wdb.base  monitor 0 view list	version 0.001 \
-			geometry "1100x700+50+50" extension 1  \
-			textcolor #ffffff codecolor 1 pages 2 comdel //  running 0 \
-			runcmd "../tclkit ./main.tcl" syntax Tcl safe 0 \
-			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 12 revpage 1
-		set c [AppendPage type chapter name "Revisions" mode source]
+		mk::row append wdb.base  monitor 0  view list	 version 0.001 \
+			geometry "1100x700+50+50"  extension 1  \
+			textcolor #ffffff  codecolor 1 pages 2 comdel //  running 0 \
+			runcmd "../tclkit ./main.tcl"  syntax Tcl  safe 0 \
+			pagesize A4  start 0  codefont Verdana  codesize 12  revpage 1
+		set c [AppendPage type chapter  name "Chapter"  mode source]
     		SetBase list $c active $c
     		SetPage $c next ""
-    		set s [AppendPage type section name "Setup"]
+    		set s [AppendPage type section  name "Section"]
     		SetPage $c list $s active $s
     		SetPage $s next $c
-    		set u [AppendPage type unit name "0.001"]
+    		set u [AppendPage type unit  name "Unit"]
     		SetPage $s list $u active $u
     		SetPage $u next $s
     		SetBase revpage $u
@@ -33,32 +31,26 @@ proc CreateStructure {} {
 proc UpdateRunning {} {
 	SetBase running [clock seconds]
  	mk::file commit wdb
-	after 6000 UpdateRunning
-}
-
-proc ProjectDB {} {
-	global argv appname 
-	set db [lindex $argv 0]
-	set db "./$db"  
-	set appname [file rootname [file tail $db]]
-	return $db
+	after 60000 UpdateRunning
 }
 
 proc OpenDB {} {
-	global wdb db
-	set db [ProjectDB]
+	global wdb argc argv appname db  newdb
+	# get path of db and name of host=app=project
+		if {$argc} {set db [lindex $argv 0]} else {set db [tk appname].hdb}
+		set db "./source/$db"  
+		set appname [file rootname [file tail $db]]
 	# open or create DB  
-	set newdb [expr ![file exists $db]]
-	mk::file open wdb $db -shared                 ;# wdb is handle of the db-file
-	SetDBLayout
-	if {$newdb} {CreateStructure}
-	catch {
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
-			wm iconify .  ;# reduce window to icon, only message box is visible
-			tk_messageBox -type ok -message "System is already running"
+		set newdb [expr ![file exists $db]]
+		mk::file open wdb $db -shared        ;# wdb is handle of db-file
+		SetDBLayout
+		if {$newdb} {CreateStructure; return}
+	# exit if app is already running
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<60} {
+			wm iconify .  
+			tk_messageBox -type ok -message "This System is already running"
 			exit
-		}	
-	}	
+		}
 	UpdateRunning
 }
 
@@ -239,31 +231,21 @@ proc Deleted {id} {
 	if {[GetPage $id type]=="deleted"} {return 1} {return 0}
 }
 
-proc SavePage {id text code who newName cursor test changed} {
+proc SavePage {id text code who newName cursor} {
 	global infomode version
   	pagevars $id name page source type 
    	if {$newName != $name} {
    		SetPage $id name $newName
   	}
-  	if {$changed==1} {
-    		SetPage $id date [clock seconds]
-    		AddHistory $id; 
-    		if {$infomode=="revisions"} {after 300 ShowRevisions}
-    		if {$infomode=="revision"} {after 300 ShowRevision $version}
-  	}
-  	if {$type!="chapter"} {
-  		SetPage $id source $code who $who cursor $cursor text $text test $test
-	} {
-		SetPage $id source $code who $who cursor $cursor text $text
-	}
+    	SetPage $id source $code who $who cursor $cursor text $text
  	mk::file commit wdb
 }
 
 set page 0
 
 proc CurrentPage {} {
-	global page
-	return $page
+	return $::page
+
 }
 
 proc PageStack {} {
@@ -307,21 +289,6 @@ proc EndVisitTime {} {
 	PushPage [CurrentPage]
 }
 
-set version 0
-
-set oldVersion 0
-
-proc SetVersion {v} {
-	global version
-	set version $v
-	SetBase version $v
-}
-
-proc AddHistory {id} {
-  	pagevars $id date page who name
-  	mk::row append wdb.archive id $id name $name date $date who $who version $::version
-}
-
 proc osx {} {
 	if {$::tcl_platform(os)=="Darwin"} {return true} {return false}
 }
@@ -343,94 +310,5 @@ proc ascii {c} {
 proc GetAscii {i} {
 	global comp
 	ascii [string index $comp(source) $i]
-}
-
-set Client "Wolf der Macher
-Zuhause
-6045 Meggen
-"
-
-set licensed false
-set trial true
-set keytext "nokey"
-set trialtime 12
-
-proc closed {} {
-	global licensed trial
- 	return [expr $licensed || $trial]
-}
-
-proc OpenKeyfile {} {
-	set name "thekeyfile"
-	set f [open $name.key w]
- 	fconfigure $f -encoding binary
-	return $f
-}
-
-proc MakeKeyfile {text} {
-	set f [OpenKeyfile]
-	fconfigure $f -translation binary
-#	puts $f [MumbleText "Wolf Wejgaard\nForth Engineering\nCH-6045 Meggen"]
-	puts $f [MumbleText $text]
-	close $f
-}
-
-proc KeyFile {} {
-	global keyfile
-	set keyfile	[lindex [glob -nocomplain *.key] 0]
-}
-
-proc GetKey {} {
-	global keyfile keytext licensed trial days trialtime
-	if {[GetBase start]==0} {SetBase start [expr ([clock seconds]/86400)]}; 
-	if {[KeyFile]!=""} {
-		set f [open $keyfile r]
-		fconfigure $f -translation binary
-		set keytext [DemumbleText [read -nonewline $f]]
-		close $f
-	}	
-	if {$keytext!="nokey"} {set licensed true; return}
-	set now [expr ([clock seconds]/86400)]; 
-	set start [GetBase start]
-	set days [expr ($now-$start)]
-	set trial [expr {$days<$trialtime}]
-}
-
-proc Mumble {m} {
-	set mm [expr ($m%8)*16+($m/8)]
-	return $mm
-}
-
-proc MumbleText {text} {
-	set mtext ""
-	set summe 0
-	set len [string length $text]
-	for {set i 0} {$i<$len} {incr i} {
-		set char [string index $text $i]
- 		set asc [ascii $char] 
-		incr summe $asc
-		append mtext	[char [Mumble $asc]]
-	}
-#	append mtext [char [expr $summe%128]]
-	return $mtext
-}
-
-proc Demumble {m} {
-	set mm [expr ($m%16)*8+($m/16)]
-	return $mm
-}
-
-proc DemumbleText {text} {
-	set mtext ""
-	set summe 0
-	set len [string length $text]
-	for {set i 0} {$i<$len} {incr i} {
-		set char [string index $text $i]
-		set asc [ascii $char]
-		append mtext	[char [Demumble $asc]]
-		incr summe [Demumble $asc]
-	}
-#	if {[ascii [string index $text end]]!=[expr $summe%128]}	{set mtext ""}
-	return $mtext
 }
 

@@ -35,9 +35,9 @@ tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
 
 Separate Project  https://github.com/wejgaard/TclForth
 
-### Run TclForth
-
 Updated Runcode here:
+
+### Run TclForth
 
 ##### Windows
 

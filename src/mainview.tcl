@@ -44,16 +44,16 @@ proc CreateButtons {} {
 	CreateButton Load LoadUnit
 	CreateButton Setup AskSetup
 	CreateButton Run DoRun
-	CreateButton Test LoadTest
-	CreateButton Commit Commit
+#	CreateButton Test LoadTest
+#	CreateButton Commit Commit
 	CreateButton Print Print
-	CreateButton Rev EditRevision
-	CreateButton Clear ClearAll
-	label .b.leer -text " |    " -bg $::color(menu)
-	bind .b.rev <$::RightButton> ShowRevisions
-	bind .b <$::RightButton> ClearAll
-	bind .b <Button-1> ClearAll
-	bind .b.load <$::RightButton> DoRun
+#	CreateButton Rev EditRevision
+#	CreateButton Clear ClearAll
+#	label .b.leer -text " |    " -bg $::color(menu)
+#	bind .b.rev <$::RightButton> ShowRevisions
+#	bind .b <$::RightButton> ClearAll
+#	bind .b <Button-1> ClearAll
+#	bind .b.load <$::RightButton> DoRun
 }
 
 proc FindReplace {} {
@@ -77,8 +77,8 @@ proc FindReplace {} {
 }
 
 proc PackButtons {} {
-	pack $::Back $::View $::New $::Edit $::Load .b.leer $::Rev  -side left -padx 0 -pady 0 
-	pack [FindReplace] -in .b -side right 
+	pack $::Back $::View $::New $::Edit $::Load -side left -padx 0 -pady 0 
+ 	pack [FindReplace] -in .b -side right 
 }
 
 proc ButtonBar {} {
@@ -88,14 +88,14 @@ proc ButtonBar {} {
 	CreateButtons
 	PackButtons
 #	.b.rev config -text "Revision $::version"
-	.b.rev config -text "Rev. $::version"
-	.b.rev config -width 8
+#	.b.rev config -text "Rev. $::version"
+#	.b.rev config -width 8
 	return $buttonBar
 }
 
 proc CreateMenu {} {
 	menu .menubar  
-	. config -menu .menubar 
+	. config -menu .menubar
 	FileMenu 
 	ViewMenu 
 	ConfigurationMenu
@@ -130,17 +130,6 @@ proc ViewMenu {} {
 	$menu(view) add command -label "Lists shorter  (-)" -command {DecrList} 
 }
 
-proc ConfigurationMenu {} {
-	global menu
-	.menubar add cascade -label Configuration -menu .menubar.version -underline 0
-	set menu(version) [menu .menubar.version -tearoff 0 ]
-	$menu(version) add command -label "Preferences" -command AskSetup
-	$menu(version) add command -label "Commit" -command Commit
-	$menu(version) add command -label "About" -command AboutHolonCode
-	$menu(version) add command -label "License" -command License
-#    ShowProject
-}
-
 proc HolonMenu {} {
 	global menu
 	.menubar add cascade -label Holon -menu .menubar.holon -underline 0
@@ -148,25 +137,6 @@ proc HolonMenu {} {
 	$menu(holon) add command -label "Markup for Import" -command {Markup}
 	$menu(holon) add command -label "New Project" -command {NewProject}
 	$menu(holon) add command -label "License" -command {License}
-}
-
-proc HelpMenu {} {
-	global menu
-	.menubar add cascade -label Manual -menu .menubar.help -underline 0
-	set menu(help) [menu .menubar.help -tearoff 0]
-	$menu(help) add command -label "Operation" -command {ShowHelp}
-	$menu(help) add command -label "About" -command {About}
-	$menu(help) add command -label "License" -command {License}
-}
-
-proc TargetMenu {} {
-	global menu
-	set menu(target) [menu .menubar.target -tearoff 0]
-	.menubar add cascade -label Target -menu .menubar.target -underline 0
-	$menu(target) add command -label "Load unit" -command {LoadUnit}
-	$menu(target) add command -label "Test unit" -command {TestUnit}
-	$menu(target) add command -label "Run program" -command {DoRun}
-	
 }
 
 proc AboutHolonCode {} {
@@ -177,14 +147,30 @@ proc AboutHolonCode {} {
 	pack $abouttext -side top -fill both
 	AnzahlElemente
   	$abouttext insert 1.0 "
-  HolonCode Version $::sourceversion 
+  HolonCode Version 1.0 
   Copyright 2008-20 Wolf Wejgaard
   All Rights Reserved
     
+  Contact/Support: 
+  wejgaard@holonforth.com
+  
   Current # Elements:
   $::AboutElemente 
     
+  Credits:
+  I am indebted to Jean-Claude Wippler, Equi4 Software, http://equi4.com, 
+  for two great tools that make Holon efficient and reliable: 
+  Metakit - a widely proven database engine
+  Tclkit - a self-contained Tcl/Tk runtime 
 "
+}
+
+proc ConfigurationMenu {} {
+	global menu
+	.menubar add cascade -label Configuration -menu .menubar.version -underline 0
+	set menu(version) [menu .menubar.version -tearoff 0 ]
+	$menu(version) add command -label "Preferences" -command AskSetup
+	$menu(version) add command -label "About" -command AboutHolonCode
 }
 
 set menu(chapters) ""
@@ -246,12 +232,12 @@ proc ContextMenus {} {
 	UnitMenu 
 	bind $view(units) <$::RightButton> {tk_popup $menu(units) %X %Y}
 	bind $view(units) <Control-Button-1> {tk_popup $menu(units) %X %Y}
-	RevisionMenu
-	bind $::Rev <$::RightButton> {tk_popup $menu(revision) %X %Y}
-	bind $::Rev <Control-Button-1> {tk_popup $menu(revision) %X %Y}
-	LoadMenu
-	bind $::Load <$::RightButton> {tk_popup $menu(load) %X %Y}
-	bind $::Load <Control-Button-1> {tk_popup $menu(load) %X %Y}
+#	RevisionMenu
+#	bind $::Rev <$::RightButton> {tk_popup $menu(revision) %X %Y}
+#	bind $::Rev <Control-Button-1> {tk_popup $menu(revision) %X %Y}
+#	LoadMenu
+#	bind $::Load <$::RightButton> {tk_popup $menu(load) %X %Y}
+#	bind $::Load <Control-Button-1> {tk_popup $menu(load) %X %Y}
 }
 
 proc BindInfo {} {
@@ -308,7 +294,7 @@ proc ClearRevision {} {
 	global view 
 	$view(rev) configure -state normal
 	$view(rev) delete 1.0 end
-	$view(rev) configure -state disabled
+	$view(rev) configure -state disabled  
 }
 
 proc InfoTitle {name} {
@@ -473,7 +459,8 @@ proc ShowHolon {} {
 	global view
 	set ::page [lindex [PageStack] 0]
 	ShowPage [CurrentPage]
-	ShowVisitedPages; ShowRevision $::version
+	ShowVisitedPages; 
+#	ShowRevision $::version
 	after 300 {TextCodePanes [CurrentPage]}
 }
 
@@ -483,16 +470,16 @@ proc DisableMotionEvents {} {
 	bind $view(text) <Leave> {}
 	bind $view(code) <Motion> {}
 	bind $view(code) <Leave> {}
-	bind $view(test) <Motion> {}
-	bind $view(test) <Leave> {}
 	bind $view(info) <Motion> {}
 	bind $view(info) <Leave> {}
 }
 
 proc EndSession {} {
 	DisableMotionEvents
-	SetBase geometry 1000x600+40+40   
+#	SetBase geometry [wm geometry .]   
+	SetBase geometry 1100x800+300+60   
 	CloseDB
+# 	file delete $::runfile
 	destroy $::topwin 
 	exit
 }

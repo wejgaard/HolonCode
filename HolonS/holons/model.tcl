@@ -1,3 +1,43 @@
+ # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+proc ShowPage {id} {
+	global view oldVersion color
+	set ::page $id
+	set oldVersion 0
+	SetList $id
+	ShowTitle $id
+#	ShowVersions $id; # ShowTest $id
+	ShowText $id
+	ShowCode $id
+ 	if {[Deleted $id]} {
+		$view(version) configure -state normal 
+		$view(version) delete 1.0 end
+		$view(version) insert end "\[deleted\]" deleted
+		$view(version) configure -state disabled 
+	}
+	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {$pane configure -bg $color(pagebg)}	
+	TextCodePanes $id
+	ShowLinPage $id
+	ShowTree $id
+	ShowFoundText 
+	MarkInfoPages
+	StartVisitTime
+	SetTreePage
+}
+
 proc SetDBLayout {} {
 	mk::view layout wdb.base \
 		{list active delchapters delsections delunits monitor view \

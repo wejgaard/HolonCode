@@ -1,3 +1,18 @@
+ # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
+ #  
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 proc CreateColors {} {
 	global color
 	set color(menu)    SystemButtonFace   
@@ -299,21 +314,13 @@ proc GetSyntax {} {
 }
 
 proc UpdateChapters {} {
-	global Chapters view active
-	if {[NoChapters]} {ClearChapters ; return}
+	global Chapters view 
 	if {[Editing]} {SaveText}
-	unmark $view(chapters)     
-	set active [$view(chapters) curselection]
-	mark $view(chapters) $active
-	SetChapter [lindex $Chapters $active]
-	GetSections
-	if {![NoSections]} {GetUnits}
+	set active [$view(chapters) curselection]	
+	if {$active == ""} {return}
+	# msg "chapter $active"
+	SetChapter [lindex $Chapters $active]  
 	ShowPage [Chapter]
-#	GetSyntax
-	focus $view(chapters)
-	# keep active chapter in center of pane
-	$view(chapters) yview [expr {$active-$view(height)/2}]
-	after 500 {$view(chapters) activate $active}
 }
 
 proc FocusChapters {} {
@@ -370,19 +377,12 @@ proc RefreshSections {} {
 }
 
 proc UpdateSections {} {
-	global Sections view active
-	if {[Editing]} {SaveText}
-	focus $view(sections)  
-	if {[NoSections]} {FocusSections; return}
-	unmark $view(sections)      
+	global Sections view 
+	if {[Editing]} {SaveText}	
 	set active [$view(sections) curselection]
-	mark $view(sections) $active 
+	if {$active == ""} {return}
 	SetSection [lindex $Sections $active]
 	ShowPage [Section]
-	focus $view(sections)     
-	GetUnits
-	$view(sections) yview [expr {$active-$view(height)/2}]
-	after 500 {$view(sections) activate $active}
 }
 
 proc FocusSections {} {
@@ -452,20 +452,13 @@ proc RefreshUnits {} {
 }
 
 proc UpdateUnits {} {
-	global Units view active
+	global Units view 
 	if {[Editing]} {SaveText}
-	if {[NoSections]} {return}
-	focus $view(units) 
-	if {[NoUnits]} {FocusUnits; return}
-	unmark $view(units)
 	set active [$view(units) curselection]
-	mark $view(units) $active 
+	if {$active == ""} {return}
 	SetUnit [lindex $Units $active]  
-	Text&CodePanes; ShowPage [Unit]
-	focus $view(units) 
-	# show active unit in center of pane
-	$view(units) yview [expr {$active-$view(height)/2}]
-	after 500 {$view(units) activate $active}
+	Text&CodePanes; 
+	ShowPage [Unit]
 }
 
 proc FocusUnits {} {
