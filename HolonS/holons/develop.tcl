@@ -243,7 +243,7 @@ proc License {} {
 	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
 	pack $lt -side top -fill both -expand true
 	$lt insert 1.0 "Open Source VERSION OF HOLONCODE\n"
-	$lt insert end  "License GPLv3
+	$lt insert end  "LICENSE GPLv3
 
 Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
 
@@ -252,18 +252,17 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 --
 
-CREDITS
-HolonTalk is programmed in TclTk and uses the Metakit database.
+HolonCode is programmed in TclTk and uses the Metakit database.
 License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
 License for Metakit:  http://equi4.com/metakit/license.html
 "
