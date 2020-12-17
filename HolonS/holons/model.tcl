@@ -1,81 +1,234 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-proc ShowPage {id} {
-	global view oldVersion color
-	set ::page $id
-	set oldVersion 0
-	SetList $id
-	ShowTitle $id
-#	ShowVersions $id; # ShowTest $id
-	ShowText $id
-	ShowCode $id
- 	if {[Deleted $id]} {
-		$view(version) configure -state normal 
-		$view(version) delete 1.0 end
-		$view(version) insert end "\[deleted\]" deleted
-		$view(version) configure -state disabled 
-	}
-	foreach pane "$view(chapters) $view(sections) $view(units) $view(tree)" {$pane configure -bg $color(pagebg)}	
-	TextCodePanes $id
-	ShowLinPage $id
-	ShowTree $id
-	ShowFoundText 
-	MarkInfoPages
-	StartVisitTime
-	SetTreePage
+
+
+
+
+
+
+
+ion}
+	bind $view(sections) <Insert> {InsertSDeleted before} 
+	bind $view(sections) <F13> {InsertSDeleted before} 
+	bind $view(sections) <Shift-F13> {InsertSDeleted after} 
+	if [osx] {bind $view(sections) <Command-BackSpace> {InsertSDeleted before}}
+	bind $view(sections) <Shift-Insert> {InsertSDeleted after} 
+	bind $view(sections) <Shift-BackSpace> {InsertSDeleted after; break} 
+	
+	bind $view(units) <Shift-Delete> {DeleteUnit}
+	bind $view(units) <Delete> {?SafeDel; DeleteUnit}
+	bind $view(units) <Insert> {InsertUDeleted before} 
+	bind $view(units) <F13> {InsertUDeleted before} 
+	bind $view(units) <Shift-F13> {InsertUDeleted after} 
+	if [osx] {bind $view(units) <Command-BackSpace> {InsertUDeleted before}}
+	bind $view(units) <Shift-Insert> {InsertUDeleted after} 
+	bind $view(units) <Shift-BackSpace> {InsertUDeleted after; break} 
 }
 
-proc SetDBLayout {} {
-	mk::view layout wdb.base \
-		{list active delchapters delsections delunits monitor view \
-		 version changes geometry extension textcolor codecolor bonus \
-		 pages forward comdel runcmd syntax safe fontsize running \
-		 pagesize start revpage codefont codesize} 
+
+
+
+
+
+
+
+	bind $view(sections) <Insert> {InsertSDeleted before} 
+	bind $view(sections) <F13> {InsertSDeleted before} 
+	bind $view(sections) <Shift-F13> {InsertSDeleted after} 
+	if [osx] {bind $view(sections) <Command-BackSpace> {InsertSDeleted before}}
+	bind $view(sections) <Shift-Insert> {InsertSDeleted after} 
+	bind $view(sections) <Shift-BackSpace> {InsertSDeleted after; break} 
+	
+	bind $view(units) <Shift-Delete> {DeleteUnit}
+	bind $view(units) <Delete> {?SafeDel; DeleteUnit}
+	bind $view(units) <Insert> {InsertUDeleted before} 
+	bind $view(units) <F13> {InsertUDeleted before} 
+	bind $view(units) <Shift-F13> {InsertUDeleted after} 
+	if [osx] {bind $view(units) <Command-BackSpace> {InsertUDeleted before}}
+	bind $view(units) <Shift-Insert> {InsertUDeleted after} 
+	bind $view(units) <Shift-BackSpace> {InsertUDeleted after; break} 
+}
+
+
+
+c CopyName {} {
+	global view
+	if {![Editing]} {return}
+	set i 0; set j 0
+	while {![regexp {\s} [GetChar $view(code) $i]]} {
+			incr i -1;  if {$i<-20} {break}
+	}
+	incr i
+	while {![regexp {\s} [GetChar $view(code) $j]]} {
+		incr j;  if {$j>20} {break}
+	}
+	set name [$view(code) get "current + $i char" "current + $j char"]
+	$view(title) delete 1.0 end
+	$view(title) insert 1.0 $name
+}
+
+f {[Editing]} {
+		if {[$pane tag ranges sel]==""} {return}
+		if {[$pane compare [$pane index sel.last] >= [$pane index current]]\
+			&& [$pane compare [$pane index sel.first] <= [$pane index current]]} {
+			# Mousepointer in range, drag & drop
+			set view(dragging) 1
+			return -code break  ;# break, else selection is cleared
+		} 
+	} {
+		set view(dragging) 0
+		GotoWord $pane
+	}
+}
+
+Editing]} {
+		if {[$pane tag ranges sel]==""} {return}
+		if {[$pane compare [$pane index sel.last] >= [$pane index current]]\
+			&& [$pane compare [$pane index sel.first] <= [$pane index current]]} {
+			# Mousepointer in range, drag & drop
+			set view(dragging) 1
+			return -code break  ;# break, else selection is cleared
+		} 
+	} {
+		set view(dragging) 0
+		GotoWord $pane
+	}
+}
+
+ing]} {
+		if {[$pane tag ranges sel]==""} {return}
+		if {[$pane compare [$pane index sel.last] >= [$pane index current]]\
+			&& [$pane compare [$pane index sel.first] <= [$pane index current]]} {
+			# Mousepointer in range, drag & drop
+			set view(dragging) 1
+			return -code break  ;# break, else selection is cleared
+		} 
+	} {
+		set view(dragging) 0
+		GotoWord $pane
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+de) search -regexp -count cnt -nocase -- $Pattern 1.0 end]
+		if {$start!=""} {$::view(code) tag add blue $start "$start +$cnt chars"}
+		while {$start!=""} {
+			set start [$::view(code) search -regexp -count cnt -nocase -- \
+						$Pattern "$start +1 chars" end]
+			if {$start!=""} {$::view(code) tag add blue $start "$start +$cnt chars"}
+		}
+	}
+}
+
+search -regexp -count cnt -nocase -- $Pattern 1.0 end]
+		if {$start!=""} {$::view(code) tag add blue $start "$start +$cnt chars"}
+		while {$start!=""} {
+			set start [$::view(code) search -regexp -count cnt -nocase -- \
+						$Pattern "$start +1 chars" end]
+			if {$start!=""} {$::view(code) tag add blue $start "$start +$cnt chars"}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ string $s "$s +$c chars"
+			incr i
+		}
+	}
+}
+
+
+
+
+
+
+
+ing $s "$s +$c chars"
+			incr i
+		}
+	}
+}
+
+$s "$s +$c chars"
+			incr i
+		}
+	}
+}
+
+ub return set socket split string switch unset update uplevel upvar variable vwait 
+	global source set 	foreach 	boolean  for 	
+	bind bitmap button canvas checkbutton console destroy entry event focus font frame grab grid image label
+	labelframe listbox lower menu menubutton message option pack panedwindow place radiobutton raise scale
+	scrollbar selection send spinbox text winfo wm tkwait
+	tag remove end configure itemconfigure index insert activate mark
+}
+
+ [$view(text) tag prevrange url current]]
+ 	if [osx] {
+		eval exec open $webadr &
+	} {
+		eval exec [auto_execok start] $webadr &
+	} 
+}
+
+a [lindex $range 0] 
+	set b [lindex $range 1]
+	$view(text) tag add i $a $b
+}
+
+ 
+	set b [lindex $range 1]
+	$view(text) tag add i $a $b
+}
+
+ revpage codefont codesize} 
 	mk::view layout wdb.pages \
 		{name page date:I who type next list active cursor source text \
 		 changes old compcode test mode}
 }
 
-proc CreateStructure {} {
-		mk::row append wdb.base  monitor 0  view list	 version 0.001 \
-			geometry "1100x700+50+50"  extension 1  \
-			textcolor #ffffff  codecolor 1 pages 2 comdel //  running 0 \
-			runcmd "../tclkit ./main.tcl"  syntax Tcl  safe 0 \
-			pagesize A4  start 0  codefont Verdana  codesize 12  revpage 1
-		set c [AppendPage type chapter  name "Chapter"  mode source]
-    		SetBase list $c active $c
-    		SetPage $c next ""
-    		set s [AppendPage type section  name "Section"]
-    		SetPage $c list $s active $s
-    		SetPage $s next $c
-    		set u [AppendPage type unit  name "Unit"]
-    		SetPage $s list $u active $u
-    		SetPage $u next $s
-    		SetBase revpage $u
-		mk::file commit wdb
+page codefont codesize} 
+	mk::view layout wdb.pages \
+		{name page date:I who type next list active cursor source text \
+		 changes old compcode test mode}
 }
 
-proc UpdateRunning {} {
-	SetBase running [clock seconds]
- 	mk::file commit wdb
-	after 60000 UpdateRunning
+ codefont codesize} 
+	mk::view layout wdb.pages \
+		{name page date:I who type next list active cursor source text \
+		 changes old compcode test mode}
 }
 
-proc OpenDB {} {
-	global wdb argc argv appname db  newdb
+b argc argv appname db  newdb
 	# get path of db and name of host=app=project
 		if {$argc} {set db [lindex $argv 0]} else {set db [tk appname].hdb}
 		set db "./source/$db"  
@@ -94,40 +247,11 @@ proc OpenDB {} {
 	UpdateRunning
 }
 
-proc CloseDB {} {
-	global wdb 
-	SaveText
-	after cancel UpdateRunning
-	SetBase running 0 
-	mk::file commit wdb 	
-	mk::file close wdb
 }
 
-proc GetBase {field} {
-	mk::get wdb.base!0 $field
-}
 
-proc SetBase {args} {
-	eval mk::set wdb.base!0 $args
-}
 
-proc Chapter {} {
-     GetBase active
-}
-
-proc SetChapter {c} {
-     SetBase active $c
-}
-
-proc FirstChapter {} {
-	GetBase list
-}
-
-proc NextChapter {} {
-	Next [Chapter]
-}
-
-proc PrevChapter {} {
+oc PrevChapter {} {
 	set c [FirstChapter]
 	if {$c==[Chapter]} {return ""}
 	while {[Next $c]!=[Chapter]} {
@@ -136,219 +260,50 @@ proc PrevChapter {} {
 	return $c
 }
 
-proc NoChapters {} {
-     expr {[GetBase list]==""}
-}
-
-proc GetChapter {r} {
-	while {[GetPage $r type] == "section"} {
-		set r [Next $r]
+revChapter {} {
+	set c [FirstChapter]
+	if {$c==[Chapter]} {return ""}
+	while {[Next $c]!=[Chapter]} {
+		set c [Next $c]
 	}
-	return $r
+	return $c
 }
 
-proc Section {} {
-	GetPage [Chapter] active
+Unit]
 }
 
-proc SetSection {s} {
-     SetPage [Chapter] active $s
+	set name "thekeyfile"
+	set f [open $name.key w]
+ 	fconfigure $f -encoding binary
+	return $f
 }
 
-proc FirstSection {} {
-	GetPage [Chapter] list
-}
-
-proc NextSection {} {
-	Next [Section]
-}
-
-proc PrevSection {} {
-	set s [FirstSection]
-	if {$s==[Section]} {return [Chapter]}
-	while {[Next $s]!=[Section]} {
-		set s [Next $s]
+len} {incr i} {
+		set char [string index $text $i]
+ 		set asc [ascii $char] 
+		incr summe $asc
+		append mtext	[char [Mumble $asc]]
 	}
-	return $s
+#	append mtext [char [expr $summe%128]]
+	return $mtext
 }
 
-proc LastSection {} {
-	set s [FirstSection]
-	while {[Next $s]!=[Chapter]} {
-		set s [Next $s]
+ {incr i} {
+		set char [string index $text $i]
+ 		set asc [ascii $char] 
+		incr summe $asc
+		append mtext	[char [Mumble $asc]]
 	}
-	return $s
+#	append mtext [char [expr $summe%128]]
+	return $mtext
 }
 
-proc NoSections {} {
-     expr {[GetPage [Chapter] list]==[Chapter]}
-}
 
-proc GetSection {r} {
-	while {[GetPage $r type] == "unit"} {
-		set r [Next $r]
-	}
-	return $r
-}
 
-proc Unit {} {
-     GetPage [Section] active
-}
 
-proc FirstUnit {} {
-	GetPage [Section] list
-}
 
-proc NextUnit {} {
-	Next [Unit]
-}
-
-proc PrevUnit {} {
-	set u [FirstUnit]
-	if {$u==[Unit]} {return [Section]}
-	while {[Next $u]!=[Unit]} {
-		set u [Next $u]
-	}
-	return $u
-}
-
-proc LastUnit {} {
-	set u [FirstUnit]
-	while {[Next $u]!=[Section]} {
-		set u [Next $u]
-	}	
-	return $u
-}
-
-proc SetUnit {u} {
-     SetPage [Section] active $u
-}
-
-proc NoUnits {} {
-     expr {[GetPage [Section] list]==[Section]}
-}
-
-proc GetUnit {name} {
-	regsub -all {[][?*\\]} $name \\\\& wordEscaped   
-	set ids [mk::select wdb.pages -globnc name $wordEscaped type unit]
-	set id [lindex $ids end]
-	if {$id==""} {set id 0}
-	return $id
-}
-
-proc pagevars {id args} {
-	if {[llength $args] == 1} {
-		uplevel 1 [list set $args [mk::get wdb.pages!$id $args]]
-	} else {
-		foreach x $args y [eval mk::get wdb.pages!$id $args] {
-			uplevel 1 [list set $x $y]
-		}
- 	}
-}
-
-proc AppendPage {args} {
-	set r [eval mk::row append wdb.pages $args]
-	return [mk::cursor position r]
-}
-
-proc GetPage {i field} {
-	mk::get wdb.pages!$i $field
-}
-
-proc SetPage {i args} {
-	eval mk::set wdb.pages!$i $args
-}
-
-proc GetOldPage {i field} {
-	mk::get wdb.oldpages!$i $field
-}
-
-proc Next {id} {
-	GetPage $id next
-}
-
-proc Deleted {id} {
-	if {[GetPage $id type]=="deleted"} {return 1} {return 0}
-}
-
-proc SavePage {id text code who newName cursor} {
-	global infomode version
-  	pagevars $id name page source type 
-   	if {$newName != $name} {
-   		SetPage $id name $newName
-  	}
-    	SetPage $id source $code who $who cursor $cursor text $text
- 	mk::file commit wdb
-}
-
-set page 0
-
-proc CurrentPage {} {
-	return $::page
-
-}
-
-proc PageStack {} {
-	GetBase pages
-}
-
-proc SetPageStack {list} {
-	SetBase pages $list
-}
-
-set maxPages 30
-
-proc PushPage {page} {
-	SetPageStack [linsert [PageStack] 0 $page]
-	if {[llength [PageStack]]>$::maxPages} {SetPageStack [lreplace [PageStack] $::maxPages end]}
-	RemoveDoublePages
-	set ::back 1
-	ShowVisitedPages
-}
-
-proc RemoveDoublePages {} {
-	set top [CurrentPage]
-	set list $top
-	foreach page [PageStack] {
-		if {$page != $top} {lappend list $page}
-	}	
-	SetPageStack $list
-}
-
-set visitDelay 0
-
-set visited 1500
-
-proc StartVisitTime {} {
-	if {$::visitDelay!=0} {after cancel $::visitDelay} 
-	set ::visitDelay [after $::visited EndVisitTime]
-}
-
-proc EndVisitTime {} {
-	set ::visitDelay 0 
-	PushPage [CurrentPage]
-}
-
-proc osx {} {
-	if {$::tcl_platform(os)=="Darwin"} {return true} {return false}
-}
-
-set RightButton Button-3   ;# Windows and Linux
-if [osx] {set RightButton ButtonRelease-2}
-
-if {$tcl_platform(os)=="Linux"} {tk scaling 1.2}
-
-proc char {ascii} {
-	format %c $ascii
-}
-
-proc ascii {c} {
-	binary scan $c "c" a
-	return $a
-}
-
-proc GetAscii {i} {
-	global comp
-	ascii [string index $comp(source) $i]
+n {} {
+	global view
+	return [$view(sections) index active]
 }
 
