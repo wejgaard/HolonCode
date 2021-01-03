@@ -1,17 +1,17 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #  
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 proc ?SafeDel {} {
 	global replaceText
@@ -115,12 +115,19 @@ proc StoreText {} {
 	set text [$view(text) dump 1.0 "end - 1 char"]
 	set code [string trimright [$view(code) get 1.0 end ]]; 
 	set cursor [lindex [$view(code) yview] 0] 
-	SavePage [CurrentPage] $text $code local $title $cursor 
-}
+	set test " "; 	# set test [string trim [$view(test) get 1.0 end]]
+	SavePage [CurrentPage] $text $code local $title $cursor $test $changed}
 
 proc SaveText {} {
-	if {![Editing]} {return}
+	global version changelist oldVersion changed
+	if {![Editing]||$oldVersion} {return}
 	set id [CurrentPage]
+	set changed 0
+	# Save previous version.
+	if {[TextChanged] && $version!=[lindex $changelist end]} {
+		SaveOldPage $id ; UpdateChangelist $id 
+		set changed 1
+	}
 	StoreText
 	WriteChapter	         
 	BrowserButtons
@@ -160,6 +167,7 @@ proc EditPage {} {
 		$pane configure -state normal  -bg $color(editbg)
 		$pane edit reset
 	}
+	$view(test) configure -state normal  -bg bisque
 	if {$edit(pane)==""} {
 		set pane $view(title)
 	} else {

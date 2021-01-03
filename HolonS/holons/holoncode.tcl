@@ -1,18 +1,3 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #  
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 package require Mk4tcl
 package require Tk
 
@@ -27,58 +12,6 @@ source $dir/browsing.tcl
 source $dir/editing.tcl
 source $dir/develop.tcl
 source $dir/interfaces.tcl
-
-proc ProjectDB {} {
-	global argc argv appname 
-	if [namespace exists starkit] {
-		set dir [pwd]; if [osx] {set type app} {set type exe}
-		set file [lindex [glob *.$type] 0]
-		set db [lindex [split $file .] 0].hdb 
-	} {
-		if {$argc} {set db [lindex $argv 0]} {set db [tk appname].hdb}
-	}
-	set db "./$db"  
-	set appname [file rootname [file tail $db]]
-	set db [string tolower "./$db"]  
-	return $db
-}
-
-proc OpenDB {} {
-	global wdb db
-	set db [ProjectDB]
-	# open or create DB  
-	set newdb [expr ![file exists $db]]
-	mk::file open wdb $db -shared                 ;# wdb is handle of the db-file
-	SetDBLayout
-	if {$newdb} {CreateStructure}
-	catch {
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<90} {
-			wm iconify .  ;# reduce window to icon, only message box is visible
-			tk_messageBox -type ok -message "System is already running"
-			exit
-		}	
-	}	UpdateRunning
-}
-
-proc ShowRevision {rev} {
-	global view color findText searchText infomode
-	$view(rev) configure -state normal; $view(rev) delete 1.0 end; 
-	set findText ""; set searchText ""; ShowFoundText
-	RevisionTitle " Found"
-	update
-	return
-}
-
-proc EndSession {} {
-	DisableMotionEvents
-#	SetBase geometry [wm geometry .]   
-#	SetBase geometry 1280x678+0+22   
-	SetBase geometry 1000x600+40+40   
-	CloseDB
-#	file delete $::runfile
-	destroy $::topwin 
-	exit
-}
 
 OpenDB
 set sysdir [pwd]

@@ -1,18 +1,3 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #  
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 set pageSize 61
 set seite 0
 set line 0
@@ -304,61 +289,7 @@ proc WriteAllChapters {} {
           SetChapter [NextChapter]
      }
 	SetChapter $current
-#	WriteSourceVersion
-}
-
-proc Markup {} {
-	if [winfo exists .markup] {return}
-	toplevel .markup
-	wm title .markup "Markup for Import"
-	set markuptext [text .markup.t -width 80 -height 30]
-	pack $markuptext -side top -fill both
-	$markuptext insert 1.0 "
-  IMPORTING .fml FILES  (Legacy Files Markup Language)
-	
-  <File> File=Chapter name
-  (text)
-  <Section> Section name
-  (text)
-  <Unit> Unit name
-  code
-  <Section> name 
-  (text)
-  <Unit> name
-  code
- 
-  --
-  Tag names are case insensitive
-  Unit comments are imported with the code. 
-  Text and code are delimited by the following tag. 
-   
-  -----------------------------------------------------------------
-   
-  IMPORTING .hml FILES  (Holon Markup Language)
-  (export a chapter for an example)
-  
-  <Chapter>
-  <Name> Name of Chapter
-  <Comment> text
-  <Section>
-  <Name> Get prime numbers
-  <Comment> text
-  <Unit>
-  <Name> Name of unit
-  <Comment> text
-  <Source> text
-  <Unit>
-  <Name> Name of unit
-  <Source> text
-  <Section>
-  <Name> Name of section
-  <Comment> text
-  
-  --
-  Comments and source are delimited by the following tag. 
-  Exported <Comment> text contains Tcl Editor markup.
- 
-"
+	WriteSourceVersion
 }
 
 proc OpenExportFile {} {
@@ -373,7 +304,7 @@ proc ExportRecord {r f} {
 	puts $f "<Name> [GetPage $r name]"
 	set t [GetPage $r text] ; if {$t!=""} {puts $f "<Comment> $t"}
 	set s [GetPage $r source] ; if {$s!=""} {puts $f "<Source> $s"}
-#	set v [lindex [GetPage $r changes] end] ; if {$v!=""} {puts $f "<Version> $v"}
+	set v [lindex [GetPage $r changes] end] ; if {$v!=""} {puts $f "<Version> $v"}
 }
 
 proc ExportUnit {f} {
@@ -470,7 +401,9 @@ proc ImportChapter {file} {
 }
 
 proc Import-hml {} {
-	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir ./source ]
+	global appname
+#	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
+	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir ./$appname ]
 	if {$file==""} {return}
 	ImportChapter $file
 }
@@ -603,15 +536,5 @@ proc StartMonitor {} {
 	global LastRead
 	set LastRead [LastAccess]
 	Monitor
-}
-
-proc LoadUnit {} {
-	global view 
-	if [NoUnits] return
-	if [Editing] {SaveIt}
-	set loadText [GetPage [Unit] source]
-	if {[catch	{SendMonitor $loadText} result]} {
-		tk_messageBox -type ok -message "Sorry, $result  "
-	}	
 }
 

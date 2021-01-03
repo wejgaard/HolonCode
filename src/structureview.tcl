@@ -1,18 +1,3 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #  
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 proc CreateColors {} {
 	global color
 	set color(menu)    SystemButtonFace   
@@ -120,6 +105,7 @@ set view(version) ""
 set view(text) ""
 set view(code) ""
 set view(info) ""
+set view(test) ""
 set view(treeactive) ""
 
 set view(sash0) "0 50"     ;# Position of sash Text/Code
@@ -430,6 +416,16 @@ proc ClearUnits {} {
 	$view(units) delete 0 [$view(units) size]
 }
 
+proc UpdateUnits {} {
+	global Units view 
+	if {[Editing]} {SaveText}
+	set active [$view(units) curselection]
+	if {$active == ""} {return}
+	SetUnit [lindex $Units $active]  
+	Text&CodePanes; 
+	ShowPage [Unit]
+}
+
 proc GetUnits {} {
 	global Units view
 	ClearUnits
@@ -449,16 +445,6 @@ proc RefreshUnits {} {
 	ShowPage [Unit]
 	$view(units) selection set [iActiveUnit] 
 	focus $view(units)
-}
-
-proc UpdateUnits {} {
-	global Units view 
-	if {[Editing]} {SaveText}
-	set active [$view(units) curselection]
-	if {$active == ""} {return}
-	SetUnit [lindex $Units $active]  
-	Text&CodePanes; 
-	ShowPage [Unit]
 }
 
 proc FocusUnits {} {

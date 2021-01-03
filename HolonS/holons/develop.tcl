@@ -1,35 +1,22 @@
- # Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
- #  
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-proc AskSetup {} {
-	global setup color setOK
-	set setup(win) .setup
-	toplevel $setup(win)
-	wm title $setup(win) "Preferences"
-	.setup config -bg $color(pagebg)
-	SetupRevision
-	SetupOperation
-	SetupOK
-	vwait setOK
-	destroy $setup(win)
-	EndSetup
-}
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 proc SetupRevision {} {
 	global setup frev color
-	set frev [labelframe $setup(win).frev -text "Revision" -borderwidth 1 -padx 10 -pady 5 \
+	set frev [labelframe $setup(win).frev -text "Revision" \
+		-borderwidth 1 -padx 10 -pady 5 \
 		-relief solid -bg $color(setup)]
 	grid $frev -sticky we
 	grid configure $frev -padx 20 -pady 5
@@ -97,10 +84,11 @@ proc SetupPrinting {} {
 }
 
 proc SetupOK {} {
-	global setup color
+	global setup color setOK
+	set setOK 0
 	set fok [frame $setup(win).fok -borderwidth 20 -bg $color(setup) ]
 	grid $fok 
-	button $fok.ok -text OK -command {EndSetup} -padx 25 -pady 5 \
+	button $fok.ok -text OK -command {set setOK 9} -padx 25 -pady 5 \
 		-relief raised -border 2 -bg $color(setup)
 	pack $fok.ok  -pady 5
 	bind $setup(win) <Return> {EndSetup}
@@ -116,6 +104,20 @@ proc EndSetup {} {
 	if {[GetBase extension]!=$setup(extension)} {
 		SetBase extension $setup(extension); RefreshChapters
 	}
+}
+
+proc AskSetup {} {
+	global setup color setOK
+	set setup(win) .setup
+	toplevel $setup(win)
+	wm title $setup(win) "Preferences"
+	.setup config -bg $color(pagebg)
+	SetupRevision
+	SetupOperation
+	SetupOK
+	vwait setOK
+	destroy $setup(win)
+	EndSetup
 }
 
 set AboutElemente ""
@@ -147,6 +149,88 @@ proc AnzahlElemente {} {
 	GotoUnit $endUnit
 }
 
+proc IncrVersion {} {
+	global version
+	set v1 [split $version .]         
+	if {$v1==$version} {
+		set v2 $v1                
+	} {
+		set v2 [lindex $v1 end] 
+	} 
+	set n [string length $v2]
+	incr n -1		                          ;# length of changenumber
+	set v3 [join "1 $v2" ""]       ;# avoid leading zeros = octal
+	incr v3
+	set v2 [string range $v3 end-$n end]
+	if {$v1==$version} {
+		set version $v2
+	} {
+		set v1 [lreplace $v1 end end $v2]
+		set version [join $v1 .]
+	}
+}
+
+proc ShowProject {} {
+	wm title . "$::appname  "
+}
+
+proc Commit {} {
+	global version  
+	set revpage  [GetBase revpage]
+	if {$revpage==""} return
+	GotoTree [GetBase revpage]; update
+	IncrVersion
+	SetVersion $version
+	WriteSourceVersion
+	AddLogPage
+}
+
+proc SaveSetupVersion {v} {
+	if {$v==$::version} {return}
+	SetVersion $v
+	WriteSourceVersion
+#	ShowProject
+	focus .
+}
+
+proc WriteSourceVersion {} {
+	set version [GetBase version]
+	set f [open $::sourcedir/sourceversion.tcl w]
+	puts $f "set sourceversion $version"
+	close $f
+}
+
+proc UpdateChangelist {id} {
+	global version changelist
+	if {$version==[lindex $changelist end]} {return}
+	lappend changelist $version
+	SetPage $id changes $changelist 
+	
+}
+
+proc GotoLogPage {} {
+	set u [GetBase revpage]
+	if $u {GotoUnit $u}
+}
+
+proc AddLogPage {} {
+	if [Editing] SaveIt
+	global version 
+	LastProgramUnit
+	set u [AppendPage name "$version" changes $version date [clock seconds] ]
+	InsertUnit $u after
+	SetBase revpage $u
+	.b.rev config -text "Rev. $version"
+}
+
+proc EditRevision {} {
+	set ::findText ""
+	set ::searchText ""
+	set ::replaceText ""
+	ShowRevision $::version
+	GotoTree [GetBase revpage]
+}
+
 proc NewProject {} {
 	if [winfo exists .project] {return}
 	toplevel .project
@@ -157,14 +241,25 @@ proc NewProject {} {
   CREATING A NEW PROJECT
 	
   1. Create a project folder, say, 'MyProject'
-  2. Insert a COPY of HolonTalk.app and rename it 'MyProject.app' -- or .exe 
-  3. Run the App. 
   
-  The new project App creates the database MyProject.hdb and the folder 
-  myproject/  for source files that are generated in the project.
+  2. In a terminal/console enter:
+ 	
+      Windows:
+ 	
+         tclsh HolonCode\\src\\holoncode.tcl MyProject.hdb
+
+      Mac and Linux:
+     
+        #!/bin/bash
+        cd `dirname \$0` 
+        tclsh HolonCode/src/holoncode.tcl MyProject.hdb &
   
+ 
+  The new project creates the database MyProject.hdb
+  and the folder myproject/  for source files
+  that are generated in the project.
+ 
   You are ready to go.
-   
 "
 }
 
@@ -202,50 +297,8 @@ proc Import-hml {} {
 }
 
 set LicenseText {
-License GPLv3
-
-Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
---
-
-CREDITS
-HolonTalk is programmed in TclTk and uses the Metakit database.
-License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
-License for Metakit:  http://equi4.com/metakit/license.html
-
-
-}
-
-proc ShowProject {} {
-	global keytext licensed trial days trialtime  
-	set title "$::appname "
-	wm title . $title 
-}
-
-proc License {} {
-	global licensed keytext
-	if [winfo exists .license] {return}
-	toplevel .license
-	wm title .license "HolonCode License"
-	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
-	pack $lt -side top -fill both -expand true
-	$lt insert 1.0 "Open Source VERSION OF HOLONCODE\n"
-	$lt insert end  "LICENSE GPLv3
-
-Copyright (c) 2008 - 2020 Wolf Wejgaard. All  Rights Reserved.
+GNU General Public License v3.0
+Copyright 2008-2020 Wolf Wejgaard
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -262,10 +315,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 --
 
+CREDITS
 HolonCode is programmed in TclTk and uses the Metakit database.
 License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
 License for Metakit:  http://equi4.com/metakit/license.html
-"
-$lt configure -state disabled
+
+}
+
+proc ShowProject {} {
+	global keytext licensed trial days trialtime  
+	set title "$::appname "
+	wm title . $title 
+}
+
+proc License {} {
+	global licensed keytext
+	if [winfo exists .license] {return}
+	toplevel .license
+	wm title .license "HolonCode License"
+	set lt [text .license.t -wrap word -height 40 -width 90 -padx 20 -pady 20]
+	pack $lt -side top -fill both -expand true
+	$lt insert 1.0 "Open Source License\n"
+	$lt insert end $::LicenseText
+	$lt configure -state disabled
 }
 
