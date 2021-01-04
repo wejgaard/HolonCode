@@ -1,3 +1,18 @@
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 proc CreateButton {name command} {
 	global color buttonBar
 	set lcname [string tolower $name]
@@ -11,9 +26,6 @@ proc CreateButton {name command} {
 	bind $buttonBar.$lcname <Enter> $enter
 	set leave "$buttonBar.$lcname configure -relief flat -cursor xterm ;"
 	bind $buttonBar.$lcname <Leave> $leave
-	
-	
-	
  }
 
 proc DoRun {} {
@@ -95,7 +107,7 @@ proc ButtonBar {} {
 
 proc CreateMenu {} {
 	menu .menubar  
-	. config -menu .menubar 
+	. config -menu .menubar
 	FileMenu 
 	ViewMenu 
 	ConfigurationMenu
@@ -135,10 +147,7 @@ proc ConfigurationMenu {} {
 	.menubar add cascade -label Configuration -menu .menubar.version -underline 0
 	set menu(version) [menu .menubar.version -tearoff 0 ]
 	$menu(version) add command -label "Preferences" -command AskSetup
-	$menu(version) add command -label "Commit" -command Commit
 	$menu(version) add command -label "About" -command AboutHolonCode
-	$menu(version) add command -label "License" -command License
-#    ShowProject
 }
 
 proc HolonMenu {} {
@@ -150,25 +159,6 @@ proc HolonMenu {} {
 	$menu(holon) add command -label "License" -command {License}
 }
 
-proc HelpMenu {} {
-	global menu
-	.menubar add cascade -label Manual -menu .menubar.help -underline 0
-	set menu(help) [menu .menubar.help -tearoff 0]
-	$menu(help) add command -label "Operation" -command {ShowHelp}
-	$menu(help) add command -label "About" -command {About}
-	$menu(help) add command -label "License" -command {License}
-}
-
-proc TargetMenu {} {
-	global menu
-	set menu(target) [menu .menubar.target -tearoff 0]
-	.menubar add cascade -label Target -menu .menubar.target -underline 0
-	$menu(target) add command -label "Load unit" -command {LoadUnit}
-	$menu(target) add command -label "Test unit" -command {TestUnit}
-	$menu(target) add command -label "Run program" -command {DoRun}
-	
-}
-
 proc AboutHolonCode {} {
 	if [winfo exists .about] {return}
 	toplevel .about
@@ -177,14 +167,14 @@ proc AboutHolonCode {} {
 	pack $abouttext -side top -fill both
 	AnzahlElemente
   	$abouttext insert 1.0 "
-  HolonCode Version $::sourceversion 
+  HolonCode Version 1.0 
   Copyright 2008-20 Wolf Wejgaard
   All Rights Reserved
     
   Current # Elements:
   $::AboutElemente 
-    
-"
+  
+  "
 }
 
 set menu(chapters) ""
@@ -308,7 +298,7 @@ proc ClearRevision {} {
 	global view 
 	$view(rev) configure -state normal
 	$view(rev) delete 1.0 end
-	$view(rev) configure -state disabled
+	$view(rev) configure -state disabled  
 }
 
 proc InfoTitle {name} {
@@ -473,7 +463,8 @@ proc ShowHolon {} {
 	global view
 	set ::page [lindex [PageStack] 0]
 	ShowPage [CurrentPage]
-	ShowVisitedPages; ShowRevision $::version
+	ShowVisitedPages 
+	ShowRevision $::version
 	after 300 {TextCodePanes [CurrentPage]}
 }
 
@@ -491,7 +482,7 @@ proc DisableMotionEvents {} {
 
 proc EndSession {} {
 	DisableMotionEvents
-	SetBase geometry 1000x600+40+40   
+	SetBase geometry 900x600+300+60   
 	CloseDB
 	destroy $::topwin 
 	exit

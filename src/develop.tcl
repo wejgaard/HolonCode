@@ -1,3 +1,18 @@
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 proc SetupRevision {} {
 	global setup frev color
 	set frev [labelframe $setup(win).frev -text "Revision" \
@@ -68,7 +83,7 @@ proc SetupPrinting {} {
 	grid $fpnt.sl $fpnt.sb1 $fpnt.sb2   -sticky w -pady 2
 }
 
-proc SetupOK {} { 
+proc SetupOK {} {
 	global setup color setOK
 	set setOK 0
 	set fok [frame $setup(win).fok -borderwidth 20 -bg $color(setup) ]
@@ -76,6 +91,7 @@ proc SetupOK {} {
 	button $fok.ok -text OK -command {set setOK 9} -padx 25 -pady 5 \
 		-relief raised -border 2 -bg $color(setup)
 	pack $fok.ok  -pady 5
+	bind $setup(win) <Return> {EndSetup}
 }
 
 proc EndSetup {} {
@@ -212,8 +228,39 @@ proc EditRevision {} {
 	set ::searchText ""
 	set ::replaceText ""
 	ShowRevision $::version
-	set revpage  [GetBase revpage]
-	if {$revpage!=""} {GotoTree $revpage}
+	GotoTree [GetBase revpage]
+}
+
+proc NewProject {} {
+	if [winfo exists .project] {return}
+	toplevel .project
+	wm title .project "Holon Projects"
+	set projecttext [text .project.t -width 80 -height 30]
+	pack $projecttext -side top -fill both
+	$projecttext insert 1.0 " 
+  CREATING A NEW PROJECT
+	
+  1. Create a project folder, say, 'MyProject'
+  
+  2. In a terminal/console enter:
+ 	
+      Windows:
+ 	
+         tclsh HolonCode\\src\\holoncode.tcl MyProject.hdb
+
+      Mac and Linux:
+     
+        #!/bin/bash
+        cd `dirname \$0` 
+        tclsh HolonCode/src/holoncode.tcl MyProject.hdb &
+  
+ 
+  The new project creates the database MyProject.hdb
+  and the folder myproject/  for source files
+  that are generated in the project.
+ 
+  You are ready to go.
+"
 }
 
 proc CreateImportScript {} {
@@ -243,134 +290,42 @@ proc ImportChapters {} {
 	source ./source/project.imp
 }
 
-proc About {} {
-	if [winfo exists .about] {return}
-	toplevel .about
-	wm title .about "About HolonS/L"
-	set abouttext [text .about.t -width 80 -height 30]
-	pack $abouttext -side top -fill both
-
-	$abouttext insert 1.0 "
-  HolonS/L Version $::sourceversion 
-  Copyright 2008-17 Wolf Wejgaard
-  All Rights Reserved
-  
-  -----
-    
-  Credits:
-  I am indebted to Jean-Claude Wippler, Equi4 Software, http://equi4.com, 
-  for two fine tools that helped keeping HolonS/L simple and reliable. 
-  Metakit - a widely proven database engine
-  Tclkit - a self-contained Tcl/Tk runtime 
- 
-  -----
-  
-  Contact/Support: 
-  Dr. Wolf Wejgaard
-  Forth Engineering
-  Neuhoflirain 10
-  CH-6045 Meggen
-  
-  Email: wolf@holonforth.com
-  Web: www.holonforth.com
-
-  
- 
- "
-  
-#  $abouttext insert end 	$::LicenseText
-
-}
-
-set LicenseTextTrial {
-LICENSE AGREEMENT
-
-This is a legal agreement between you and DR. WOLF WEJGAARD FORTH ENGINEERING. 
-You should carefully read the following terms and conditions before using this
-software. Your use of the software indicates your acceptance of this license 
-agreement and disclaimer of warranty. 
-
-DR. WOLF WEJGAARD FORTH ENGINEERING, hereinafter referred to as "WOLF WEJGAARD", 
-grants to you a temporary license to use the present Software for evaluation 
-purposes without charge on a single computer with one keyboard/display, i.e., a 
-computer intended to be used by one person at a time, for a period of 12 days. 
- 
-Once the registration fee has been paid, WOLF WEJGAARD grants to you a permanent 
-non-exclusive and non-transferable license to use the Software on a single computer 
-with one keyboard/display, i.e., a computer intended to be used by one person at a 
-time.
-
-Furthermore, you agree not to modify, de-compile, disassemble, or otherwise reverse 
-engineer the Software at any time or under any circumstances. WOLF WEJGAARD's 
-software is under copyright and contains proprietary information belonging to FORTH 
-ENGINEERING and/or its partners. 
-
-THE SOFTWARE AND THE ACCOMPANYING FILES ARE PROVIDED AS IS AND WITHOUT WARRANTIES AS 
-TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIES WHETHER EXPRESSED OR IMPLIED. 
-NO WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE IS OFFERED. 
-
---
-
-CREDITS
-HolonTalk is built in TclTk and relies on the marvellous Metakit database.
-License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
-License for Metakit:  http://equi4.com/metakit/license.html
-
+proc Import-hml {} {
+	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
+	if {$file==""} {return}
+	ImportChapter $file
 }
 
 set LicenseText {
-LICENSE AGREEMENT
+GNU General Public License v3.0
+Copyright 2008-2020 Wolf Wejgaard
 
-This is a legal agreement between you and DR. WOLF WEJGAARD FORTH ENGINEERING. 
-You should carefully read the following terms and conditions before using this
-software. Your use of the software indicates your acceptance of this license 
-agreement and disclaimer of warranty. 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-DR. WOLF WEJGAARD FORTH ENGINEERING, hereinafter referred to as "WOLF WEJGAARD", 
-grants to you a permanent non-exclusive and non-transferable license to use the 
-Software on a single computer with one keyboard/display, i.e., a computer intended 
-to be used by one person at a time.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-Furthermore, you agree not to modify, de-compile, disassemble, or otherwise reverse 
-engineer the Software at any time or under any circumstances. WOLF WEJGAARD's 
-software is under copyright and contains proprietary information belonging to FORTH 
-ENGINEERING and/or its partners. 
-
-THE SOFTWARE AND THE ACCOMPANYING FILES ARE PROVIDED "AS IS" AND WITHOUT WARRANTIES AS 
-TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIES WHETHER EXPRESSED OR IMPLIED. 
-NO WARRANTY OF FITNESS FOR ANY PARTICULAR PURPOSE IS OFFERED. 
-
-THE USER MUST ASSUME THE ENTIRE RISK OF USING THE SOFTWARE. ANY LIABILITY OF FORTH 
-ENGINEERING OR ANY OF ITS PARTNERS WILL BE LIMITED EXCLUSIVELY TO A REFUND OF THE 
-PURCHASE PRICE PAID FOR THE SOFTWARE BY THE USER TO WOLF WEJGAARD. 
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 --
 
 CREDITS
-HolonTalk is programmed in TclTk and uses the Metakit database.
+HolonCode is programmed in TclTk and uses the Metakit database.
 License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
 License for Metakit:  http://equi4.com/metakit/license.html
-
 
 }
 
 proc ShowProject {} {
 	global keytext licensed trial days trialtime  
 	set title "$::appname "
-	if {$keytext=="nokey"} {
-		if $trial {
-			set daysleft [expr $trialtime-$days]
-			wm title . "$title Trial    +$daysleft days"
-		} {
-			wm title . "$title  - Editor is closed, register to reopen"
-		}
-	} {	
-		if $licensed {
-			wm title . $title 
-		} {
-			wm title . "$title  |  Keyfile problem - Project closed " 
-		}		
-	}
+	wm title . $title 
 }
 
 proc License {} {
@@ -383,6 +338,5 @@ proc License {} {
 	$lt insert 1.0 "Open Source License\n"
 	$lt insert end $::LicenseText
 	$lt configure -state disabled
-
 }
 

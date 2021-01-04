@@ -1,3 +1,18 @@
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 proc ?SafeDel {} {
 	global replaceText
 	if [GetBase safe] {
@@ -37,7 +52,7 @@ proc Insert&Delete {} {
 	bind $view(units) <Shift-BackSpace> {InsertUDeleted after; break} 
 }
 
-proc NewPage {} {
+proc NewPage {} { 
 	if [Editing] {SaveIt}
 	switch [GetPage [CurrentPage] type] {
 		chapter {AddChapter}
@@ -101,8 +116,7 @@ proc StoreText {} {
 	set code [string trimright [$view(code) get 1.0 end ]]; 
 	set cursor [lindex [$view(code) yview] 0] 
 	set test " "; 	# set test [string trim [$view(test) get 1.0 end]]
-	SavePage [CurrentPage] $text $code local $title $cursor $test $changed
-}
+	SavePage [CurrentPage] $text $code local $title $cursor $test $changed}
 
 proc SaveText {} {
 	global version changelist oldVersion changed
@@ -159,8 +173,6 @@ proc EditPage {} {
 	} else {
 		set pane $edit(pane); set edit(pane) "" ; set cursor $edit(pos)
 	}
-#	if {$cursor==""} {set cursor 1.0}   ;# new page
-#	$pane mark set insert $cursor
 	$pane mark set anchor insert	   
 	focus $pane
 	RefreshColors
@@ -505,36 +517,4 @@ proc TextMenu {} {
 #	$tm add command -label "image" -command TextImage
 	$tm add command -label "url" -command TextURL
 }
-
-proc CutLines {pane} {
-	set i 0; set j 0
-	set buf [$pane get 1.0 end]  
-	set len [string length $buf]
-	while {$i<$len} {
-		if {[string index $buf $i] eq "\n"} {set  j 0}
-		if {$j > 72} {
-			while {[string index $buf $i] ne " "} {
-				incr i -1;  if {$i<0} break
-			}
-			set buf [string replace $buf $i $i \n]
-			set j 0; 
-		}
-		incr i; incr j
-	} 
-	# Text zurückschreiben
-	$pane configure -state normal
-	$pane delete 1.0 end
-	$pane insert  end $buf
-}
-
-proc Signatur {pane} {
-	$pane insert end "
-- Wolf
---
-Wolf Wejgaard
-http://holonforth.com
-"
-}
-
-
 

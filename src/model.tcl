@@ -1,3 +1,18 @@
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 proc SetDBLayout {} {
 	mk::view layout wdb.base \
 		{list active delchapters delsections delunits monitor view \
@@ -12,18 +27,18 @@ proc SetDBLayout {} {
 }
 
 proc CreateStructure {} {
-		mk::row append wdb.base  monitor 0 view list	version 0.001 \
-			geometry "1100x700+50+50" extension 1  \
-			textcolor #ffffff codecolor 1 pages 2 comdel //  running 0 \
-			runcmd "../tclkit ./main.tcl" syntax Tcl safe 0 \
-			pagesize A4 start 0 codefont Verdana codesize 12 fontsize 12 revpage 1
-		set c [AppendPage type chapter name "Revisions" mode source]
+		mk::row append wdb.base  monitor 0  view list	 version 0.001 \
+			geometry "1100x700+50+50"  extension 1  \
+			textcolor #ffffff  codecolor 1 pages 2 comdel //  running 0 \
+			runcmd "../tclkit ./main.tcl"  syntax Tcl  safe 0 \
+			pagesize A4  start 0  codefont Verdana  codesize 12  revpage 1
+		set c [AppendPage type chapter  name "Revisions"  mode source]
     		SetBase list $c active $c
     		SetPage $c next ""
-    		set s [AppendPage type section name "Setup"]
+    		set s [AppendPage type section  name "Section"]
     		SetPage $c list $s active $s
     		SetPage $s next $c
-    		set u [AppendPage type unit name "0.001"]
+    		set u [AppendPage type unit  name "0.001"]
     		SetPage $s list $u active $u
     		SetPage $u next $s
     		SetBase revpage $u
@@ -33,7 +48,7 @@ proc CreateStructure {} {
 proc UpdateRunning {} {
 	SetBase running [clock seconds]
  	mk::file commit wdb
-	after 6000 UpdateRunning
+	after 60000 UpdateRunning
 }
 
 proc ProjectDB {} {
@@ -262,8 +277,8 @@ proc SavePage {id text code who newName cursor test changed} {
 set page 0
 
 proc CurrentPage {} {
-	global page
-	return $page
+	return $::page
+
 }
 
 proc PageStack {} {
@@ -343,94 +358,5 @@ proc ascii {c} {
 proc GetAscii {i} {
 	global comp
 	ascii [string index $comp(source) $i]
-}
-
-set Client "Wolf der Macher
-Zuhause
-6045 Meggen
-"
-
-set licensed false
-set trial true
-set keytext "nokey"
-set trialtime 12
-
-proc closed {} {
-	global licensed trial
- 	return [expr $licensed || $trial]
-}
-
-proc OpenKeyfile {} {
-	set name "thekeyfile"
-	set f [open $name.key w]
- 	fconfigure $f -encoding binary
-	return $f
-}
-
-proc MakeKeyfile {text} {
-	set f [OpenKeyfile]
-	fconfigure $f -translation binary
-#	puts $f [MumbleText "Wolf Wejgaard\nForth Engineering\nCH-6045 Meggen"]
-	puts $f [MumbleText $text]
-	close $f
-}
-
-proc KeyFile {} {
-	global keyfile
-	set keyfile	[lindex [glob -nocomplain *.key] 0]
-}
-
-proc GetKey {} {
-	global keyfile keytext licensed trial days trialtime
-	if {[GetBase start]==0} {SetBase start [expr ([clock seconds]/86400)]}; 
-	if {[KeyFile]!=""} {
-		set f [open $keyfile r]
-		fconfigure $f -translation binary
-		set keytext [DemumbleText [read -nonewline $f]]
-		close $f
-	}	
-	if {$keytext!="nokey"} {set licensed true; return}
-	set now [expr ([clock seconds]/86400)]; 
-	set start [GetBase start]
-	set days [expr ($now-$start)]
-	set trial [expr {$days<$trialtime}]
-}
-
-proc Mumble {m} {
-	set mm [expr ($m%8)*16+($m/8)]
-	return $mm
-}
-
-proc MumbleText {text} {
-	set mtext ""
-	set summe 0
-	set len [string length $text]
-	for {set i 0} {$i<$len} {incr i} {
-		set char [string index $text $i]
- 		set asc [ascii $char] 
-		incr summe $asc
-		append mtext	[char [Mumble $asc]]
-	}
-#	append mtext [char [expr $summe%128]]
-	return $mtext
-}
-
-proc Demumble {m} {
-	set mm [expr ($m%16)*8+($m/16)]
-	return $mm
-}
-
-proc DemumbleText {text} {
-	set mtext ""
-	set summe 0
-	set len [string length $text]
-	for {set i 0} {$i<$len} {incr i} {
-		set char [string index $text $i]
-		set asc [ascii $char]
-		append mtext	[char [Demumble $asc]]
-		incr summe [Demumble $asc]
-	}
-#	if {[ascii [string index $text end]]!=[expr $summe%128]}	{set mtext ""}
-	return $mtext
 }
 

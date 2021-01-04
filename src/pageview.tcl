@@ -1,3 +1,18 @@
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 set oldText ""
 set oldCode ""
 set oldTitle ""
@@ -35,20 +50,16 @@ proc TitleBindings {} {
 
 proc TitlePane {} {
 	global view color
-
 	# the frame for title and version 
 	set view(titleversion) [frame $view(page).tv -relief sunken -bd 1 -bg white]
-
 	# the title space
 	set view(title) $view(titleversion).title
 	text $view(title) -width 40  -undo true	-font title -pady 7  \
 		-height 1 -state disabled -relief flat -padx 9 -bg $color(menu) \
 		-highlightthickness 0 -highlightcolor white
 	pack $view(title) -side left -fill both 
-
 	# the version space
 	pack [VersionPane] -side right -fill x -fill y -expand true
-
 	# configure
 	TitleTags
 	TitleBindings
@@ -475,7 +486,7 @@ proc ClearPage {} {
 }
 
 proc ShowPage {id} {
-	global view oldVersion color page
+	global view oldVersion page color
 	set page $id
 	set oldVersion 0
 	SetList $id
