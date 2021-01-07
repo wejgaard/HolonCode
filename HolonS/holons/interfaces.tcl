@@ -13,6 +13,262 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+set pageSize 61
+set seite 0
+set line 0
+
+proc PrintHeader {} {
+	global pf seite line appname version
+	if {$line==1} return  ;# avoiding an empty page
+	set line 0
+	if {$seite>0} {puts -nonewline $pf \f}
+	incr seite
+#	set d [clock format [clock seconds] -format "%x"]
+	set d [clock format [clock seconds] -format "%e.%b %Y"]
+	set hAppname [string totitle $appname]
+	set hChapter [ChapterName [Chapter]]
+	set hSection [GetPage [Section] name] 
+	set l "$hAppname/$hChapter/$hSection"
+	set c [string length $l]
+	puts -nonewline $pf $l
+	while {$c<38} {puts -nonewline $pf " "; incr c}
+	puts	$pf "$version / $d              Page $seite"
+	puts $pf \n
+}
+
+proc IncrLine {} {
+	global line pageSize
+	incr line
+	if {$line>$pageSize} {PrintHeader}
+}
+
+proc WriteLine {l} {
+	global pf 
+	regsub -all {\t} $l "    " l
+	puts $pf $l 
+	IncrLine
+}
+
+proc PrintTitle {type id} {
+	set l "$type [GetPage $id name]"
+	WriteLine $l
+	set n [string length $l]
+	set l [string repeat "=" $n]
+	WriteLine $l
+}
+
+proc RemoveTags {t} {
+	set text ""	
+	foreach {key value index} $t {
+		if {$key=="text"} {
+			append text $value
+		}
+	}
+	return [string trimright $text]
+}
+
+proc PrintTextLine {l r} {
+	global pf
+	set type [GetPage $r type]
+	set length 78
+	set delimiter [GetBase comdel]; if {$delimiter!=""} {set delimiter "$delimiter "}
+	while {[string length $l] > $length} {
+		set w [string wordstart $l $length]
+		# if w points to first char of word, move to separator.
+		set c [string index $l $w]
+		if {[string match {[a-zA-Z0-9]} $c]} {incr w -1}
+		# if separator is not space or dot, include in word.
+		set c [string index $l $w]
+		if {![string match {[ .]} $c]} {incr w -1}
+		if {$type=="unit"} {puts -nonewline $pf $delimiter}
+		WriteLine [string range $l 0 $w]
+		set l [string replace $l 0 $w]
+	}
+	if {$type=="unit"} {puts -nonewline $pf $delimiter}
+	WriteLine $l
+}
+
+proc PrintCodeLine {l r} {
+	global pf
+	set type [GetPage $r type]
+	set length 78
+	while {[string length $l] > $length} {
+		set w [string wordstart $l $length]
+		# if w points to first char of word, move to separator.
+		set c [string index $l $w]
+		if {[string match {[a-zA-Z0-9]} $c]} {incr w -1}
+		# if separator is not space or dot, include in word.
+		set c [string index $l $w]
+		if {![string match {[ .]} $c]} {incr w -1}
+		WriteLine [string range $l 0 $w]
+		set l [string replace $l 0 $w]
+	}
+	WriteLine $l
+}
+
+proc UnitSize {r} {
+	set t [RemoveTags [GetPage $r text]]
+	set lines [split $t \n]
+	set n [llength $lines]
+	set t [GetPage $r source]
+	set lines [split $t \n]
+	incr n [llength $lines]
+	return $n
+}
+
+proc PrintText {r} {
+	global pf
+	set t [RemoveTags [GetPage $r text]]
+	set lines [split $t \n]
+	set n [llength $lines]
+	set i 0
+	while {$i<$n} {
+		PrintTextLine [lindex $lines $i] $r
+		incr i
+	}	
+}
+
+proc PrintCode {id} {
+	set t [GetPage $id source]
+	set lines [split $t \n]
+	set n [llength $lines]
+	set i 0
+	while {$i<$n} {
+		PrintCodeLine [lindex $lines $i] $id
+		incr i
+	}	
+}
+
+proc PrintPage {r} {
+	global pageSize line
+	if {[expr [UnitSize $r]+$line]>$pageSize} {PrintHeader}
+	PrintText $r
+	PrintCode $r
+}
+
+proc PrintSectionPages {} {
+	PrintHeader
+	PrintTitle "Section" [Section]
+	PrintText [Section]
+	WriteLine ""; WriteLine ""
+	if {![NoUnits]} {
+	     set u [FirstUnit]
+	     PrintPage $u
+	     while {[Next $u] != [Section]} {
+			set u [Next $u]
+			WriteLine ""; WriteLine ""
+			PrintPage $u
+	     }
+	}
+}
+
+proc PrintSectionsList {}  {
+	WriteLine "Sections"
+	WriteLine "========"
+ 	set s [FirstSection]
+	while {$s != [Chapter]} {
+		WriteLine [GetPage $s name]
+		set s [Next $s]
+	 }
+}
+
+proc StartPrint {id} {
+	global printfile pf seite 
+	set name [GetPage $id name]; regsub -all { } $name {-} name
+	# if chapter get rid of extension
+	set n [string first {.} $name] 
+	if {$n>0} {set name [string range $name 0 [expr $n-1]]}
+	file mkdir [pwd]/text
+	set printfile [pwd]/text/$name.txt
+	set pf [open $printfile w]
+	fconfigure $pf -encoding binary 
+ 	set seite 0
+ 	set line 1  ;# avoid empty pages in PrintHeader
+ 	if {[GetBase pagesize]!="A4"} {set pageSize 57} else {set pageSize 61}
+}
+
+proc EndPrint {} {
+	global printfile pf
+	close $pf
+	 if [osx] {
+		eval exec open $printfile &
+	} {
+		if [catch {eval exec wordpad.exe $printfile &}] {
+			eval exec [auto_execok start] $printfile &
+		}
+	}
+}
+
+proc PrintUnit {} {
+ 	StartPrint [Unit]
+	PrintHeader	
+	PrintPage [Unit]
+	EndPrint
+}
+
+proc PrintSection {} {
+	StartPrint [Section]
+	PrintSectionPages 
+	EndPrint
+}
+
+proc PrintChapter {} {
+	if {[NoSections]} {return}
+	set current [Section]
+	SetSection [FirstSection]
+ 	StartPrint [Chapter]
+	PrintHeader
+	PrintTitle "Chapter" [Chapter]
+	PrintText [Chapter]
+	WriteLine ""
+	WriteLine ""
+	PrintSectionsList
+	while {[Section] != [Chapter]} {
+		PrintSectionPages 
+		SetSection [NextSection]
+	}
+	EndPrint
+	SetSection $current
+}
+
+proc Print {} {
+	switch -glob -- [focus] {
+		*chapters {PrintChapter}
+		*sections {PrintSection}
+		*units {PrintUnit}
+	}
+}
+
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 proc OpenWriteFile {} {
 	set dir $::sourcedir
 	set name [string tolower [GetPage [Chapter] name]]
