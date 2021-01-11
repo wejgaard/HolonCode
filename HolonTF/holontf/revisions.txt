@@ -1,9 +1,11 @@
 
-  0.575 Revision chapter 
+  0.001 Project HolonTF set up 
 
-Comment:
-Make it a txt file for external logging.
+mark insert 1.0 mark current 1.0 text {New Project HolonTF.hdb
+} 1.0 text {Imported .hml files from master HolonTF. } 2.0
 
-Code:
-proc example {} ..
+New Project HolonTF.hdb
+Imported .hml files from master HolonTF.
+
+
 

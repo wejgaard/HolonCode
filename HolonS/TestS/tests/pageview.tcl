@@ -469,7 +469,6 @@ proc TextCodePanes {id} {
 		section {NoCodePane}
 		unit {Text&CodePanes}
 	}
-	if {[Extension]=="txt"} {NoCodePane}
 }
 
 proc ClearPage {} {
@@ -511,6 +510,5 @@ proc ShowPage {id} {
 	MarkInfoPages
 	StartVisitTime
 	SetTreePage
-	BrowserButtons
 }
 

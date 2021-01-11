@@ -1,0 +1,644 @@
+<Chapter>
+<Name> Compiler.tcl
+<Comment> mark insert 1.0 mark current 1.0 text {Forth Modul das über Tcl geladen wird und Tcl wie Forth aussehen lässt wobei alle Tcl Sachen weiter verfügbar sind. Forth & Tcl!} 1.0 mark tk::anchor1 1.128 text {
+} 1.128 text {
+} 2.0 text {Forth Worte werden zu Tcl Procs ohne Argumente compiliert.
+} 3.0 text {Argumente werden auf dem Datenstack übergeben.
+} 4.0 text {Die Worte belegen den globalen Datenraum.
+} 5.0 text {Ausserdem gibt es ein Dictionary der Worte für die Compileraktion, als Array.
+} 6.0 text {Compilieren: Wort-Proc-Code bilden, laden, Eintrag in Dictionary. Wie in Forth...
+} 7.0 text { 
+} 8.0 text {> Source von Units ist Folge von Zeilen im File 
+} 9.0 text {> getrennt durch eine Leerzeile.
+} 10.0 text { 
+} 11.0 text { } 12.0
+<Section>
+<Name> Head
+<Unit>
+<Name> Compiler-Head
+<Source> # File:    compiler.tcl
+# Project: TclForth
+# Version: 0.6.0
+# License: Tcl
+# Author:  Wolf Wejgaard  
+#
+<Section>
+<Name> Source
+<Comment> mark insert 1.0 text {Source parsing auf Forth Art beibehalten. Tcl ist zu genial...
+} 1.0 text {
+} 2.0 text {set } 3.0 tagon replaced 3.4 text comp(t 3.4 mark tk::anchor.work.page.panes.t.text 3.10 text ext) 3.10 tagoff replaced 3.14 text { {}     ;# Der Sourcetext der Unit
+} 3.14 text {set comp(code) {}    ;# Der erzeugte Tclcode
+} 4.0 text {set comp(word) {}    ;# aktuelles Word/Item
+} 5.0 text {
+} 6.0 text {set comp(prev) 0      ;# previous word
+} 7.0 text {set comp(i) 0            ;# start of current word
+} 8.0 text {set comp(next) 0      ;# start of next word 
+} 9.0 text {set comp(end) 0       ;# end of text
+} 10.0 text {
+} 11.0 text {set comp(in) {}        ;# input parameter tcl code
+} 12.0 text {set comp(out) {}      ;# output parameter tcl code
+} 13.0 text {
+} 14.0 text {
+} 15.0 text {xxx  xxx  xxx  xxx  xxx
+} 16.0 text {      p     c      n
+} 17.0 text { } 18.0
+<Unit>
+<Name> comp(
+<Comment> mark insert 1.0 mark current 1.0 text {Array mit Compilersachen für das Laden einer Unit } 1.0
+<Source> set comp(text) {}   ;# source text of the unit
+set comp(code) {}   ;# compiled tcl code
+set comp(word) {}   ;# currently compiled word/item
+set comp(i) 0       ;# current index in source text
+set comp(end) 0     ;# end of source text
+set comp(in) {}     ;# input parameters tcl code
+set comp(out) {}    ;# output parameters tcl code
+set comp(prev) 0    ;# saved current index
+set comp(imm) 0     ;# start of imm code
+set comp(icode) {}  ;# imm code
+<Unit>
+<Name> GetItem
+<Comment> mark insert 1.0 mark current 1.0 text {regexp -indices -start $comp(i)  {\S+} $comp(text) range
+} 1.0 text {beginnt bei $comp(i) und sucht durch $comp(text) den nächsten Text ohne Leerstellen. 
+} 2.0 text {
+} 3.0 text {
+} 4.0 text { } 5.0
+<Source> proc GetItem {} {
+	global comp
+	if {$comp(i)>=$comp(end)} {set comp(word) "" ; return $comp(word)}
+	if ![regexp -indices -start $comp(i) {\S+} $comp(text) range] {
+		error "Non-space control chars in source after: $comp(word)\n"
+	}
+	set start [lindex $range 0]
+	set end [lindex $range 1]
+	set comp(word) [string range $comp(text) $start $end ] 
+	set comp(prev) $start
+	incr end; 	set comp(i) $end
+	if {$comp(word)=="."} {set comp(word) ".."}
+	return $comp(word)
+}
+<Unit>
+<Name> EmptyLine
+<Comment> mark insert 1.0 mark current 1.0 text {Commentlines starting with \ and # are ignored. Don't use comments in a line.
+} 1.0 text Trim\ leading\ and\ trailing\ white\ space.\ Thus\ in\ Code\ words\ \}\ is\ at\ the\ end\ of\ text.\n 2.0 text { } 3.0
+<Source> proc EmptyLine {} {
+	global f line
+	gets $f line
+	while {[string first {\ } $line]==0 || [string first {#} $line]==0} {gets $f line}
+	set line [string trim $line]
+	expr {$line==""}
+}
+<Unit>
+<Name> GetUnit
+<Comment> mark insert 1.0 mark current 1.0 text {Nächste Programmeinheit aus dem File lesen. 
+} 1.0 text {Unit ist Block aus Zeilen.
+} 2.0 text {Blöcke getrennt durch Leerzeilen. - Die aber Whitespace enthalten dürfen.
+} 3.0 text {	weil da schnell ein Space oder Tab hängenbleibt was man nicht sieht.
+} 4.0 text {Zeilenendezeichen drinlassen in comp(text). Für \ und so. 
+} 5.0 text {# Include empty lines as comments, starting with # or \ 
+} 6.0 text {0.563 GetUnit liefert Text fertig für Interpreter. } 7.0
+<Source> # Next program unit. 
+# A unit is a block of source text terminated by an empty line
+proc GetUnit {} {
+	global f line comp
+	while {[EmptyLine]&&[eof $f]==0} {}
+	set code $line	
+	while { ![EmptyLine]  && [eof $f]==0} {
+		set code $code\n$line
+	}
+	set comp(text) $code
+	set comp(end) [string length $comp(text)]
+	set comp(i) 0
+}
+<Section>
+<Name> WordsList
+<Comment> mark insert 1.0 mark current 1.0 text {Die Wortliste enthält den CompCode und sonst nichts. 
+} 1.0 text { } 2.0
+<Unit>
+<Name> words()
+<Comment> mark insert 1.0 mark current 1.0 text {Each entry binds a Forth name with its compile code. Colon evals the code. (Asks the word to do its own business...) } 1.0
+<Source> # Forth word list array
+# For each name the entry contains the corresponding compile code 
+set words(name) code
+<Section>
+<Name> Definers
+<Comment> mark insert 1.0 mark current 1.0 text {Action of the different word types. 
+} 1.0 text {The compiler words are defined in the target=application itself. 
+} 2.0 text { } 3.0
+<Unit>
+<Name> MakeProc
+<Comment> mark insert 1.0 mark current 1.0 text {Hilfsroutine für Codewort. Soll nicht direkt angesprochen werden.
+} 1.0 text {Nicht in Wortliste nehmen. } 2.0
+<Source> proc MakeProc {} {
+	global comp 
+	set comp(code) $comp(text) 
+	uplevel #0 {eval $comp(text)}
+}
+<Unit>
+<Name> MakeCode
+<Comment> mark insert 1.0 mark current 1.0 text {Creates a proc that takes and leaves parameters on the data stack. } 1.0
+<Source> # Creates a Forth proc that receives and passes its arguments on the data stack. 
+proc MakeCode {} {
+	global comp words
+	set comp(name) [GetItem] 
+	set comp(code) "proc $comp(name) \{\} \{ "
+	CompileStack
+	if {$comp(in)!=""} {append comp(code) "\n$comp(in) "}
+	append comp(code) [string range $comp(text) $comp(i) $comp(end)]
+	append comp(code) " \n$comp(out) \} "
+	set words($comp(name))  "CompWord $comp(name)"
+	eval $comp(code)
+}
+<Unit>
+<Name> MakeCompiler
+<Comment> mark insert 1.0 mark current 1.0 text {compcode => comptext weil es so ist. } 1.0
+<Source> proc MakeCompiler {} {
+	global comp words
+	GetItem
+	set comptext [string range $comp(text) $comp(i) $comp(end)]
+	set words($comp(word)) [string trimleft $comptext]
+}
+<Unit>
+<Name> MakeColon
+<Comment> mark insert 1.0 mark current 1.0 text {Colonwort legt proc ab mit Stackparametern und gibt dann die Kontrolle an die einzelnen Worte. Zum Schluss werden die Resultate auf TOS geschrieben. } 1.0
+<Source> proc MakeColon {} {
+	global comp words
+	set comp(name) [GetItem]
+	set words($comp(name))  "CompWord $comp(name)"
+	set comp(code) "proc $comp(name) \{\} \{\n"
+	CompileStack
+	if {$comp(in)!=""} {append comp(code) "$comp(in) \n"}
+	GetItem
+	CompileColon	
+	append comp(code) " $comp(out) \n\} "
+	eval $comp(code)
+}
+<Unit>
+<Name> EvalTcl
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Copy rest of code as is. } 1.0
+<Source> proc EvalTcl {} {
+	global comp
+	incr comp(i)
+	set comp(code) [string range $comp(text) $comp(i) $comp(end)]
+	uplevel #0 {eval $comp(code)}
+}
+<Unit>
+<Name> EvalForth
+<Source> # Interprets = compiles and executes a Forth script
+proc EvalForth {} {
+	global comp words
+	set comp(i) 0
+	GetItem
+	CompileColon	
+	uplevel #0 {eval $comp(code)}
+}
+<Section>
+<Name> CompileAction
+<Comment> mark insert 1.0 mark current 1.0 text {> Name aus File Unit Source holen = zweites Wort 
+} 1.0 text {oder aus Unit lesen, wobei:} 2.0 mark tk::anchor.work.page.panes.t.text 2.27 text {
+} 2.27 text {> Unit = Eintrag in Wortliste = Array der Namen und Compcodes. } 3.0
+<Unit>
+<Name> PushText
+<Source> # Called by Forth word "
+proc PushText {} {
+	global comp 
+	set start $comp(i); incr start
+	set end [string first {"} $comp(text) $start]
+	if {$end<0} {error "String not finished"}
+	incr end -1 
+	set text [string range $comp(text) $start $end]
+	incr end 2; set comp(i) $end
+	append comp(code) "push \"$text\" ; "
+}
+<Unit>
+<Name> PushList
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text Gerufen\ von\ Word\ \{\n 1.0 text comp(i)\ zeigt\ hinter\ \{\n 2.0 text { } 3.0
+<Source> # Called by Forth word { 
+proc PushList {} {
+	global comp 
+	set start $comp(i)
+	set end [string first \} $comp(text) $start]
+	if {$end<0} {error "List not finished"}
+	incr start; incr end -1 
+	set text [string range $comp(text) $start $end]
+	incr end 2; set comp(i) $end
+	append comp(code) "push \{$text\}  ; "
+}
+<Unit>
+<Name> SkipLine
+<Source> proc SkipLine {} {
+	global comp
+	set eol [string first \n $comp(text) $comp(i)]
+	if $eol>0 {
+		incr eol; 	set comp(i) $eol
+	} {
+		set comp(i) $comp(end)
+	}
+}
+<Unit>
+<Name> SkipComment
+<Source> proc SkipComment {} {
+	global comp
+	set eoc [string first ) $comp(text) $comp(i)]
+	if $eoc>0 {
+		incr eoc; 	set comp(i) $eoc
+	} {
+		set comp(i) $comp(end)
+	}
+}
+<Unit>
+<Name> CompWord
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Default Aktion der Words, sich selbst einhängen. 
+} 1.0 text {> [GetPage $id name] ==> name anders holen 
+} 2.0 text {name ist bekannt in dem Moment, aus Source gelesen. } 3.0
+<Source> # Compile action of code and colon words
+proc CompWord {name} {
+	global comp
+	append comp(code) " $name ; " 
+}
+<Unit>
+<Name> appendcode
+<Source> # Compile action of most compiler=immediate words
+proc appendcode {code} {
+	global comp
+	append comp(code) $code
+}
+<Section>
+<Name> Objecttypes
+<Comment> mark insert 1.0 mark current 1.0 text {Objecttype <objtype> definiert einen Objecttype
+} 1.0 text {Der Objecttype hat Methods und Messages.
+} 2.0 text {Compiler: Message: definiert eine Message
+} 3.0 text {Ein Array objtype(message) definiert die zu Message gehörende Method.
+} 4.0 text {Ein Object kennt/speichert seinen Objecttyp in seinem Compcode. Damit kann es auf die Methoden des Objecttype zugreifen beim Compilieren des Objects. 
+} 5.0 text {
+} 6.0 text {Eine Message holt das folgende Objekt und legt die Methode gemäss objtype(message) ab.
+} 7.0 text {Wenn kein Objekt folgt ist das ein Fehler.
+} 8.0 text {Ein Objekt holt die folgende Message und legt die Methode ab.
+} 9.0 text {Wenn keine Message folgt, wird die Defaultmethode abgelegt. 
+} 10.0 text {
+} 11.0 text {Damit sind prefix und postfix Syntax möglich. } 12.0
+<Unit>
+<Name> MakeObjecttype
+<Comment> mark insert 1.0 mark current 1.0 text {Bildet einen Objecttype und compiliert den Array, der die Messages und die dazugehörigen Methods festhält. 
+} 1.0 mark tk::anchor1 2.0 text {
+} 2.0 text {Objecttype variable
+} 3.0 text {get  {push $obj}
+} 4.0 text {set  {set obj [pop]} 
+} 5.0 text {... (ohne Zwischenraum/Leerzeilen)
+} 6.0 text {... 
+} 7.0 text {... } 8.0
+<Source> # Called by definer objecttype.
+# Creates an objecttype array. 
+# The indices are messages, the values are method scripts.
+# Example use:
+# objecttype Variable
+# 		get  {push $obj}	
+#		set  {set obj [pop]} 
+#		... 
+proc MakeObjecttype {} {
+	global comp words 
+	set objtype [GetItem] 
+	set words($objtype)  "MakeObject ::$objtype"	
+	set comp(code) "array set $objtype  {"
+	append comp(code) [string range $comp(text) $comp(i) $comp(end)]
+	append comp(code) " }"
+	uplevel #0 {eval $comp(code)}
+}
+<Unit>
+<Name> MakeObject
+<Comment> mark insert 1.0 mark current 1.0 text {Eine Instanz bilden für eine objt} 1.0 mark tk::anchor.work.page.panes.t.text 1.33 text {ype. Führt die instance Methode aus, falls definiert, sonst die default Methode.
+} 1.33 text { } 2.0
+<Source> # Creates an instance of objtype.
+proc MakeObject {objtype} {
+	global comp words
+	set object [GetItem] ;# name of object
+	set words($object) "CompObject $objtype"	
+	if {[array names $objtype -exact instance]!=""} {
+		AppendObjectCode $object [set ${objtype}(instance)]
+	} {
+		AppendObjectCode $object {set obj {} ; }
+	}
+}
+<Unit>
+<Name> AppendMethod
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Wenn das folgende Item eine Message ist, die entsprechende Methode anwenden; sonst die default Methode, dabei den Sourcezeiger zurücksetzen. 
+} 1.0 text {Wenn das Objekt global ist, :: vor den Namen setzen. Erst auf local testen, Objekt kann auch einen globalen Doppelgänger haben. } 2.0
+<Source> # If the following source item is a message of objecttype type
+# the corresponding method script is appended,
+# else the default method {} is used.
+proc AppendMethod {object type} {
+	global comp words
+	if [isLocal $object] { } {set object "::$object"}			
+	set comp(prev) $comp(i); 
+	set message [GetItem]
+	if [info exists ::${type}($message)] {
+		set method [set ::${type}($message)]
+	} {
+		set message ""
+		set method [set ::${type}($message)]
+		set comp(i) $comp(prev)	
+	}
+	AppendObjectCode $object $method
+}
+<Unit>
+<Name> CompObject
+<Comment> mark insert 1.0 mark current 1.0 text {Compiliert ein Objekt des Typs ob} 1.0 mark tk::anchor.work.page.panes.t.text 1.33 text {jtype. 
+} 1.33 text {
+} 2.0 text { } 3.0
+<Source> proc CompObject {objtype} {	
+	global comp
+	AppendMethod $comp(word) $objtype
+}
+<Unit>
+<Name> AppendObjectCode
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Beim Laden des Methoden-Code wird "obj" ersetzt durch den Namen des Objekts. Das Objekt wird im Methodencode symbolisiert durch "obj", der Name wird eingesetzt von Hand mit string map, also nicht per Tcl Substitution. 
+} 1.0 text {
+} 2.0 text { } 3.0
+<Source> # Replaces the dummy "obj" in the appended method code by 
+# the current object's name
+proc AppendObjectCode {object method} {
+	global comp 
+	set code [string map "obj $object" $method]
+	append comp(code) "$code ; "
+}
+<Section>
+<Name> Colonword
+<Unit>
+<Name> CompileStack
+<Comment> mark insert 1.0 mark current 1.0 text {Endet mit comp(word) = ")" , comp(i) entsprechend. 
+} 1.0 text {Legt die Argumentnamen in den Array locals, mit leerem Wert. MakeColon kann so lokale Variablen erkennen. 
+} 2.0 text {1.45 Output locals nicht setzen,  könnten gleich sein wie input (für Stackworte dup drop swap) 
+} 3.0 text {Muss ja output vars noch gar nicht bilden. Wenn sie am Wortende fehlen ist das ein echter Fehler. 
+} 4.0 text {1.54 Typ mitgeben, default variable, kann mit cast geändert werden. } 5.0
+<Source> # Handles the Forth stack diagram { in1 .. | local1 .. -- out1 .. }
+# Accepts short form {} and {--} for empty diagrams
+proc CompileStack {} {
+	global comp locals
+	array unset locals   
+	set comp(in) {} ; set comp(out) {} ; set stackvar true
+	GetItem
+	if {$comp(word)=="\{\}"} return
+	if {$comp(word)=="\{--\}"} return
+	if {$comp(word)!="\{"} {error "stack diagram missing"}  
+	GetItem 
+	while {$comp(word) != "--"} {
+		if {$comp(word)=="\}"} {error "stack error: missing '--'"}
+		if {$comp(word)==""} {error "stack error: missing '--'"}
+		if {$comp(word)=="|"} {set stackvar false; GetItem; continue} 
+		if $stackvar {
+			set comp(in) [linsert $comp(in) 0 "set $comp(word) \[pop\] ; "]
+		} {
+			set comp(in) [lappend comp(in) "set $comp(word) 0 ; "] 
+		}
+		set locals($comp(word)) {variable}
+		GetItem
+	}
+	GetItem 
+	while {$comp(word) != "\}" } {
+		if {$comp(word)==""} {error "stack error: missing '\}'"}
+		set comp(out) [lappend comp(out) "push \$$comp(word) ; "] 
+		set locals($comp(word)) {variable}
+		GetItem
+	}
+	set comp(in) [join $comp(in)]
+	set comp(out) [join $comp(out)]
+}
+<Unit>
+<Name> isNumber
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {True if word is a value: integer, double, decimal, octal = 0ooo, or hexadecimal = 0xhhh or 0Xhhhhh } 1.0
+<Source> # Returns true if word is a number (int, double, decimal, octal, hex)
+proc isNumber {word} {	
+	return [expr [string is integer -strict $word]||[string is double -strict $word]]
+}
+<Unit>
+<Name> isLocal
+<Source> proc isLocal {word} {
+	global locals
+	expr {[array names locals -exact $word]!=""}
+}
+<Unit>
+<Name> isString
+<Comment> mark insert 1.0 mark current 1.0 text {Wenn das Anfangszeichen " ist, den ganzen String auf den Stack legen.
+} 1.0 text { } 2.0
+<Source> proc isString {} {
+	global comp
+	if {[string first {"} $comp(word)]==0} {
+		set comp(i) $comp(prev); PushText
+		return 1
+	} {
+		return 0
+	}
+}
+<Unit>
+<Name> isList
+<Comment> mark insert 1.0 mark current 1.0 text Wenn\ das\ Anfangszeichen\ \{\ ist,\ die\ ganze\ Liste\ auf\ den\ Stack\ legen.\n 1.0 text { } 2.0
+<Source> proc isList {} {
+	global comp
+	if {[string first \{ $comp(word)]==0} {
+		set comp(i) $comp(prev); PushList
+		return 1
+	} {
+		return 0
+	}
+}
+<Unit>
+<Name> CompileColon
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 text {Gerufen mit comp(word) = erstes Wort des Source. 
+} 1.0 text {Local Variable hat Priorität. 
+} 2.0 text {Kann kein code sein. } 3.0
+<Source> proc CompileColon {} {
+	global comp lcname locals words 
+	while {$comp(word) != "" } {
+		if [isLocal $comp(word)] {
+			set object $comp(word);  
+			set type $locals($object)
+			AppendMethod $object ::$type
+		}  {
+			if [info exists words($comp(word))] {
+				uplevel #0 {eval $words($comp(word))}			
+			} else {
+				if [isNumber $comp(word)] {
+					append comp(code) "push $comp(word) ; "
+				} {
+					if {![isString]&&![isList]} {ShowCompCode; error "$comp(word) is undefined"; }
+				}
+			}
+		}
+		GetItem 
+	}
+}
+<Unit>
+<Name> ShowCompCode
+<Source> # To be overwritten in Forth Console
+proc ShowCompCode {} {
+	puts $::comp(code)
+}
+<Section>
+<Name> Loader
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Der Loadmechanismus. 
+} 1.0 text {
+} 2.0 text {> NEU von File laden. } 3.0
+<Unit>
+<Name> SetupInterpreter
+<Source> proc SetupInterpreter {} {
+	global comp view locals doi doj dok 
+	array unset locals
+	set doi 0; set doj -1; set dok -2  
+	set comp(code) {}; set comp(objtype) {}
+}
+<Unit>
+<Name> InterpretText
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc InterpretText {} {
+	global definer  
+	SetupInterpreter
+	set definer [string tolower [ GetItem ]]
+	switch $definer {
+		proc MakeProc
+		tcl EvalTcl
+		compiler MakeCompiler
+		immediate MakeCompiler
+		code MakeCode
+		:  MakeColon
+		objecttype MakeObjecttype
+		datatype MakeObjecttype
+		default EvalForth
+	}
+}
+<Unit>
+<Name> LoadUnit
+<Comment> mark insert 1.0 mark current 1.0 text {Compilieren, dann ausführen. 
+} 1.0 text {0.563 Der Text ist schon geladen in comp(text) - durch GetUnit in LoadForth oder durch EvalUnit in der Console } 2.0
+<Source> proc LoadUnit {} {
+	InterpretText
+	puts $::comp(code)\n
+}
+<Unit>
+<Name> LoadForth
+<Source> proc LoadForth {file} {
+	global f
+	set f [open $file r]; 	fconfigure $f -encoding binary
+	while {[eof $f]==0} { 	
+		GetUnit
+		LoadUnit
+	}
+	close $f
+}
+<Section>
+<Name> Output
+<Unit>
+<Name> print
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {Wirkt als Printvektor, wird umgesetzt (rename) für die Forthconsole. } 1.0
+<Source> # Print vectors, will be redefined for output to the console widget.
+proc print {text} {
+	puts -nonewline $text
+}
+<Unit>
+<Name> printnl
+<Comment> mark tk::anchor.work.page.panes.t.text 1.0 mark insert 1.0 mark current 1.0 text {with new line } 1.0
+<Source> proc printnl {text} {
+	puts $text
+}
+<Section>
+<Name> Monitor
+<Comment> mark insert 1.0 mark current 1.0 text {Monitor File holon.mon in das gemeinsame Verzeichnis von TclForth und HolonU legen.
+} 1.0 text {Dann kann LoadForth den Source verarbeiten.
+} 2.0 text { } 3.0
+<Unit>
+<Name> osx
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc osx {} {
+	if {$::tcl_platform(os)=="Darwin"} {return true} {return false}
+}
+<Unit>
+<Name> MonitorFile
+<Comment> mark insert 1.0 mark current 1.0 text {Legt holon.mon zwei Etagen höher zum Oberfolder der beiden Projekte, die kommunizieren.
+} 1.0 text {Bsp:
+} 2.0 text {Literate Programming
+} 3.0 text {	Projekt Primes
+} 4.0 text {		Primes.ap etc} 5.0 mark tk::anchor.work.page.panes.t.text 5.15 text {
+} 5.15 text {	TclForth
+} 6.0 text {		TclForth.app
+} 7.0 text {	holon.html
+} 8.0 text {Primes App kann in TclForth code laden
+} 9.0 text {
+} 10.0 text {
+} 11.0 text { } 12.0
+<Source> set MonitorFile ../../holon.mon
+<Unit>
+<Name> LastAccess
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc LastAccess {} {
+	global MonitorFile
+	if {[file exists $MonitorFile]} {
+		file stat $MonitorFile status
+		return $status(mtime)
+	} {
+		return 0
+	}
+}
+<Unit>
+<Name> LastRead
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> set LastRead 0
+<Unit>
+<Name> Monitor
+<Comment> mark insert 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc Monitor {} {
+	global LastRead errorInfo
+	if {$LastRead != [LastAccess]} {
+		set LastRead [LastAccess]
+		if {[catch DoIt result]} {
+			puts "Error: $errorInfo"
+		}
+	}
+	after 200 Monitor
+}
+<Unit>
+<Name> LoadInConsole
+<Comment> mark insert 1.0 mark current 1.0 text {Copy text from holon.mon to console. } 1.0
+<Source> proc LoadInConsole {file} {
+	global f Console comstart montext
+	set f [open $file r]; 	fconfigure $f -encoding binary
+	$Console insert $comstart [read $f]
+	close $f
+}
+<Unit>
+<Name> DoIt
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc DoIt {} {
+	global MonitorFile
+	set result [uplevel #0 {eval { LoadInConsole $MonitorFile}}]
+#	puts $result
+#	SendMonitor $result
+	EvalText
+}
+<Unit>
+<Name> SendMonitor
+<Source> proc SendMonitor {text} {
+	set f [open $::MonitorFile w]
+	fconfigure $f -encoding binary
+	puts $f "$text\n"
+	close $f
+}
+<Unit>
+<Name> StartMonitor
+<Comment> mark insert 1.0 text {
+} 1.0 text { } 2.0
+<Source> proc StartMonitor {} {
+	global LastRead
+	set LastRead [LastAccess]
+	Monitor
+}
+<Unit>
+<Name> PrintMontext
+<Comment> mark insert 1.0 mark current 1.0 text {Debugging Monitorfile text zeigen } 1.0
+<Source> proc PrintMontext {} {
+	global montext
+	printnl $montext
+}
