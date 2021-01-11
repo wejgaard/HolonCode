@@ -1,9 +1,0 @@
-
-  0.575 Revision chapter 
-
-Comment:
-Make it a txt file for external logging.
-
-Code:
-proc example {} ..
-
