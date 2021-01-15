@@ -657,7 +657,6 @@ proc ShowFoundPages {rows} {
 			}
 		}
   	}
-    	if {$count==0} {InsertRevisionline "(none)" normal 0}
 	set ::infomode found  
 }
 

@@ -130,7 +130,7 @@ proc SaveText {} {
 	}
 	StoreText
 	WriteChapter	         
-#	BrowserButtons
+	BrowserButtons
 	if [LinView] {StreamAll}
 }
 
@@ -154,8 +154,7 @@ proc SaveIt {} {
 }
 
 proc Cancel {} {
-#	if [Editing] {BrowserButtons; ShowPage [CurrentPage]}
-	if [Editing] {ShowPage [CurrentPage]}
+	if [Editing] {BrowserButtons; ShowPage [CurrentPage]}
 }
 
 proc EditPage {} {

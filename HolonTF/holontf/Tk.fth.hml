@@ -1,0 +1,170 @@
+<Chapter>
+<Name> Tk.fth
+<Comment> mark insert 1.0 mark current 1.0 text {The Tk syntax can be used unchanged in HolonTF as a script in a code word. There is no reason to create Forth versions of all Tk commands. However, I have found a couple of Forth words useful for specific Tk calls, and collect these words here.} 1.0 mark tk::anchor1 1.244 text {
+} 1.244 text { } 2.0
+<Section>
+<Name> Widgets
+<Comment> mark insert 1.0 mark current 1.0 mark tk::anchor1 1.0 text {
+} 1.0 text {
+} 2.0 text {
+} 3.0 text {
+} 4.0 text { } 5.0
+<Unit>
+<Name> Tk-Head
+<Source> \ File:    tk.fth
+\ Project: TclForth
+\ Version: 0.6.0
+\ License: Tcl
+\ Author:  Wolf Wejgaard
+\ 
+
+tcl package require Tk
+
+\ ===================================================================================
+\ General Widgets
+\ ===================================================================================
+<Unit>
+<Name> Widget
+<Comment> mark insert 1.0 mark current 1.0 text {Nearly all Widgets. } 1.0
+<Source> \ Use: ".tkname" "type" Widget Forthname
+\ Example: ".forth" "text" Widget Console
+Objecttype Widget 
+	instance   {uplevel #0 {set type [pop]; set obj [pop]; eval $type $obj}}
+	{}         {push $obj}
+	config     {eval $obj [concat configure [pop]]}
+	pack       {eval [concat pack $obj [pop]]}
+	bind       {eval [concat bind $obj [pop]]}
+	wait       {tkwait window $obj}
+	insert     {push [$obj index insert]}
+	append     {$obj insert end [pop] ; $obj mark set insert end}
+	delete     {swap ; $obj delete [pop] [pop]}
+	yview      {$obj yview moveto [pop]}
+	end        {push [$obj index "end -1 char"]}
+	title      {wm title $obj [pop]}
+	add        {eval $obj [concat add [pop]]}
+<Section>
+<Name> Menus
+<Unit>
+<Name> Menus
+<Comment> mark insert 1.0 text {
+} 1.0 text { } 2.0
+<Source> \ ===================================================================================
+\ Tk Menus
+\ ===================================================================================
+<Unit>
+<Name> Menu
+<Comment> mark insert 1.0 text {\ ".tkname" Menu menu} 1.0 mark current 1.21 text {
+} 1.21 text {\ "command" "script" menu addcommand
+} 2.0 text {\ "label" "menu" "menubar" addmenu } 3.0
+<Source> Objecttype Menu 
+	instance   {uplevel #0 {set obj [pop]; menu $obj}}
+	{}         {push $obj}
+	addcommand {$obj add command -command [pop] -label [pop]}
+	addmenu    {$obj add cascade -menu [pop] -label [pop]}
+<Unit>
+<Name> Menubar
+<Source> ".menubar" Menu Menubar
+
+\ Anchor Menubar in console window
+tcl . config -menu .menubar
+<Section>
+<Name> Chessboard
+<Unit>
+<Name> CanvasHead
+<Comment> mark insert 1.0 text {
+} 1.0 text { } 2.0
+<Source> \ ===================================================================================
+\ Canvas
+\ ===================================================================================
+<Unit>
+<Name> createPoly
+<Source> Code createPoly { w polygon color outline tag -- }  
+	$w create poly $polygon -fill $color -tag $tag -outline $outline
+<Unit>
+<Name> ItemGet
+<Source> Code ItemGet { w tag field -- value }  
+	set value [$w itemcget $tag $field]
+<Unit>
+<Name> ItemPut
+<Source> Code ItemPut { w tag field value -- }  
+	$w itemconfigure $tag $field $value
+<Unit>
+<Name> 3swap
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> Code 3swap  { s1 s2 s3 -- s3 s2 s1 }
+<Unit>
+<Name> 4swap
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> Code 4swap  { s1 s2 s3 s4 -- s4 s3 s2 s1 }
+<Unit>
+<Name> 5swap
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> Code 5swap  { s1 s2 s3 s4 s5 -- s5 s4 s3 s2 s1 }
+<Unit>
+<Name> 6swap
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> Code 6swap  { s1 s2 s3 s4 s5 s6 -- s6 s5 s4 s3 s2 s1 }
+<Unit>
+<Name> unlist
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> Code unlist { -- } set ::stack [join $::stack]
+<Unit>
+<Name> Canvas
+<Comment> mark insert 1.0 text {text ( x y text -- )  - legt Text zentriert um x auf Höhe y } 1.0 mark current 1.60 text {
+} 1.60 text {set / config ( commands -- ) - e.g. ( "-width 300 -height 300" -- ) 
+} 2.0 text {pack ( commands -- ) - e.g. ( "-fill both -expand 1" -- ) 
+} 3.0 text {delete ( tag -- ) 
+} 4.0 text {polygon ( {shape} color border "tag" -- ) 
+} 5.0 text {rectangle  ( x1 y1 x2 y2 color "tag" -- )
+} 6.0 text {bbox ( tag -- x1 y1 x2 y2 )
+} 7.0 text {scale ( tag xOrigin yOrigin xScale yScale -- )  
+} 8.0 text {move ( tag dx dy -- )
+} 9.0 text {find ( searchcommand -- {items} )  e.g. ( "overlap $cx $cy $cx $cy" -- 
+} 10.0 text {gettags ( tagOrId -- {tags} )
+} 11.0 text {dtag  ( tagToDelete tagOrId -- )
+} 12.0 text {addtag ( tag searchSpec args -- )
+} 13.0 text {
+} 14.0 text { } 15.0
+<Source> Objecttype Canvas  
+	instance   {uplevel #0 {set obj [pop]; canvas $obj} }
+	{}         {push $obj}
+	create     {eval $obj [concat create [pop]]}
+	text       {3swap; eval $obj [concat create text [pop] [pop] -text \"[pop]\"]}
+	config     {eval $obj [concat configure [pop]]}
+	set        {eval $obj [concat config [pop]]}
+	rectangle  {6swap;	eval $obj [concat create rect [pop] [pop] [pop] [pop] -fill [pop] -tag \"[pop]\"]} 
+	delete     {$obj delete [pop]}
+	polygon    {4swap;	eval $obj [concat create poly \{[pop]\} -fill [pop] -outline [pop] -tag \"[pop]\"]} 
+	scale      {5swap; eval $obj [concat scale \"[pop]\" [pop] [pop] [pop] [pop]]}
+	move       {3swap; eval $obj [concat move [pop] [pop] [pop]]}
+	bbox       {push [$obj bbox [pop]]; unlist}
+	pack       {eval [concat pack $obj [pop]]}
+	bind       {eval [concat bind $obj [pop]]}
+	bindtag    {eval [concat $obj bind [pop]]}
+	find       {push [eval $obj find [pop]]}
+	gettags    {push [eval $obj gettags [pop]]}
+	dtag       {$obj dtag [pop] [pop]}
+	addtag     {3swap; $obj addtag [pop] [pop] [pop]}
+<Section>
+<Name> Other
+<Unit>
+<Name> OtherTkWords
+<Source> \ ===================================================================================
+\ Other
+\ ===================================================================================
+<Unit>
+<Name> windowExists
+<Source> Code windowExists { w -- flag }  
+	set flag [winfo exists $w]
+<Unit>
+<Name> Title
+<Comment> mark insert 1.0 mark current 1.0 text {
+} 1.0 text { } 2.0
+<Source> \ Set title of main window
+Code Title { text  -- }  
+	wm title . $text

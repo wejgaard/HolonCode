@@ -1,0 +1,95 @@
+
+  0.001 Start 
+
+
+
+
+
+
+
+
+  0.002 
+
+
+
+
+
+
+
+
+  0.003 hdb anpassen an src 
+
+
+
+
+
+
+
+
+  0.004 
+
+
+
+
+
+
+
+
+  0.005 HolonTF .hml importieren 
+
+mark insert 1.0 mark current 1.0 text {irrtum appname existiert } 1.0
+
+irrtum appname existiert
+
+HolonTF .hml importieren - Fehler appname ex nicht
+
+HolonS hat $appname gar nicht drin in hdb:
+proc Import-hml {} {
+	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
+	if {$file==""} {return}
+	ImportChapter $file
+}
+
+aber in src? Kann HolonS importieren?  Nein!! 
+Bug in Source: appname raus!
+
+--
+
+HolonTF Console flicken:
+
+
+  0.006 RemoveTags 
+
+mark insert 1.0 text {hier viel text weil nichts im source } 1.0
+
+hier viel text weil nichts im source
+
+
+
+
+  0.007 Import-hml 
+
+mark insert 1.0 mark current 1.0 text {global appname } 1.0
+
+global appname
+
+
+
+
+  0.008 Literate Programming 
+
+mark insert 1.0 mark current 1.0 text {Export .md } 1.0
+
+Export .md
+
+
+
+
+  0.009 git lernen 
+
+mark insert 1.0 mark current 1.0 text {text in m/b1 } 1.0
+
+text in m/b1
+
+
+

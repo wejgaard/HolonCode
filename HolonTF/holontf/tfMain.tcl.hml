@@ -1,0 +1,40 @@
+<Chapter>
+<Name> tfMain.tcl
+<Section>
+<Name> Modules
+<Unit>
+<Name> tfMain Header
+<Comment> mark insert 1.0 text {
+} 1.0 text { } 2.0
+<Source> # File:    tfmain.tcl
+# Project: TclForth
+# Version: 0.56
+# License: Tcl
+# Author:  Wolf Wejgaard  
+#
+<Unit>
+<Name> TclConsole
+<Comment> mark insert 1.0 mark current 1.0 text {Tk ist hier nötig um console zu zeigen.
+} 1.0 text { } 2.0
+<Source> package require Tk
+catch {console show}
+<Unit>
+<Name> source tclforth
+<Source> source compiler.tcl
+<Unit>
+<Name> Load forth
+<Source> LoadForth forth.fth
+<Unit>
+<Name> Load tk
+<Source> LoadForth tk.fth
+<Unit>
+<Name> Load console.fth
+<Source> LoadForth console.fth
+<Section>
+<Name> Start
+<Unit>
+<Name> TclForthStart
+<Comment> mark insert 1.0 mark current 1.0 text {Das Verzeichnis ist schon } 1.0 mark tk::anchor.work.page.panes.t.text 1.26 text {ausserhalb des Pakets TclForth.app
+} 1.26 text { } 2.0
+<Source> StartMonitor
+ForthConsole
