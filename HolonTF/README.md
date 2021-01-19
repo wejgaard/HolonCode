@@ -4,7 +4,7 @@
 
 ## Project HolonTF
 
-The HolonCode project that creates TclForth.
+HolonCode project that creates TclForth.
 
 ![HolonTF](https://www.holonforth.com/images/holontf2.png)
 
