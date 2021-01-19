@@ -481,7 +481,7 @@ proc HomeUnit {} {
 	}
 }
 
-proc EndUnit {} {
+proc EndUnit {} { xxx
 	if {[iActiveUnit]==[iLastUnit]} {
 		DownUnit
 	} else {
@@ -657,6 +657,7 @@ proc ShowFoundPages {rows} {
 			}
 		}
   	}
+    	if {$count==0} {InsertRevisionline "(none)" normal 0}
 	set ::infomode found  
 }
 
