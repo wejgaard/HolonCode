@@ -12,6 +12,9 @@ HolonCode handles program units as a collection of pages in a structure of secti
 
 ### Content
 
+
+- **[HolonS](https://github.com/wejgaard/HolonCode/tree/master/HolonS)** - Master Holon project - creates HolonCode src
+
 - **[HolonTF](https://github.com/wejgaard/HolonCode/tree/master/HolonTF)** - actual Holon project - creates TclForth
 
 - **[User Project](https://github.com/wejgaard/HolonCode/tree/master/Project)** - ready to use
