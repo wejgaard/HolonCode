@@ -1,14 +1,5 @@
 # HolonS
 
-### Overview
-
-HolonS handles program units in a structure of pages, sections and chapters. 
-Like a book. 
-
-![HolonTF](https://www.holonforth.com/images/holontest.png)
-
-
-
 ### Features
 
 see [https://holonforth.com/holons.html](https://holonforth.com/holons.html) 
