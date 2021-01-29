@@ -4,6 +4,8 @@
 
 HolonCode handles program units as a collection of pages in a structure of sections and chapters. Like a book.  HolonCode is free for use under GPLv3.
 
+![HolonTF](https://www.holonforth.com/images/holontest.png)
+
 
 ### Content
 
