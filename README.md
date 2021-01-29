@@ -4,13 +4,13 @@
 
 HolonCode handles program units as a collection of pages in a structure of sections and chapters. Like a book.  HolonCode is free for use under GPLv3.
 
-
-
-### Features: see [HolonS](https://holonforth.com/holons.html)
-
+![HolonTF](https://www.holonforth.com/images/holontest.png)
 
 
 ### Content
+
+
+- **[HolonS](https://github.com/wejgaard/HolonCode/tree/master/HolonS)** - Master Holon project - creates HolonCode src
 
 - **[HolonTF](https://github.com/wejgaard/HolonCode/tree/master/HolonTF)** - actual Holon project - creates TclForth
 
