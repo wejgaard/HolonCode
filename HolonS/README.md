@@ -2,7 +2,7 @@
 
 ### Overview
 
-[HolonS](https://holonforth.com/holons.html) handles program units in a structure of pages, sections and chapters. 
+HolonS handles program units in a structure of pages, sections and chapters. 
 Like a book. 
 
 ![HolonTF](https://www.holonforth.com/images/holontest.png)
