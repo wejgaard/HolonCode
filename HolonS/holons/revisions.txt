@@ -35,7 +35,7 @@
 
 
 
-  0.005 HolonTF .hml importieren 
+  0.005 
 
 mark insert 1.0 mark current 1.0 text {irrtum appname existiert } 1.0
 
@@ -58,9 +58,9 @@ Bug in Source: appname raus!
 HolonTF Console flicken:
 
 
-  0.006 RemoveTags 
+  0.006 
 
-mark insert 1.0 text {hier viel text weil nichts im source } 1.0
+mark insert 1.0 mark current 1.0 text {hier viel text weil nichts im source } 1.0
 
 hier viel text weil nichts im source
 
@@ -94,20 +94,41 @@ text in m/b1
 
 
 
-  0.010 Monitor 
+  0.010 MonitorFile 
+
+mark insert 1.0 text {used for umbilical development into target system } 1.0
+
+used for umbilical development into target system
 
 
 
 
+  4.0.1 Semantic Versioning 
+
+mark insert 1.0 mark current 1.0 text {4.0.0 is HolonCode version as developed starting 2011
+} 1.0 text {New Projects start} 2.0 mark tk::anchor2 2.18 text { at 0.0.1
+} 2.18 text {
+} 3.0 text { } 4.0
+
+4.0.0 is HolonCode version as developed starting 2011
+New Projects start at 0.0.1
 
 
 
 
-  1.0.1 
+  4.0.23 just a number 
 
+mark insert 1.0 mark current 1.0 text {HolonCode Versioning started at 1.000 2011, last change 4.022 2020
+} 1.0 text {
+} 2.0 text {HolonTF includes its } 3.0 mark tk::anchor2 3.21 text {full revision history.
+} 3.21 text {
+} 4.0 text {
+} 5.0 text {
+} 6.0 text { } 7.0
 
+HolonCode Versioning started at 1.000 2011, last change 4.022 2020
 
-
+HolonTF includes its full revision history.
 
 
 
