@@ -195,7 +195,7 @@ Code EvalText { -- }
 	EvalUnit
 	okprompt
 
-: ClearConsole { -- }
+: ClearConsole { -- } 
 	!s
 	"1.0" Console end Console delete ;
 

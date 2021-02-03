@@ -53,6 +53,8 @@ Code createPoly { w polygon color outline tag -- }
 Code ItemGet { w tag field -- value }  
 	set value [$w itemcget $tag $field]
 
+
+
 Code ItemPut { w tag field value -- }  
 	$w itemconfigure $tag $field $value
 
