@@ -39,7 +39,7 @@ The project is created with one each chapter, section and unit.
 
 The rest is up to you. Help:
 
-- Import "User's Guide.hml"  -  Made for HolonU, most of it still applies.
+- Import "User's Guide.hml"  -  Made for [HolonU](https://holonforth.com/holonu.html), most of it still applies.
   - Menu: Project/Import .hml
   - From Project/project get "User's Guide.hml"
 

@@ -118,16 +118,18 @@ New Projects start at 0.0.1
 
   4.0.23 just a number 
 
-mark insert 1.0 mark current 1.0 text {HolonCode Versioning started at 1.000 2011, last change 4.022 2020
-} 1.0 text {
-} 2.0 text {HolonTF includes its } 3.0 mark tk::anchor2 3.21 text {full revision history.
-} 3.21 text {
+mark insert 1.0 mark current 1.0 text {HolonCode Versioning started at 1.000 in 2011, 
+} 1.0 text {last change 4.022 in 2020
+} 2.0 text -- 3.0 mark tk::anchor1 3.2 text {
+} 3.2 text {HolonTF includes its full revision history.
 } 4.0 text {
 } 5.0 text {
-} 6.0 text { } 7.0
+} 6.0 text {
+} 7.0 text { } 8.0
 
-HolonCode Versioning started at 1.000 2011, last change 4.022 2020
-
+HolonCode Versioning started at 1.000 in 2011, 
+last change 4.022 in 2020
+--
 HolonTF includes its full revision history.
 
 
