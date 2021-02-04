@@ -511,6 +511,5 @@ proc ShowPage {id} {
 	MarkInfoPages
 	StartVisitTime
 	SetTreePage
-	BrowserButtons
 }
 

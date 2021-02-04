@@ -60,9 +60,9 @@ HolonTF Console flicken:
 
   0.006 RemoveTags 
 
+mark insert 1.0 text {hier viel text weil nichts im source } 1.0
 
-
-
+hier viel text weil nichts im source
 
 
 
@@ -78,60 +78,36 @@ global appname
 
   0.008 Literate Programming 
 
-mark insert 1.0 mark current 1.0 text {Export .md 
-} 1.0 text {Initial definitions } 2.0
+mark insert 1.0 mark current 1.0 text {Export .md } 1.0
 
-Export .md 
-Initial definitions
+Export .md
 
 
 
 
-  0.009 Found state 
+  0.009 git lernen 
 
-mark insert 1.0 text {Wenn nichts gefunden} 1.0 mark tk::anchor3 1.20 text {: Found Info leer
-} 1.20 text {
-} 2.0 text { } 3.0
+mark insert 1.0 mark current 1.0 text {text in m/b1 } 1.0
 
-Wenn nichts gefunden: Found Info leer
+text in m/b1
 
 
 
 
-  0.010 Bug Buttons&Editing 
-
-mark insert 1.0 mark current 1.0 text {Die Buttonreihe kann wechseln ohne Ändern von Editzustand oder Farbe weg und Buttons bleiben 
-} 1.0 text {Click in Visited Page kann Editzustand rufen ohne Buttons zu ändern beim ersten Eintrag 
-} 2.0 text {blinkt kurz und bleibt in Editor hängen Buttons sind Browser 
-} 3.0 text {Cancel soll BrowserButtons nicht setzen, das lieber ShowPage überlassen, dann sind wir sicher aus dem Editor heraus.
-} 4.0 text {Nicht gelöst. wie kann Editzustand ohne EditorButtons existieren? Visited??
-} 5.0 text {> nur } 6.0 tagon b 6.6 text Showpage 6.6 tagoff b 6.14 text { soll BrowserButtons } 6.14 mark tk::anchor3 6.35 text {setzen 
-} 6.35 text { } 7.0
-
-Die Buttonreihe kann wechseln ohne Ändern von Editzustand oder Farbe weg und Buttons bleiben 
-Click in Visited Page kann Editzustand rufen ohne Buttons zu ändern beim ersten Eintrag 
-blinkt kurz und bleibt in Editor hängen Buttons sind Browser 
-Cancel soll BrowserButtons nicht setzen, das lieber ShowPage überlassen, dann sind wir sicher aus dem Editor heraus.
-Nicht gelöst. wie kann Editzustand ohne EditorButtons existieren? Visited??
-> nur Showpage soll BrowserButtons setzen
+  0.010 Monitor 
 
 
 
 
-  0.011 .txt no codepane 
-
-mark insert 1.0 mark current 1.0 text {Textfiles have no code pane, the whole page available for text (comments). } 1.0
-
-Textfiles have no code pane, the whole page available for text (comments).
 
 
 
 
-  0.012 Commit to GitHub 
+  0.011 Semantic Versioning 
 
+mark insert 1.0 mark current 1.0 text {Rev start with 0.0.1 } 1.0
 
-
-
+Rev start with 0.0.1
 
 
 

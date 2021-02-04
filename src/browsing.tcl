@@ -657,7 +657,8 @@ proc ShowFoundPages {rows} {
 			}
 		}
   	}
-    	if {$count>0} {set ::infomode found}	
+#    	if {$count==0} {InsertRevisionline "(none)" normal 0}
+	set ::infomode found  
 }
 
 proc ShowVisitedPages {} {
@@ -665,6 +666,10 @@ proc ShowVisitedPages {} {
 	ClearVisited
 	FoundColor $color(info)
 	InfoTitle "Visited\n"
+#	InfoTitle "Back\n"
+#	InfoTitle "History\n"
+#	InfoTitle "Recent\n"
+#	InfoTitle "Edited:\n"
 	set count 0
 	foreach i [PageStack] {
 		pagevars $i name 
