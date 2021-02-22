@@ -290,6 +290,12 @@ proc ImportChapters {} {
 	source ./source/project.imp
 }
 
+proc Import-hml {} {
+	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
+	if {$file==""} {return}
+	ImportChapter $file
+}
+
 set LicenseText {
 GNU General Public License v3.0
 Copyright 2008-2020 Wolf Wejgaard

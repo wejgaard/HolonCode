@@ -30,6 +30,5 @@ wm geometry . [GetBase geometry]
 wm minsize . 700 400
 
 WriteAllChapters
-
 RunHolon  ; # stays here until the user ends the program
 
