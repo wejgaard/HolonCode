@@ -1409,7 +1409,7 @@ mark insert 1.0 text {Da ich die Sourcefiles extern laden, muss ich aus dem virt
 } 9.0 text {cd $dir                                       ;# erst absolut setzen auf das vfs im Pack
 } 10.0 text {cd ../../../../source                     ;# dann relativ aus der App raus zum Source Verzeichnis
 } 11.0 text {# puts "Verzeichnis ist [pwd]"
-} 12.0 mark current 13.0 text {# tkwait window .
+} 12.0 text {# tkwait window .
 } 13.0 text {source tfmain.tcl
 } 14.0 text {
 } 15.0 tagon i 16.0 text {main.tcl } 16.0 tagoff i 16.9 text {
@@ -1417,8 +1417,8 @@ mark insert 1.0 text {Da ich die Sourcefiles extern laden, muss ich aus dem virt
 } 17.0 text {starkit::startup
 } 18.0 text {cd [file dirname [info script]]
 } 19.0 text {cd ../../../../source
-} 20.0 text {source tfmain.tcl
-} 21.0 text {
+} 20.0 mark current 21.0 text {source tfmain.tcl
+} 21.0 mark tk::anchor4 22.0 text {
 } 22.0 text {
 } 23.0 text {Nehme das HolonCode App und modifiziere es. 
 } 24.0 text {Editiere die Info.plist, und kriege merkwürdige Resultate. Der Finder ignoriert die Korrekturen. Lädt immer noch holoncode statt tclforth. - Irgendwo im OS muss die erste Version des Bundles gespeichert sein. 
@@ -1427,8 +1427,8 @@ mark insert 1.0 text {Da ich die Sourcefiles extern laden, muss ich aus dem virt
 } 27.0 text {
 } 28.0 text {Zuerst bin ich im Dunkeln, weiss nicht ob das Starpack überhaupt gerufen wird. 
 } 29.0 text {Zur Kontrolle Tk und die Console laden und die aktuelle pwd zeigen.
-} 30.0 text {Die pwd ist der root des vfs im Starpack relativ zum root, also / . Ich weiss noch nicht wo das ist relativ zu OSX.} 31.0 mark tk::anchor.work.page.panes.t.text 31.115 text {
-} 31.115 text {Das bekommt man mit 
+} 30.0 text {Die pwd ist der root des vfs im Starpack relativ zum root, also / . Ich weiss noch nicht wo das ist relativ zu OSX.
+} 31.0 text {Das bekommt man mit 
 } 32.0 text {set dir [file dirname [info script]] 
 } 33.0 text {Von dort aus dann mit cd das Verzeichnis setzen und mit cd ../../../../ vier Stufen hinauf und mit cd ./source eine runter.
 } 34.0 text {
