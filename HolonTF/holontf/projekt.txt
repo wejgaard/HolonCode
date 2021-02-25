@@ -1397,19 +1397,19 @@ CompileStack ergänzt.
 
   0.061 OSX Starpack = APP 
 
-mark insert 1.0 mark current 1.0 text {Da ich die Sourcefiles extern laden, muss ich aus dem virtuellen Verzeichnis raus zum source Verzeichnis wechseln.
+mark insert 1.0 text {Da ich die Sourcefiles extern laden, muss ich aus dem virtuellen Verzeichnis raus zum source Verzeichnis wechseln.
 } 1.0 text {Nach viel Experimentieren finde ich folgende Methode in main.tcl in .vfs.
 } 2.0 text {
 } 3.0 tagon i 4.0 text main.tcl 4.0 tagoff i 4.8 text { } 4.8 tagon i 4.9 text debugversion 4.9 tagoff i 4.21 text {
-} 4.21 text {package requ} 5.0 mark tk::anchor1 5.12 text {ire starkit
-} 5.12 text {starkit::startup
+} 4.21 text {package require starkit
+} 5.0 text {starkit::startup
 } 6.0 text {# package require Tk   
 } 7.0 text {# catch {console show}
 } 8.0 text {set dir [file dirname [info script]]  ;# set dir [file dirname $argv0]  geht auch
 } 9.0 text {cd $dir                                       ;# erst absolut setzen auf das vfs im Pack
 } 10.0 text {cd ../../../../source                     ;# dann relativ aus der App raus zum Source Verzeichnis
 } 11.0 text {# puts "Verzeichnis ist [pwd]"
-} 12.0 text {# tkwait window .
+} 12.0 mark current 13.0 text {# tkwait window .
 } 13.0 text {source tfmain.tcl
 } 14.0 text {
 } 15.0 tagon i 16.0 text {main.tcl } 16.0 tagoff i 16.9 text {
@@ -1427,8 +1427,8 @@ mark insert 1.0 mark current 1.0 text {Da ich die Sourcefiles extern laden, muss
 } 27.0 text {
 } 28.0 text {Zuerst bin ich im Dunkeln, weiss nicht ob das Starpack überhaupt gerufen wird. 
 } 29.0 text {Zur Kontrolle Tk und die Console laden und die aktuelle pwd zeigen.
-} 30.0 text {Die pwd ist der root des vfs im Starpack relativ zum root, also / . Ich weiss noch nicht wo das ist relativ zu OSX.
-} 31.0 text {Das bekommt man mit 
+} 30.0 text {Die pwd ist der root des vfs im Starpack relativ zum root, also / . Ich weiss noch nicht wo das ist relativ zu OSX.} 31.0 mark tk::anchor.work.page.panes.t.text 31.115 text {
+} 31.115 text {Das bekommt man mit 
 } 32.0 text {set dir [file dirname [info script]] 
 } 33.0 text {Von dort aus dann mit cd das Verzeichnis setzen und mit cd ../../../../ vier Stufen hinauf und mit cd ./source eine runter.
 } 34.0 text {
