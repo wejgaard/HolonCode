@@ -27,7 +27,7 @@ proc SetDBLayout {} {
 }
 
 proc CreateStructure {} {
-		mk::row append wdb.base  monitor 0  view list	 version 0.0.1 \
+		mk::row append wdb.base  monitor 0  view list	 version 0.001 \
 			geometry "1100x700+50+50"  extension 1  \
 			textcolor #ffffff  codecolor 1 pages 2 comdel //  running 0 \
 			runcmd "../tclkit ./main.tcl"  syntax Tcl  safe 0 \
@@ -38,7 +38,7 @@ proc CreateStructure {} {
     		set s [AppendPage type section  name "Section"]
     		SetPage $c list $s active $s
     		SetPage $s next $c
-    		set u [AppendPage type unit  name "0.0.1"]
+    		set u [AppendPage type unit  name "0.001"]
     		SetPage $s list $u active $u
     		SetPage $u next $s
     		SetBase revpage $u
