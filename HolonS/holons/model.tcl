@@ -77,7 +77,7 @@ proc OpenDB {} {
 	UpdateRunning
 }
 
-proc CloseDB {} {
+proc CloseDB {} { 
 	global wdb 
 	SaveText
 	after cancel UpdateRunning
@@ -291,7 +291,7 @@ proc SetPageStack {list} {
 
 set maxPages 30
 
-proc PushPage {page} {
+proc PushPage {page} { 
 	SetPageStack [linsert [PageStack] 0 $page]
 	if {[llength [PageStack]]>$::maxPages} {SetPageStack [lreplace [PageStack] $::maxPages end]}
 	RemoveDoublePages

@@ -450,7 +450,7 @@ proc SetPanes {} {
 
 proc Text&CodePanes {} {
 	global view
-	if {[GetPage [Chapter] mode]=="text"}	{
+	if {[Extension] =="txt"}	{
 		NoCodePane
 	} else {
 		SetPanes 

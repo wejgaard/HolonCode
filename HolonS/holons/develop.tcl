@@ -290,12 +290,6 @@ proc ImportChapters {} {
 	source ./source/project.imp
 }
 
-proc Import-hml {} {
-	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
-	if {$file==""} {return}
-	ImportChapter $file
-}
-
 set LicenseText {
 GNU General Public License v3.0
 Copyright 2008-2020 Wolf Wejgaard
@@ -320,12 +314,6 @@ HolonCode is programmed in TclTk and uses the Metakit database.
 License for TclTK:  http://www.tcl.tk/software/tcltk/license.html
 License for Metakit:  http://equi4.com/metakit/license.html
 
-}
-
-proc ShowProject {} {
-	global keytext licensed trial days trialtime  
-	set title "$::appname "
-	wm title . $title 
 }
 
 proc License {} {
