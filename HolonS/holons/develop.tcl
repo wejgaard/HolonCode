@@ -316,6 +316,12 @@ License for Metakit:  http://equi4.com/metakit/license.html
 
 }
 
+proc ShowProject {} {
+	global keytext licensed trial days trialtime  
+	set title "$::appname "
+	wm title . $title 
+}
+
 proc License {} {
 	global licensed keytext
 	if [winfo exists .license] {return}
