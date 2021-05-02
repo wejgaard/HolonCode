@@ -461,8 +461,8 @@ proc InitSpecial {} { }
 
 proc ShowHolon {} {
 	global view
-#	set ::page [lindex [PageStack] 0]
-	set ::page 0
+	set ::page [lindex [PageStack] 1]
+#	set ::page 0
 	ShowPage [CurrentPage]
 	ShowVisitedPages 
 	ShowRevision $::version
