@@ -1,3 +1,3 @@
 #!/bin/bash
 cd `dirname $0`
-tclsh ../src/holoncode.tcl Project.hdb &
+tclsh ../holoncode/holoncode.tcl Project.hdb &

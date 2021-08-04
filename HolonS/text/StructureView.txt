@@ -1,0 +1,1091 @@
+Holons/StructureView/Styles           0.006 / 28.Jul 2021              Page 1
+
+
+Chapter StructureView.tcl
+=========================
+work frame .wframe
+
+tree text work.tree
+
+lists frame work.lists    
+    chapters listbox lists.chapters   sections listbox lists.sections   units 
+listbox lists.units
+
+ page panedwindow work.page
+    upperpane frame page.up
+        titleversion frame upperpane.tv
+            title text titleversion.title
+            version text titleversion.version        
+        text text upperpane.text
+    code text page.code
+
+info text .info
+
+Name geändert
+
+
+Sections
+========
+Styles
+Lists
+Chapters
+Sections
+Units
+Tree
+Linear
+Holons/StructureView/Styles           0.006 / 28.Jul 2021              Page 2
+
+
+Section Styles
+==============
+FONTS
+Text - Helvetica ist immer gut, grosse Zeichen sind deutlich höher als die 
+kleinen.
+Verdana ist moderner, breiter, gut für Buttons und Listen und Titel, 
+aufdringlich. 
+Lucida Grande ist ein Tick schmäler aber elegant, gut für Text und Titel. 
+Tahoma Zeichen eng, gross nicht viel grösser als Kleinschrift, Buttons wie 
+Icons, unaufdringlich, passt zu Courier, gut lesbar.
+
+Code - Courier überzeugt weiter, vielleicht Gewohnheit. 
+Monaco ist brauchbar, Grösse 1 Stufe reduziert, gewöhnungsbedürftig, hat 
+seinen Reiz, gut lesbar. - In Editoren wie Textmate gebraucht, daher in einem 
+Holon-Video Monaco nehmen für den Vergleich von Holon und Textmate, 
+Geneva ist zwar ein Proportionalfont, aber für Code geeignet, lässt sich gut 
+lesen. -     Tk setzt fixed = Geneva wenn der gewählte Font nicht in Tcl 
+vorhanden ist.
+
+Buttons - Verdana macht sie wichtig. 
+Labels - Find und Replace in Helvetica, wirkt bescheiden, sind keine Buttons
+Find&Replacetext - Textfont
+
+=> Verdana für Text, Listen, Buttons; Monaco für Code 
+
+font families - listet die verfügbaren Fonts - alle im Mac.
+
+
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+Holons/StructureView/Styles           0.006 / 28.Jul 2021              Page 3
+
+
+\ #efe grün, #ffe gelb
+proc CreateColors {} {
+    global color
+    set color(menu)    SystemButtonFace   
+    set color(system)  SystemButtonFace
+    set color(button)  SystemButtonFace
+    set color(frame)   SystemButtonFace
+    
+    set color(pagebg)  white 
+    set color(listbg)  white
+    set color(treebg)  white
+    set color(info)    white
+    set color(setup)   white 
+    
+    set color(listfg)  black
+    set color(editbg)  #f1ffff
+    set color(testbg) orange
+}
+
+
+proc CreateFonts {} {
+    set textfont Verdana      
+    set codefont [GetBase codefont]
+    set buttonfont Verdana
+    set revisionfont Verdana
+    
+    font create text -family $textfont 
+    font create underline -family $textfont -underline true
+    font create bold -family $textfont -weight bold
+    font create italic -family $textfont  -slant italic
+    font create button -family $buttonfont 
+    font create title -family $textfont 
+    
+    font create code       -family $codefont
+    font create codebold -family $codefont -weight bold
+    font create codeitalic -family $codefont -slant italic
+    font create codelink  -family $codefont -underline true
+    font create link -family $codefont  -underline true
+    
+    font create infoNormal -family $textfont 
+    font create infoBold     -family $textfont -weight bold
+    
+    font create treeFont -family $textfont   
+    font create treeBold -family $textfont -weight bold
+    font create listFont -family $textfont   
+    
+    font create small -family $revisionfont 
+    font create smallbold -family $revisionfont -weight bold
+    font create smallitalic -family $revisionfont  -slant italic
+    
+    font create linearitalic -family $textfont -slant italic
+    font create linearnormal -family $codefont
+
+
+}
+
+
+Holons/StructureView/Styles           0.006 / 28.Jul 2021              Page 4
+
+
+\ Set bold size to normal size-1
+proc AdjustFontsize {} {
+    set fontsize  [GetBase fontsize] 
+    set codesize [GetBase codesize]
+    font configure title -size [expr $fontsize+5]
+
+    font configure button -size [expr $fontsize+1]
+
+    foreach f "code codelink" {
+        font configure $f -size [expr $codesize+1]
+    }
+    foreach f "text underline italic link " {
+        font configure $f -size [expr $fontsize+1]
+    }
+    foreach f "bold treeBold" {
+        font configure $f -size [expr $fontsize]
+    }
+    foreach f "listFont treeFont " {
+        font configure $f -size [expr $fontsize+1]
+    }
+    foreach f "infoNormal infoBold " {
+        font configure $f -size [expr $fontsize+1]
+    }
+    foreach f "small smallbold smallitalic" {
+        font configure $f -size [expr $fontsize-2]
+    }
+}
+
+
+\ Common styles of the lists
+proc ListStyles {} {
+    global style 
+    set style(frame) {-relief sunken -bd 0 -bg $color(frame) -fg $color(listfg) \
+        -pady 2 -font text} 
+    set style(listframe) {-relief sunken -bd 0 -bg $color(frame) -fg $color
+(listfg) \
+        -pady 2 -font text} 
+    set style(box) {-relief sunken -bd 1 -bg $color(listbg) -fg $color(listfg) \
+        -font listFont -activestyle none}
+}
+Holons/StructureView/Lists            0.006 / 28.Jul 2021              Page 5
+
+
+Section Lists
+=============
+Pages have types: chapter, section, unit, or deleted. 
+The list does not show deleted pages, but a deleted page
+can still be called via a link. 
+
+Aktives Element markieren mit Selection.
+curselection ist dann der Index des aktiven Elementes.
+
+
+\ Frames and panes
+set view(work)  .work             ;# Container for the selectable views
+set view(page)  .work.page     ;# Container for title, comment and code 
+set view(treeframe) .work.treeframe 
+set view(tree)  .work.tree        ;# Container for tree text
+set view(lists) .work.lists      ;# Container for chapters, sections and units 
+lists
+
+set view(chapters) ""              ;# defined in ChapterList
+set view(sections) ""
+set view(units) ""
+set view(upperpane) ""
+set view(titleversion) ""
+set view(title) ""
+set view(version) ""
+set view(text) ""
+set view(code) ""
+set view(info) ""
+set view(test) ""
+set view(treeactive) ""
+
+set view(sash0) "0 50"     ;# Position of sash Text/Code
+set view(sash1) "0 250"   ;# Position of sash Code/Test
+set view(height) 7            ;# Number of elements visible in each list
+set view(dragging) 0
+
+
+\ The styles are defined separately and applied with eval. Arguments with a 
+\ variable can be added in braces, e.g. {-yscrollcommand "$chapterScroll set"}. 
+\ Eval takes away the brackets before evaluation.
+proc ChapterList {} {  
+    global view color style
+    eval    labelframe $view(lists).cf $style(listframe) ;    
+    pack $view(lists).cf -side left -fill both -expand 1
+    $view(lists).cf configure -text "  Chapters" -fg #888
+    set view(chapters) $view(lists).cf.chapters 
+    set chapterScroll $view(lists).cf.cscroll
+    eval listbox $view(chapters) $style(box) {-yscrollcommand "$chapterScroll set
+"}
+    scrollbar $chapterScroll -orient vertical -command "$view(chapters) yview"
+    pack $view(chapters) -side left -expand 1 -fill both   
+    pack $chapterScroll -side left -fill y
+}
+
+
+Holons/StructureView/Lists            0.006 / 28.Jul 2021              Page 6
+
+
+proc SectionList {} {  
+    global view color style
+    eval    labelframe $view(lists).sf  $style(listframe) ;# -text {"  Sections"} 
+-fg #888
+    
+    pack $view(lists).sf -side left -fill both  -expand 1
+    $view(lists).sf configure -text "  Sections" -fg #888
+    
+    set view(sections) $view(lists).sf.sections 
+    set sectionScroll $view(lists).sf.sscroll
+    eval listbox $view(sections) $style(box) {-yscrollcommand "$sectionScroll set
+"}    
+    scrollbar $sectionScroll -orient vertical -command "$view(sections) yview"
+    pack $view(sections) -side left -expand 1 -fill both   
+    pack $sectionScroll -side left -fill y
+}
+
+
+proc UnitList {} {  
+    global view color    style
+    eval    labelframe $view(lists).uf $style(listframe) ; # -text  {"  Units"} -fg 
+#888
+
+    pack $view(lists).uf -side left -fill both  -expand 1
+    $view(lists).uf configure -text "  Units" -fg #888
+
+    set view(units) $view(lists).uf.units
+    set unitsScroll $view(lists).uf.uscroll
+    eval listbox $view(units) $style(box) {-yscrollcommand "$unitsScroll set"}    
+    scrollbar $unitsScroll -orient vertical -command "$view(units) yview"
+    pack $view(units) -side left -expand 1 -fill both  
+    pack $unitsScroll -side left -fill y
+
+
+}
+
+
+\ Creates the Holon listboxes, one each for chapter, section and unit pages
+proc CreateLists {} {  
+    global view
+    frame $view(lists) 
+    ChapterList
+    SectionList
+    UnitList
+}
+
+
+\ Marks a list entry, keeps it marked also if not in focus.
+proc mark {w i} {
+    global marked color 
+    $w itemconfigure $i -fg #0000aa -bg #eeeeee
+    set marked($w) $i
+}
+
+
+proc unmark {w} {
+    global marked
+    $w itemconfigure $marked($w) -fg black -bg white
+}
+
+
+Holons/StructureView/Lists            0.006 / 28.Jul 2021              Page 7
+
+
+\ Shortcuts for lengthen and shorten of lists, plus and minus keys.
+proc Plus&Minus {} {
+    global view
+    bind Listbox <plus> {IncrList}
+    bind Listbox <minus> {DecrList}
+}
+
+
+\ Bindings without break also perform the original binding (tk::ListboxUpDown)
+proc ListNavigation {} {
+    global view
+    bind $view(chapters) <Left> {FocusUnits} 
+    bind $view(chapters) <Right> {FocusSections} 
+    bind $view(chapters) <Alt-Left> {GoBack; break}   
+    bind $view(sections) <Left> {FocusChapters} 
+    bind $view(sections) <Right> {FocusUnits}
+    bind $view(chapters) <Control-End> {LastProgramUnit}
+    bind $view(sections) <Up> {if [UpSection] break} 
+    bind $view(sections) <Down> {if [DownSection] break}
+    bind $view(sections) <Home> {HomeSection; break}        
+    bind $view(sections) <End> {EndSection; break}        
+    bind $view(sections) <Control-End> {LastProgramUnit}
+    bind $view(sections) <Prior> {PgUpSections; break}        ;# PgUp  v50-6
+    bind $view(sections) <Alt-Left> {GoBack; break}   
+    bind $view(units) <Left> {FocusSections} 
+    bind $view(units) <Right> {FocusChapters}
+    bind $view(units) <Up> {if [UpUnit] break} 
+    bind $view(units) <Down> {if [DownUnit] break} 
+    bind $view(units) <Home> {HomeUnit; break}        
+    bind $view(units) <End> {EndUnit; break}        
+    bind $view(units) <Control-End> {LastProgramUnit}
+    bind $view(units) <Prior> {PgUpUnits; break}        ;# PgUp
+    bind $view(units) <Next> {PgDnUnits; break}         ;# PgDn
+    bind $view(units) <Alt-Left> {GoBack; break}   
+    bind . <Alt-Left> {GoBack; break}   
+    bind . <BackSpace> {if ![Editing] GoBackSpace; break}   
+}
+
+
+proc ListboxSelection {} {    
+    bind . <<ListboxSelect>> {
+         switch -glob -- %W {
+              *chapters {UpdateChapters}
+              *sections {UpdateSections}
+              *units    {UpdateUnits}
+         }
+    }
+    # No list item activation at release 
+    # (tk script also contains "%w activate @%x,%y")
+    bind Listbox <Enter> {tk::CancelRepeat}
+}
+Holons/StructureView/Chapters         0.006 / 28.Jul 2021              Page 8
+
+
+Section Chapters
+================
+
+
+\ A list of chapter page-id's corresponding to the entries in the listbox.
+set Chapters {}
+
+
+\ Index of active chapter in the list.
+proc iActiveChapter {} {
+    global view
+    return [$view(chapters) index active]
+}
+
+
+\ Index of last chapter in list
+proc iLastChapter {} {
+    global view
+    return [expr {[$view(chapters) index end] -1}]
+}
+
+
+\ Returns the chapter name of ID c with or without a file extension
+proc ChapterName {c} {
+    set name [GetPage $c name]
+    # Show name without extension?
+    if {[GetBase extension]==0} {
+        set n [string first {.} $name] 
+        if {$n>0} {set name [string range $name 0 [expr $n-1]]}
+    }
+    return $name
+}
+
+
+\ Add c to chapter list, and mark it if active.
+proc AppendChapter {c} {
+    global Chapters view
+    lappend Chapters $c
+    set name [ChapterName $c]
+    $view(chapters) insert end "  $name"
+    if {[Chapter]==$c} {
+        set i [iLastChapter]
+        $view(chapters) activate $i
+        mark $view(chapters) $i
+    }
+}
+
+
+\ Retrieves chapters from the database.
+proc GetChapters {} {
+    global Chapters view 
+    set Chapters {} 
+    $view(chapters) delete 0 [$view(chapters) size]
+    if {[NoChapters]} {return}
+    set c [FirstChapter]
+    while {$c != ""} {
+        AppendChapter $c
+        set c [Next $c]
+    }
+    $view(chapters) yview [expr {[iActiveChapter]-$view(height)/2}]
+}
+
+Holons/StructureView/Chapters         0.006 / 28.Jul 2021              Page 9
+
+
+
+proc ClearChapters {} {
+    global view
+    $view(chapters) delete 0 [$view(chapters) size]
+    ClearSections
+}
+
+
+\ Called with a changed chapter list in the structure (chapter inserted or 
+\ deleted).
+proc RefreshChapters {} {
+    global view
+    GetChapters
+    # needed for UpdateChapters
+    $view(chapters) selection set [iActiveChapter] 
+    if [LinView] {StreamAll}
+    UpdateChapters
+    focus $view(chapters)
+}
+
+
+\ The syntax of the chapter is Forth (concatenativ) .f and .fth, else Tcl 
+\ (formal). Used in syntax coloring.
+proc GetSyntax {} {
+    set filename [GetPage [Chapter] name]
+    set dotpos [string first {.} $filename]; incr dotpos
+    set extension [string range $filename $dotpos [string length $filename]]
+    if {![string compare $extension "fth"] || ![string compare $extension "f"]} {
+        SetBase syntax Forth
+    } {
+        SetBase syntax Tcl
+    }
+}
+
+
+\ Called after a click in the list. See also UpdateUnits .
+proc UpdateChapters {} {
+    global Chapters view 
+    if {[Editing]} {SaveText}
+    set active [$view(chapters) curselection]    
+    if {$active == ""} {return}
+    # msg "chapter $active"
+    SetChapter [lindex $Chapters $active]  
+    ShowPage [Chapter]
+}
+
+
+proc FocusChapters {} {
+    global view
+    if [NoChapters] return
+    ShowPage [Chapter]
+    $view(chapters) selection set [$view(chapters) index active]
+    focus $view(chapters)
+}
+Holons/StructureView/Sections         0.006 / 28.Jul 2021              Page 10
+
+
+Section Sections
+================
+
+
+set Sections {}
+
+
+proc AppendSection {s} {
+    global Sections view
+    lappend Sections $s
+    $view(sections) insert end "  [GetPage $s name]"
+    if {[Section]==$s} {
+        set i [expr [$view(sections) index end]-1]
+        $view(sections) activate $i
+        mark $view(sections) $i  
+        $view(sections) see $i
+    }
+}
+
+
+proc ClearSections {} {
+    global view
+    $view(sections) delete 0 [$view(sections) size]
+    ClearUnits
+}
+
+
+proc GetSections {} {
+    global Sections view
+    set Sections {} 
+    ClearSections
+    ClearUnits
+    if {[NoSections]} {return}
+    set s [GetPage [Chapter] list]
+    AppendSection $s
+    while {[Next $s]!=[Chapter]} {
+        set s [Next $s]
+        AppendSection $s
+    }
+    $view(sections) yview [expr {[$view(sections) index active]-$view(height)/2}]
+}
+
+
+\ Called with changed section list (insert, delete).
+proc RefreshSections {} {
+    global view
+    GetSections
+    if [LinView] {StreamAll}
+    ShowPage [Section]
+    GetUnits
+    $view(sections) selection set [$view(sections) index active]
+    focus $view(sections)
+}
+
+
+Holons/StructureView/Sections         0.006 / 28.Jul 2021              Page 11
+
+
+\  [s. UpdateUnits]
+proc UpdateSections {} {
+    global Sections view 
+    if {[Editing]} {SaveText}    
+    set active [$view(sections) curselection]
+    if {$active == ""} {return}
+    SetSection [lindex $Sections $active]
+    ShowPage [Section]
+}
+
+
+proc FocusSections {} {
+    global view
+    focus $view(sections)
+    if {[NoSections]} {
+         $view(chapters) selection clear [$view(chapters) index active]
+        mark $view(chapters) [$view(chapters) index active]
+        ClearPage
+        return
+    }
+    ShowPage [Section]
+    $view(sections) selection set [$view(sections) index active]
+}
+Holons/StructureView/Units            0.006 / 28.Jul 2021              Page 12
+
+
+Section Units
+=============
+
+
+# Copyright (c) 2008 - 2021 Wolf Wejgaard. All  Rights Reserved.
+#  
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+set Units {}
+
+
+proc iActiveUnit {} {
+    return [$::view(units) index active]
+}
+
+
+proc iLastUnit {} {
+    return [expr {[$::view(units) index end] -1}]
+}
+
+
+\ Shows repeated names brown. 
+\ [In principle Holonforth names should be unique. However, you might include 
+\ source for variations of the program and only load one of the variations. For 
+\ exaple, the Holon tool exists in several versions (HolonS, HolonT, HolonH). 
+\ The differences are defined in separate chapters of the master Holon project. 
+\ This way the common parts are identical in all versions and need not be 
+\ repeated.]
+proc AppendUnit {u} {
+    global Units view
+    lappend Units $u
+    $view(units) insert end "  [GetPage $u name]" 
+    # show name clashes red (two or more units with the same name)
+    set n [llength [mk::select wdb.pages name [GetPage $u name] type unit]]
+    if {$n>1} {
+        $view(units) itemconfigure [iLastUnit] -fg brown
+    }
+    if {[Unit]==$u} {
+        set i [iLastUnit]
+        $view(units) activate $i
+        mark $view(units) $i  
+    }
+}
+
+
+Holons/StructureView/Units            0.006 / 28.Jul 2021              Page 13
+
+
+proc ClearUnits {} {
+    global view Units
+    set Units {} 
+    $view(units) delete 0 [$view(units) size]
+}
+
+
+\ [Index active kann durch Listverschieben mit yview ändern, umgesetzt werden. 
+\ index active ist unzuverlässig. 
+\ curselection bleibt beim markierten Element. d.h. curselection ist der Index 
+\ des aktiven Elementes.] 
+\ [Nach UpdateUnits macht Tk noch %w activate @%x,%y und setzt damit den 
+\ Aktivindex auf die Mausposition beim Click welche nicht mehr dem aktiven 
+\ Element entspricht wenn dieses in die Mitte verschoben wurde. Daher nach 500 
+\ ms den Aktivindex zurücksetzen.]
+proc UpdateUnits {} {
+    global Units view 
+    if {[Editing]} {SaveText}
+    set active [$view(units) curselection]
+    if {$active == ""} {return}
+    SetUnit [lindex $Units $active]  
+    Text&CodePanes; 
+    ShowPage [Unit]
+}
+
+
+proc GetUnits {} {
+    global Units view
+    ClearUnits
+    if {[NoUnits]} {return}
+    set u [FirstUnit]
+    while {$u != [Section]} {
+        AppendUnit $u
+        set u [Next $u]
+    }
+    $view(units) yview [expr {[iActiveUnit]-$view(height)/2}]
+}
+
+
+\ Called with a changed units list (inserted, deleted units).
+proc RefreshUnits {} {
+    global view
+    GetUnits
+    if [LinView] {StreamAll}
+    ShowPage [Unit]
+    $view(units) selection set [iActiveUnit] 
+    focus $view(units)
+}
+
+
+Holons/StructureView/Units            0.006 / 28.Jul 2021              Page 14
+
+
+proc FocusUnits {} {
+    global view
+    if {[NoSections]} {return}
+    focus $view(units)
+    if {[NoUnits]} {
+        $view(sections) selection clear [$view(sections) index active]
+        mark $view(sections) [$view(sections) index active]
+        ClearPage
+        return
+    }
+    $view(units) selection set [iActiveUnit]
+    Text&CodePanes; ShowPage [Unit]
+    focus $view(units)
+}
+Holons/StructureView/Tree             0.006 / 28.Jul 2021              Page 15
+
+
+Section Tree
+============
+
+
+proc TreeFrame {} {
+    global view color style
+    eval labelframe $view(treeframe) $style(frame) 
+    $view(treeframe) configure -text "  Chapters" -fg #888
+}
+
+
+proc CreateTree {} {
+    global view theType color
+    TreeFrame
+    text $view(tree) -pady 5 -padx 10 -wrap none  -highlightthickness 0 \
+         -bg $color(treebg) -width 20 -cursor arrow -font listFont -relief sunken 
+-bd 1 -spacing3 0
+     pack $view(tree) -in $view(treeframe) -fill both -expand true
+     
+    $view(tree) tag configure bold -foreground darkblue -font treeBold 
+    $view(tree) tag configure normal -foreground black -font treeFont 
+    $view(tree) tag configure title -font bold -foreground #666 -spacing1 5 
+-spacing3 9
+    $view(tree) tag configure blue -foreground darkblue -font treeBold
+    $view(tree) tag configure bluemarked -foreground darkblue -font treeBold 
+-background #bfdfff
+    $view(tree) tag configure marked -background #bfdfff -foreground black -font 
+treeFont
+    
+    bind $view(tree) <ButtonRelease-1> {SetCurrent $theType}   ;# v51-2
+    bind $view(tree) <$::RightButton> {focus $view(tree)}  ;# 064
+    TreeMenu
+}
+
+
+proc ExpandTree {} {
+    SetBase view treeexp
+    if [Editing] SaveIt
+    ShowPage [CurrentPage]
+}
+
+
+proc CompressTree {} {
+    SetBase view tree
+    if [Editing] SaveIt
+    ShowPage [CurrentPage]
+}
+
+
+proc TreeCMenu {} {
+    global view tree
+    set tree(cmenu) [menu $view(tree).comenu -tearoff 0]
+    $tree(cmenu) add command -label "New Chapter" -command AddChapter
+    $tree(cmenu) add command -label "Print Chapter" -command PrintChapter
+    $tree(cmenu) add command -label "Expand Tree" -command ExpandTree
+    $tree(cmenu) add command -label "Compress Tree" -command CompressTree
+}
+
+
+Holons/StructureView/Tree             0.006 / 28.Jul 2021              Page 16
+
+
+proc TreeSMenu {} {
+    global view tree
+    set tree(smenu) [menu $view(tree).somenu -tearoff 0]
+    $tree(smenu) add command -label "New Section" -command AddSection
+    $tree(smenu) add command -label "Print Section" -command PrintSection
+    $tree(smenu) add command -label "Expand Tree" -command ExpandTree
+    $tree(smenu) add command -label "Compress Tree" -command CompressTree
+}
+
+
+proc TreeUMenu {} {
+    global view tree
+    set tree(umenu) [menu $view(tree).uomenu -tearoff 0]
+    $tree(umenu) add command -label "New Unit" -command NewUnit
+    $tree(umenu) add command -label "Copy Unit" -command CopyUnit
+    $tree(umenu) add command -label "Print Page" -command PrintUnit
+    $tree(umenu) add command -label "Expand Tree" -command ExpandTree
+    $tree(umenu) add command -label "Compress Tree" -command CompressTree
+}
+
+
+\ Auch brauchen für den Titel der Page (Chapter/ Section/ Unit)
+proc SetTreeMenu {} {
+    global view tree
+    switch [GetPage [CurrentPage] type] {
+        chapter {set tree(menu) $tree(cmenu)}
+        section {set tree(menu) $tree(smenu)}
+        unit {set tree(menu) $tree(umenu)}
+    }    
+}
+
+
+\ Titel der Page je Chapter/ Section/ Unit
+proc SetTreePage {} {
+    global view tree
+    if {[GetBase view]=="tree"} {
+        set Page "  [string totitle [GetPage [CurrentPage] type]]"
+        $view(page) configure -text $Page -fg #888
+    }
+}
+
+
+proc TreeMenu {} {
+    global view tree
+    TreeCMenu; TreeSMenu; TreeUMenu
+    bind $view(tree) <$::RightButton> {SetTreeMenu; tk_popup $tree(menu) %X %Y}
+    bind $view(tree) <Control-Button-1> {SetTreeMenu; tk_popup $tree(menu) %X %Y}
+}
+
+
+proc GotoTree {id} {
+    if {[Editing]} {SaveText}
+    ShowPage $id
+}
+
+
+Holons/StructureView/Tree             0.006 / 28.Jul 2021              Page 17
+
+
+\ Current versus active: There are three current elements, chapter, section and 
+\ unit. One of them is active, its text is displayed.
+proc TreeSections {} {
+    global view 
+    if [NoSections] {return}
+    set current [Section]
+    SetSection [FirstSection]
+    while {[Section]!=[Chapter]} {
+        set s [Section]
+        $view(tree) tag bind tag$s <Button-1> "GotoTree    $s"    
+        if {[Section]==$view(treeactive)} {
+            $view(tree) insert end "  [GetPage [Section] name]\n" "marked normal tag$s"
+            $view(tree) see end
+        } else {
+            if {[Section]==$current} {
+                $view(tree) insert end "  [GetPage [Section] name]\n" "normal tag$s"
+            } else {
+                $view(tree) insert end "  [GetPage [Section] name]\n" "normal tag$s"
+            }
+        }
+        if {[GetBase view]=="treeexp"} {
+            TreeUnits
+        } else {
+            if {[Section]==$current} {TreeUnits} 
+        }
+        SetSection [NextSection]
+    }
+    SetSection $current
+}
+
+
+proc TreeUnits {} {
+    global view 
+    if [NoUnits] {return}
+    set u [FirstUnit]
+    while {$u!=[Section]} {
+        $view(tree) tag bind tag$u <Button-1> "GotoTree $u"
+        if {$u==$view(treeactive)} {
+            $view(tree) insert end "      [GetPage $u name]\n" "normal marked tag$u"
+            $view(tree) see end
+        } else {
+            $view(tree) insert end "      [GetPage $u name]\n" "normal tag$u"
+        }
+        set u [Next $u]
+    }
+}
+
+
+Holons/StructureView/Tree             0.006 / 28.Jul 2021              Page 18
+
+
+\ Every entry in the tree is tagged with its id and bound to mouse button-1. 
+\ Module als separate Liste.
+proc ShowTreeList {} {
+    global view color
+    $view(tree) configure -state normal -bg $color(pagebg)
+    $view(tree) delete 1.0 end
+#    $view(tree) insert end "Chapters\n"    title 
+    set current [Chapter]
+    set c [FirstChapter]
+    while {$c != ""} {
+        $view(tree) tag bind tag$c <Button-1> "GotoTree    $c; break"     ;# v51-2
+        if {$c==$view(treeactive)} {
+            $view(tree) insert end "[ChapterName $c]\n"    "bold tag$c"
+        } else {
+            if {$c==$current} {
+            $view(tree) insert end "[ChapterName $c]\n" "bold tag$c"
+            } else {
+            $view(tree) insert end "[ChapterName $c]\n" "normal tag$c"
+            }
+        }
+        set c [Next $c]
+    }
+    $view(tree) insert end "________________\n\n"
+    SetChapter $current
+    if {$current==$view(treeactive)} {
+            $view(tree) insert end "[ChapterName $current]\n" "bluemarked tag$current"
+            } else {
+            $view(tree) insert end "[ChapterName $current]\n" "blue tag$current"
+            }
+    TreeSections
+    $view(tree) configure -state disabled
+}
+
+
+\ List tree and marks the active page.
+proc ShowTree {id} {
+    global view
+    if [NoChapters] {return}
+    set view(treeactive) $id
+    ShowTreeList 
+}
+Holons/StructureView/Linear           0.006 / 28.Jul 2021              Page 19
+
+
+Section Linear
+==============
+Soll Sourcefile simulieren. 
+Code fortlaufend ohne Zwischentitel
+Sectiontitel doppelt unterstrichen wie in Printout
+Kapitel teilen mit Balken und fettem Titel.
+
+
+proc StreamChapterTitle {id} {
+    global ltext
+    $ltext insert end "Chapter [GetPage $id name]\n" bold
+}
+
+
+proc StreamSectionTitle {id} {
+    global ltext
+    set t [GetPage $id name]
+    $ltext insert end "Section  $t \n" bold
+}
+
+
+proc StreamUnitTitle {id} {
+    global ltext
+    set t [GetPage $id name]
+    $ltext insert end "$t\n" bold
+}
+
+
+proc StreamText {u} {
+    global ltext
+    set text [GetPage $u text]
+    if {$text==""} {return}
+    $ltext insert end [RemoveTags $text]\n
+}
+
+
+proc StreamCode {u} {
+    global ltext
+    $ltext insert end [GetPage $u source]\n
+}
+
+
+Holons/StructureView/Linear           0.006 / 28.Jul 2021              Page 20
+
+
+\ Der fette Titel unterbricht den Fluss des Auges, ohne Titel ist es eher 
+\ normaler Sourcecode.
+proc StreamPage {id} {
+    global ltext
+    set type [GetPage $id type]
+    # insert the page with a tag of its own
+    set i1 [$ltext index current]
+    if {$type=="chapter"} {StreamChapterTitle $id}
+    if {$type=="section"} {StreamSectionTitle $id}
+    if {$type=="unit"} {StreamUnitTitle $id}
+    StreamText $id 
+    set i2 [$ltext index current]
+    $ltext tag add text $i1 $i2
+    if {$type=="unit"} {StreamCode $id }
+    set i3 [$ltext index current]
+    $ltext tag add code $i2 $i3
+    set ltag "tag$id"
+    $ltext tag add $ltag $i1 $i3
+    $ltext tag bind $ltag <Double-Button-1>    "ShowPage $id; focus .lin"
+    $ltext insert end \n
+}
+
+
+proc StreamSection {} {
+    global ltext 
+    $ltext insert end "\n"  
+    StreamPage [Section]
+    $ltext insert end "\n"  
+    if [NoUnits] {return}
+    set u [FirstUnit]
+    while {$u!=[Section]} {
+        set i1 [$ltext index current]
+        StreamPage $u
+        set i2 [$ltext index current]
+        set u [Next $u]
+    }
+}
+
+
+proc StreamChapter {} {
+    global ltext
+    $ltext insert end "   \n" chapter  
+    StreamPage [Chapter]
+    if [NoSections] {return}
+    set current [Section]
+    SetSection [FirstSection]
+    while {[Section] != [Chapter]} {
+        StreamSection
+        SetSection [NextSection]
+    }
+    SetSection $current
+}
+
+
+Holons/StructureView/Linear           0.006 / 28.Jul 2021              Page 21
+
+
+proc StreamAll {} {
+    global ltext 
+    if [NoChapters] {return}
+    $ltext configure -state normal
+    $ltext delete 1.0 end
+    set current [Chapter]
+    SetChapter [FirstChapter]
+    while {[Chapter] != ""} {
+        StreamChapter
+        SetChapter [NextChapter]
+    }
+    $ltext configure -state disabled
+    SetChapter $current
+}
+
+
+\ Comment Size ca. gleich Code Grösse im Eindruck.
+proc LinearView {} {
+    global ltext color
+    if [winfo exists .lin] {wm deiconify .lin; return}
+    toplevel .lin
+    wm geometry .lin 700x900+80+20
+    wm title .lin "Linear Text View"
+    set ltext [text .lin.text -yscrollcommand ".lin.scroll set" \
+        -padx 20 -pady 20 -wrap word  -tabs {1c 2c 3c 4c 5c 6c} ]
+    scrollbar .lin.scroll -orient vertical -command [list .lin.text yview]
+    pack .lin.scroll -side right -fill y
+    pack .lin.text -side left -fill both -expand true
+
+    $ltext tag configure text  -font linearitalic
+    $ltext tag configure code  -font linearnormal
+    $ltext tag configure frame  -relief solid -borderwidth 0 -background #eff 
+-lmargin1 3 -rmargin 5
+    $ltext tag configure bold -font bold
+    $ltext tag configure b -font bold
+    $ltext tag configure section -background $color(pagebg)
+    $ltext tag configure chapter -background $color(menu) -font bold
+    $ltext tag configure textpage -background $color(pagebg)
+    $ltext tag configure codepage -background $color(pagebg)    
+    StreamAll
+}
+
+
+proc LinView {} {
+    winfo exists .lin
+}
+
+
+proc RemoveFrames {} {
+    global ltext
+    set l [$ltext tag ranges frame]    
+    if {$l!={}} {
+        eval $ltext tag remove frame $l
+    }
+}
+
+
+Holons/StructureView/Linear           0.006 / 28.Jul 2021              Page 22
+
+
+\ Show the text of page id in LinearView, IOW scroll the LinearView to page id.
+proc ShowLinPage {id} {
+    global ltext
+    if ![LinView] {return}
+    RemoveFrames
+    set pagerange [$ltext tag ranges "tag$id"]
+    set pagestart [lindex $pagerange 0]
+    set pageend [lindex $pagerange 1]
+    $ltext tag add frame $pagestart $pageend
+    # make page fully visible
+    $ltext see $pageend
+    $ltext see $pagestart
+}

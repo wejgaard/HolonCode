@@ -15,14 +15,14 @@ HolonCode project that creates TclForth.
 ##### Windows
 
 ```
-tclsh holonCode\src\holoncode.tcl HolonTF.hdb
+tclsh HolonCode\holoncode\holoncode.tcl HolonTF.hdb
 ````
 ##### macOS and Linux
 
 ````
 #!/bin/bash
 cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl HolonTF.hdb &
+tclsh HolonCode/holoncode/holoncode.tcl HolonTF.hdb &
 
 
 ````

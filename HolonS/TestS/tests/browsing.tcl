@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-proc SetCurrent {type} { 
+proc SetCurrent {type} {
 	global view
 	switch $type {
 		chapter {set l $view(chapters)}

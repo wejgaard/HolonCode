@@ -156,7 +156,7 @@ proc HolonMenu {} {
 	set menu(holon) [menu .menubar.holon -tearoff 0]
 	$menu(holon) add command -label "Markup for Import" -command {Markup}
 	$menu(holon) add command -label "New Project" -command {NewProject}
-	$menu(holon) add command -label "License" -command {License}
+	$menu(holon) add command -label "License" -command {LicenseText}
 }
 
 proc AboutHolonCode {} {

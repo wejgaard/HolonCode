@@ -1,0 +1,8 @@
+Holons/StructureView/Units            0.006 / 28.Jul 2021              Page 1
+
+
+proc ClearUnits {} {
+    global view Units
+    set Units {} 
+    $view(units) delete 0 [$view(units) size]
+}

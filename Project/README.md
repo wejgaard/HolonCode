@@ -20,7 +20,7 @@ Say: MyProject
 ##### Windows
 
 ```
-tclsh holonCode\src\holoncode.tcl MyProject.hdb
+tclsh HolonCode\holoncode\holoncode.tcl MyProject.hdb
 ````
 
 ##### macOS and Linux
@@ -28,7 +28,7 @@ tclsh holonCode\src\holoncode.tcl MyProject.hdb
 ````
 #!/bin/bash 
 cd `dirname $0` 
-tclsh holonCode/src/holoncode.tcl MyProject.hdb &
+tclsh HolonCode/holoncode/holoncode.tcl MyProject.hdb &
 ````
 
 
