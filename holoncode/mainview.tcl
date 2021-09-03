@@ -461,7 +461,7 @@ proc InitSpecial {} { }
 
 proc ShowHolon {} {
 	global view
-	set ::page [lindex [PageStack] 1]
+	set ::page [lindex [PageStack] 0]
 	ShowPage [CurrentPage]
 	ShowVisitedPages 
 	ShowRevision $::version
@@ -494,7 +494,7 @@ proc RunHolon {}  {
 	InitSpecial
   	ShowHolon
   	FindLoop
-	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
+  	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
 	update idletasks
 	after idle raise $topwin
 	tkwait window $topwin

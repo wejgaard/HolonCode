@@ -69,3 +69,15 @@ Export .md
 
 
 
+
+  0.009 test von Selection Event 
+
+Der Editor wird zweimal geladen nach einer Selektion.
+Wird da zwischengespeichert? Ist Cancel noch aktiv? 
+es wird zwischengespEichert 
+FHHFHFHF
+ дцlдцl 
+WIchtig das die Buttons noch sichtbar sind.
+
+
+

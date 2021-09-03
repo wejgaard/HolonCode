@@ -36,7 +36,29 @@
 
   0.006 Import.hml 
 
-Import-hml
+Import
+
+
+
+
+  0.007 Event <<Selection>> 
+
+Selection im Editor löscht die Markierung des Edit Zustandes
+bind $view(code) <<Selection>> {EditorButtons; EditIt} 
+stellt ihn wieder her durch neuen Einstieg in den Editor.
+ 
+Korrektur nur in ShowCode und TextMouseBindings
+
+Ohne Selection Return normal   
+
+Mit Selection Return zweistufig: zuerst in Edit zum Titel, dann zum Browser 
+das auch bei Ausstieg durch Wahl eines Wortes im Browser 
+ 
+ABER NACH SELECTION WIRD DURCH EDITIT GESPEICHERT - CANCEL NUR AB JETZT MÖGLICH.
+
+ALSO ÜBUNG ABBRECHEN
+
+CANCEL? NICHT MÖGLICH  OHNE KORREKTUR, ODER BUTTON NEW NICHT ÄNDERN AUF EDITING TESTEN
 
 
 

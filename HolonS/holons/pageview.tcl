@@ -144,6 +144,7 @@ proc TextMouseBindings  {} {
 	bind $view(text) <Alt-Button-1> {GotoWord $view(text); break} 
 	bind $view(text) <Motion> {MarkIt $view(text)}		
 	bind $view(text) <Leave> {$view(text) tag remove marking 1.0 end}
+	bind $view(text) <<Selection>> {EditorButtons; EditIt}
 }
 
 proc TextPane {} {
@@ -271,6 +272,7 @@ proc ShowCode {id} {
 	set oldCode $code
 	$view(code) configure -state disabled -bg $color(pagebg)
 	if {$offset<1.0} {$view(code) yview moveto $offset} 
+	bind $view(code) <<Selection>> {EditorButtons; EditIt}
 }
 
 proc CodeReturn {} {

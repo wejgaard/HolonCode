@@ -494,7 +494,7 @@ proc RunHolon {}  {
 	InitSpecial
   	ShowHolon
   	FindLoop
-	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
+  	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
 	update idletasks
 	after idle raise $topwin
 	tkwait window $topwin
