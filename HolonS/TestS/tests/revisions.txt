@@ -27,57 +27,46 @@
 
 
 
-  0.005 HolonTF .hml importieren 
-
-irrtum appname existiert
-
-HolonTF .hml importieren - Fehler appname ex nicht
-
-HolonS hat $appname gar nicht drin in hdb:
-proc Import-hml {} {
-	set file [tk_getOpenFile -filetypes {{"" {".hml"}}} -initialdir . ]
-	if {$file==""} {return}
-	ImportChapter $file
-}
-
-aber in src? Kann HolonS importieren?  Nein!! 
-Bug in Source: appname raus!
-
---
-
-HolonTF Console flicken:
-
-
-  0.006 RemoveTags 
-
-hier viel text weil nichts im source
+  0.005 Revisionpage 
 
 
 
 
-  0.007 Import-hml 
-
-global appname
 
 
-llloijopjoj
+  0.006 Import.hml 
 
-
-  0.008 Literate Programming 
-
-Export .md
+Import
 
 
 
 
-  0.009 test von Selection Event 
+  0.007 Event <<Selection>> 
 
-Der Editor wird zweimal geladen nach einer Selektion.
-Wird da zwischengespeichert? Ist Cancel noch aktiv? 
-es wird zwischengespEichert 
-FHHFHFHF
- äöläöl 
-WIchtig das die Buttons noch sichtbar sind.
+Selection im Editor löscht die Markierung des Edit Zustandes
+bind $view(code) <<Selection>> {EditorButtons; EditIt} 
+stellt ihn wieder her durch neuen Einstieg in den Editor.
+ 
+Korrektur nur in ShowCode und TextMouseBindings
+
+Ohne Selection Return normal   
+
+Mit Selection Return zweistufig: zuerst in Edit zum Titel, dann zum Browser 
+das auch bei Ausstieg durch Wahl eines Wortes im Browser 
+ 
+ABER NACH SELECTION WIRD DURCH EDITIT GESPEICHERT - CANCEL NUR AB JETZT MÖGLICH.
+
+ALSO ÜBUNG ABBRECHEN
+
+CANCEL? NICHT MÖGLICH  OHNE KORREKTUR, ODER BUTTON NEW NICHT ÄNDERN AUF EDITING TESTEN
+
+
+
+
+  0.008 Colors 
+
+SystemButtonFace does not exist in Linux.
+Replaced by #efefef
 
 
 

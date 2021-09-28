@@ -15,10 +15,10 @@
 
 proc CreateColors {} {
 	global color
-	set color(menu)    #fefefe
-	set color(system)  #fefefe
-	set color(button)  #fefefe
-	set color(frame)   #fefefe
+	set color(menu)    #efefef
+	set color(system)  #efefef  
+	set color(button)  #efefef
+	set color(frame)   #efefef
 	
 	set color(pagebg)  white 
 	set color(listbg)  white

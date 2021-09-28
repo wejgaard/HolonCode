@@ -62,3 +62,11 @@ CANCEL? NICHT MÖGLICH  OHNE KORREKTUR, ODER BUTTON NEW NICHT ÄNDERN AUF EDITING 
 
 
 
+
+  0.008 Colors 
+
+SystemButtonFace does not exist in Linux.
+Replaced by #efefef
+
+
+

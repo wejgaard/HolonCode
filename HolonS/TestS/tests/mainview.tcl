@@ -156,7 +156,7 @@ proc HolonMenu {} {
 	set menu(holon) [menu .menubar.holon -tearoff 0]
 	$menu(holon) add command -label "Markup for Import" -command {Markup}
 	$menu(holon) add command -label "New Project" -command {NewProject}
-	$menu(holon) add command -label "License" -command {LicenseText}
+	$menu(holon) add command -label "License" -command {License}
 }
 
 proc AboutHolonCode {} {
@@ -494,7 +494,7 @@ proc RunHolon {}  {
 	InitSpecial
   	ShowHolon
   	FindLoop
-	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
+  	wm protocol $topwin WM_DELETE_WINDOW {EndSession}
 	update idletasks
 	after idle raise $topwin
 	tkwait window $topwin

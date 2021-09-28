@@ -54,7 +54,7 @@ proc TitlePane {} {
 	set view(titleversion) [frame $view(page).tv -relief sunken -bd 1 -bg white]
 	# the title space
 	set view(title) $view(titleversion).title
-	text $view(title) -width 30  -undo true	-font title -pady 7  \
+	text $view(title) -width 40  -undo true	-font title -pady 7  \
 		-height 1 -state disabled -relief flat -padx 9 -bg $color(menu) \
 		-highlightthickness 0 -highlightcolor white
 	pack $view(title) -side left -fill both 
@@ -144,6 +144,7 @@ proc TextMouseBindings  {} {
 	bind $view(text) <Alt-Button-1> {GotoWord $view(text); break} 
 	bind $view(text) <Motion> {MarkIt $view(text)}		
 	bind $view(text) <Leave> {$view(text) tag remove marking 1.0 end}
+	bind $view(text) <<Selection>> {EditorButtons; EditIt}
 }
 
 proc TextPane {} {
@@ -271,6 +272,7 @@ proc ShowCode {id} {
 	set oldCode $code
 	$view(code) configure -state disabled -bg $color(pagebg)
 	if {$offset<1.0} {$view(code) yview moveto $offset} 
+	bind $view(code) <<Selection>> {EditorButtons; EditIt}
 }
 
 proc CodeReturn {} {
@@ -450,7 +452,7 @@ proc SetPanes {} {
 
 proc Text&CodePanes {} {
 	global view
-	if {[GetPage [Chapter] mode]=="text"}	{
+	if {[Extension] =="txt"}	{
 		NoCodePane
 	} else {
 		SetPanes 
