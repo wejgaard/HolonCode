@@ -68,7 +68,7 @@ proc OpenDB {} {
 	SetDBLayout
 	if {$newdb} {CreateStructure}
 	catch {
-		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<10} {
+		if {[GetBase running]!="" && ([clock seconds]-[GetBase running])<70} {
 			wm iconify .  ;# reduce window to icon, only message box is visible
 			tk_messageBox -type ok -message "System is already running"
 			exit
