@@ -70,3 +70,14 @@ Replaced by #efefef
 
 
 
+
+  0.009 Start mit vorletzter Unit 
+
+MainView/ShowHolon: 
+	set ::page [lindex [PageStack] 0]  startet mit aktueller Unit der letzten Session
+
+Der letzte Pagestack Eintrag 0 kann gestört werden beim Ausschalten. 
+Daher den vorletzten Eintrag 1 nehmen
+
+
+
