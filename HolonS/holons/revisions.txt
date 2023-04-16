@@ -82,3 +82,11 @@ Daher den vorletzten Eintrag 1 nehmen
 
 
 
+
+  0.010 Selection 
+
+Selection by cursor movement ends editing in 64-bit Holon.
+0.007 Event <<Selection>> activates editing again. This is a kludge. Better solution?
+
+
+

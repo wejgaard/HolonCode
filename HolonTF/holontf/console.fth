@@ -8,7 +8,7 @@
 : ConsoleWindows  { -- }
 	"TclForth Version 0.7.0" Title
 	".forth" "text" Widget Console
-	"-padx 10 -pady 10 -relief sunken -border 1 -highlightcolor white" Console config   
+	"-padx 10 -pady 10 -relief sunken -border 1 -highlightcolor white -wrap word" Console config   
 	"-expand 1 -fill both" Console pack
 	".code" "text" Widget CodeWindow
 	"-height 6 -pady 10 -padx 10 -relief sunken -border 1 -highlightcolor white" CodeWindow config  
